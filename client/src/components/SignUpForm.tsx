@@ -23,7 +23,7 @@ export function SignUpForm() {
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
-      signIn(userData);
+      await signIn(userData);
       navigate('/');
     } catch (err) {
       alert(`Error registering user: ${err}`);

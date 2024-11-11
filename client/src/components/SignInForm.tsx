@@ -14,7 +14,7 @@ export function SignInForm() {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData) as UserData;
-      signIn(userData);
+      await signIn(userData);
       navigate('/');
     } catch (err) {
       alert(`Error signing in: ${err}`);
