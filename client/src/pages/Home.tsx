@@ -1,9 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { useUser } from '../components/useUser';
 
 export function Home() {
-  const { user, handleSignOut } = useUser();
+  const { user, handleSignOut, signIn } = useUser();
   const navigate = useNavigate();
   return (
     <>
@@ -11,7 +11,10 @@ export function Home() {
         <div>
           <Button onClick={() => navigate('/sign-in')}>Sign In</Button>
           <Button onClick={() => navigate('/sign-up')}>Sign Up</Button>
-          <Link to="">Continue as guest</Link>
+          <Button
+            onClick={() => signIn({ username: 'Guest', password: 'guest' })}>
+            Continue as guest
+          </Button>
         </div>
       )}
       {user && (

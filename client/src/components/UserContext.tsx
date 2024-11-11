@@ -7,6 +7,11 @@ export type User = {
   role: string;
 };
 
+export type UserData = {
+  username: string;
+  password: string;
+};
+
 type AuthData = {
   user: User;
   token: string;
@@ -16,7 +21,7 @@ export type UserContextValues = {
   user: User | undefined;
   token: string | undefined;
   handleSignOut: () => void;
-  signIn: (formData: FormData) => void;
+  signIn: (userData: UserData) => void;
 };
 
 export const UserContext = createContext<UserContextValues>({
@@ -50,8 +55,7 @@ export function UserProvider({ children }: Props) {
     removeAuth();
   }
 
-  async function signIn(formData: FormData) {
-    const userData = Object.fromEntries(formData);
+  async function signIn(userData: UserData) {
     const req = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -1,6 +1,7 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './useUser';
+import { UserData } from './UserContext';
 
 export function SignInForm() {
   const { signIn } = useUser();
@@ -12,7 +13,8 @@ export function SignInForm() {
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
-      signIn(formData);
+      const userData = Object.fromEntries(formData) as UserData;
+      signIn(userData);
       navigate('/');
     } catch (err) {
       alert(`Error signing in: ${err}`);

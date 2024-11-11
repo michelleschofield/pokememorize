@@ -7,7 +7,9 @@ type Props = {
 
 export function Button({ onClick, children }: Props) {
   return (
-    <button onClick={onClick} className="p-1 border-2 rounded border-black">
+    <button
+      onClick={onClick}
+      className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
       {children}
     </button>
   );

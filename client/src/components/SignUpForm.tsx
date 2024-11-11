@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './useUser';
+import { UserData } from './UserContext';
 
 export function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,7 +13,7 @@ export function SignUpForm() {
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
-      const userData = Object.fromEntries(formData);
+      const userData = Object.fromEntries(formData) as UserData;
       const req = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -22,7 +23,7 @@ export function SignUpForm() {
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
-      signIn(formData);
+      signIn(userData);
       navigate('/');
     } catch (err) {
       alert(`Error registering user: ${err}`);
