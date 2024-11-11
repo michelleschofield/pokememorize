@@ -4,19 +4,26 @@ import { readToken, readUser, removeAuth, saveAuth } from '../lib';
 export type User = {
   userId: number;
   username: string;
+  role: string;
+};
+
+type AuthData = {
+  user: User;
+  token: string;
 };
 
 export type UserContextValues = {
   user: User | undefined;
   token: string | undefined;
-  handleSignIn: (user: User, token: string) => void;
   handleSignOut: () => void;
+  signIn: (formData: FormData) => void;
 };
+
 export const UserContext = createContext<UserContextValues>({
   user: undefined,
   token: undefined,
-  handleSignIn: () => undefined,
   handleSignOut: () => undefined,
+  signIn: () => undefined,
 });
 
 type Props = {
@@ -43,7 +50,22 @@ export function UserProvider({ children }: Props) {
     removeAuth();
   }
 
-  const contextValue = { user, token, handleSignIn, handleSignOut };
+  async function signIn(formData: FormData) {
+    const userData = Object.fromEntries(formData);
+    const req = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    };
+    const res = await fetch('/api/auth/sign-in', req);
+    if (!res.ok) {
+      throw new Error(`fetch Error ${res.status}`);
+    }
+    const { user, token } = (await res.json()) as AuthData;
+    handleSignIn(user, token);
+  }
+
+  const contextValue = { user, token, handleSignOut, signIn };
 
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

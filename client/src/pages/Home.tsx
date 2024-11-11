@@ -3,7 +3,7 @@ import { Button } from '../components/Button';
 import { useUser } from '../components/useUser';
 
 export function Home() {
-  const { user } = useUser();
+  const { user, handleSignOut } = useUser();
   const navigate = useNavigate();
   return (
     <>
@@ -13,6 +13,12 @@ export function Home() {
           <Button onClick={() => navigate('/sign-up')}>Sign Up</Button>
           <Link to="">Continue as guest</Link>
         </div>
+      )}
+      {user && (
+        <>
+          <div>signed in as {user.username}</div>
+          <Button onClick={handleSignOut}>Sign Out</Button>
+        </>
       )}
     </>
   );

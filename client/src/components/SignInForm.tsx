@@ -1,10 +1,10 @@
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './useUser';
 
-export function SignUpForm() {
-  const [isLoading, setIsLoading] = useState(false);
+export function SignInForm() {
   const { signIn } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -12,20 +12,10 @@ export function SignUpForm() {
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
-      const userData = Object.fromEntries(formData);
-      const req = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      };
-      const res = await fetch('/api/auth/sign-up', req);
-      if (!res.ok) {
-        throw new Error(`fetch Error ${res.status}`);
-      }
       signIn(formData);
       navigate('/');
     } catch (err) {
-      alert(`Error registering user: ${err}`);
+      alert(`Error signing in: ${err}`);
     } finally {
       setIsLoading(false);
     }
@@ -33,7 +23,7 @@ export function SignUpForm() {
 
   return (
     <div className="container">
-      <h2 className="text-xl font-bold">Register</h2>
+      <h2 className="text-xl font-bold">Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
@@ -60,7 +50,7 @@ export function SignUpForm() {
         <button
           disabled={isLoading}
           className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
-          Register
+          Sign In
         </button>
       </form>
     </div>
