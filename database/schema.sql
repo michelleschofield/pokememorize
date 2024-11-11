@@ -5,3 +5,58 @@ set client_min_messages to warning;
 drop schema "public" cascade;
 
 create schema "public";
+
+CREATE TABLE "users" (
+  "userId" serial PRIMARY KEY,
+  "username" text,
+  "hashedPassword" text,
+  "avatarUrl" text,
+  "role" text
+);
+
+CREATE TABLE "studySets" (
+  "studySetId" serial PRIMARY KEY,
+  "title" text,
+  "userId" integer
+);
+
+CREATE TABLE "sharedSets" (
+  "studySetId" integer,
+  "userId" integer
+);
+
+CREATE TABLE "cards" (
+  "cardId" serial PRIMARY KEY,
+  "studySetId" integer,
+  "pokemonId" integer,
+  "endpoint" text,
+  "info" text
+);
+
+CREATE TABLE "scores" (
+  "scoreId" serial PRIMARY KEY,
+  "score" numeric,
+  "studySetId" integer,
+  "userId" integer,
+  "scoredOn" timestamptz,
+  "gameId" integer
+);
+
+CREATE TABLE "games" (
+  "gameId" serial PRIMARY KEY,
+  "name" text
+);
+
+ALTER TABLE "studySets" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
+
+ALTER TABLE "sharedSets" ADD FOREIGN KEY ("studySetId") REFERENCES "studySets" ("studySetId");
+
+ALTER TABLE "sharedSets" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
+
+ALTER TABLE "cards" ADD FOREIGN KEY ("studySetId") REFERENCES "studySets" ("studySetId");
+
+ALTER TABLE "scores" ADD FOREIGN KEY ("studySetId") REFERENCES "studySets" ("studySetId");
+
+ALTER TABLE "scores" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
+
+ALTER TABLE "scores" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("gameId");
