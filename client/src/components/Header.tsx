@@ -3,10 +3,29 @@ import { useUser } from './useUser';
 import { useState } from 'react';
 import { Modal } from './Modal';
 import { Button } from './Button';
+import { readToken } from '../lib';
 
 export function Header() {
   const [modalOpen, setModalOpen] = useState(false);
   const { user, handleSignOut } = useUser();
+
+  async function testFunction() {
+    const card = {
+      studySetId: 2,
+      pokemonId: 1,
+      info: 'information!',
+      endpoint: 'endpoint woohoo',
+    };
+    const response = await fetch('/api/cards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${readToken()}`,
+      },
+      body: JSON.stringify(card),
+    });
+    console.log(await response.json());
+  }
 
   return (
     <>
@@ -17,6 +36,7 @@ export function Header() {
             src="https://fontmeme.com/permalink/241004/6e99ef9578d90391496b5f4b4459f196.png"
           />
         </div>
+        <Button onClick={testFunction}>Run test function</Button>
         {user && <p onClick={() => setModalOpen(true)}>{user.username}</p>}
         <Modal onClose={() => setModalOpen(false)} isOpen={modalOpen}>
           <Button

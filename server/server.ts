@@ -3,7 +3,7 @@ import express from 'express';
 import pg from 'pg';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { ClientError, errorMiddleware } from './lib/index.js';
+import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
 
 type User = {
   userId: number;
@@ -14,6 +14,16 @@ type User = {
 type Auth = {
   username: string;
   password: string;
+};
+type Payload = {
+  userId: number;
+  role: string;
+};
+type Card = {
+  studySetId: number;
+  pokemonId: number;
+  endpoint: string;
+  info: string;
 };
 
 const hashKey = process.env.TOKEN_SECRET;
@@ -92,6 +102,84 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     next(err);
   }
 });
+
+app.get('/api/sets', authMiddleware, async (req, res, next) => {
+  try {
+    const sql = `
+      select *
+      from "studySets" as "s"
+      where "userId" = $1
+      join "cards" as "c" using ("studySetId")
+    `;
+    const result = await db.query(sql, [req.user?.userId]);
+    const studySets = result.rows;
+    if (!studySets.length) throw new ClientError(404, `study sets not found`);
+    res.status(200).json(studySets);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/sets', authMiddleware, async (req, res, next) => {
+  try {
+    const { title } = req.body;
+    const user = req.user as Payload;
+
+    if (!title) throw new ClientError(400, `title field is required`);
+    if (user.role === 'guest')
+      throw new ClientError(401, 'Guest user cannot create');
+    const sql = `
+      insert into "studySets" ("title", "userId")
+      values ($1, $2)
+      returning *;
+    `;
+    const result = await db.query(sql, [title, user.userId]);
+    const studySet = result.rows[0];
+    res.status(201).json(studySet);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/cards', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId, pokemonId, endpoint, info } = req.body;
+    const user = req.user as Payload;
+    validateCard(req.body);
+    if (user.role === 'guest')
+      throw new ClientError(401, 'Guest user cannot create');
+
+    const validationSql = `
+      select *
+      from "studySets"
+      where "studySetId" = $1
+        and "userId" = $2
+      `;
+    const validationResult = await db.query(validationSql, [
+      studySetId,
+      user.userId,
+    ]);
+    if (!validationResult.rows[0]) {
+      throw new ClientError(401, `User cannot edit set ${studySetId}`);
+    }
+
+    const sql = `
+      insert into "cards" (
+        "studySetId",
+        "pokemonId",
+        "endpoint",
+        "info")
+      values ($1, $2, $3, $4)
+      returning *;
+    `;
+    const result = await db.query(sql, [studySetId, pokemonId, endpoint, info]);
+    const card = result.rows[0];
+    res.status(201).json(card);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
@@ -104,3 +192,13 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+function validateCard(card: Card): void {
+  const { studySetId, pokemonId, endpoint, info } = card;
+  if (!studySetId || !pokemonId || !endpoint || !info) {
+    throw new ClientError(400, 'not all fields provided');
+  }
+  if (!Number.isInteger(pokemonId) || !Number.isInteger(studySetId)) {
+    throw new ClientError(400, 'invalid information');
+  }
+}
