@@ -5,6 +5,7 @@ import { Home } from './pages/Home';
 import { UserProvider } from './components/UserContext';
 import { SignUpForm } from './pages/SignUpForm';
 import { SignInForm } from './pages/SignInForm';
+import { StudySets } from './pages/StudySets';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="sign-up" element={<SignUpForm />} />
           <Route path="sign-in" element={<SignInForm />} />
+          <Route path="study-sets" element={<StudySets />} />
         </Route>
       </Routes>
     </UserProvider>

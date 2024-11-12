@@ -78,7 +78,7 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     }
     const sql = `
     select "userId",
-           "hashedPassword",
+           "hashedPassword"
       from "users"
      where "username" = $1
   `;
@@ -103,14 +103,12 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
 app.get('/api/sets', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
-      select *
-      from "studySets" as "s"
+      select "title", "studySetId"
+      from "studySets"
       where "userId" = $1
-      join "cards" as "c" using ("studySetId")
     `;
     const result = await db.query(sql, [req.user?.userId]);
     const studySets = result.rows;
-    if (!studySets.length) throw new ClientError(404, `study sets not found`);
     res.status(200).json(studySets);
   } catch (err) {
     next(err);
