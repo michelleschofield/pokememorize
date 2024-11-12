@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Back } from '../components/Back';
 import { FilledCard, readCards } from '../lib';
 import { useParams } from 'react-router-dom';
+import { NewCard } from '../components/NewCard';
 
 export function SpecificSet() {
   const [cards, setCards] = useState<FilledCard[]>();
@@ -28,6 +29,7 @@ export function SpecificSet() {
   return (
     <div className="container px-2">
       <Back to="/study-sets">All Study Sets</Back>
+      <NewCard />
       {isLoading && <p>Loading...</p>}
       {cards && cards[0].pokemonName}
     </div>

@@ -23,3 +23,61 @@ h6 {
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(239, 239, 239);
+  box-shadow: 0 4px 5px 0 rgb(142, 142, 142);
+  width: 9.5rem;
+  height: 13rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+.card.pokeball {
+  padding: 0;
+  position: relative;
+}
+
+.red-half {
+  background-color: rgb(255, 42, 40);
+  height: 50%;
+  width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.white-half {
+  background-color: rgb(255, 255, 255);
+  height: 50%;
+  width: 100%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.mid-section {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.mid-stripe {
+  width: 40%;
+  height: 5px;
+  background-color: rgb(0, 0, 0);
+}
+
+.center-circle {
+  padding: 0.7rem;
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%;
+  border: 5px solid rgb(0, 0, 0);
+}

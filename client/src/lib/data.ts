@@ -103,7 +103,6 @@ async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
     };
     newCards.push(filledCard);
   }
-  console.log(newCards);
   return newCards;
 }
 
