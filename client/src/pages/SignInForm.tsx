@@ -1,12 +1,13 @@
 import { type FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from './useUser';
-import { UserData } from './UserContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../components/useUser';
+import { UserData } from '../components/UserContext';
 
 export function SignInForm() {
   const { signIn } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,8 +24,12 @@ export function SignInForm() {
     }
   }
 
+  if (user) {
+    navigate('/');
+  }
+
   return (
-    <div className="container">
+    <div className="container px-2">
       <h2 className="text-xl font-bold">Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
@@ -55,6 +60,14 @@ export function SignInForm() {
           Sign In
         </button>
       </form>
+      <p>
+        Don't have an account?{' '}
+        <Link
+          className="text-blue-600 underline underline-offset-2"
+          to="/sign-up">
+          Sign Up
+        </Link>
+      </p>
     </div>
   );
 }

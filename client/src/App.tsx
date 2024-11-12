@@ -3,8 +3,8 @@ import './App.css';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { UserProvider } from './components/UserContext';
-import { SignUpForm } from './components/SignUpForm';
-import { SignInForm } from './components/SignInForm';
+import { SignUpForm } from './pages/SignUpForm';
+import { SignInForm } from './pages/SignInForm';
 
 export default function App() {
   return (

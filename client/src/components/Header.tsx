@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <>
-      <div className="bg-blue-300 flex items-center justify-between px-2">
+      <div className="bg-blue-300 flex items-center justify-end px-2 h-16">
         <Menu menuItems={menuItems} />
         <div className="w-2/3">
           <img
@@ -27,16 +27,25 @@ export function Header() {
             src="https://fontmeme.com/permalink/241004/6e99ef9578d90391496b5f4b4459f196.png"
           />
         </div>
-        {user && <p onClick={() => setModalOpen(true)}>{user.username}</p>}
+        {user && (
+          <p
+            className="grow text-end underline underline-offset-2"
+            onClick={() => setModalOpen(true)}>
+            {user.username}
+          </p>
+        )}
         <Modal onClose={() => setModalOpen(false)} isOpen={modalOpen}>
-          <Button
-            onClick={() => {
-              setModalOpen(false);
-              handleSignOut();
-            }}>
-            Sign out
-          </Button>
-          <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+          <div className="p-2 rounded">
+            <p>Signed in as {user?.username}</p>
+            <Button
+              onClick={() => {
+                setModalOpen(false);
+                handleSignOut();
+              }}>
+              Sign out
+            </Button>
+            <Button onClick={() => setModalOpen(false)}>Close</Button>
+          </div>
         </Modal>
       </div>
       <Outlet />

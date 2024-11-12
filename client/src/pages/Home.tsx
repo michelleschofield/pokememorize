@@ -6,7 +6,7 @@ export function Home() {
   const { user, handleSignOut, signIn } = useUser();
   const navigate = useNavigate();
   return (
-    <>
+    <div className="px-2">
       {!user && (
         <div>
           <Button onClick={() => navigate('/sign-in')}>Sign In</Button>
@@ -19,10 +19,10 @@ export function Home() {
       )}
       {user && (
         <>
-          <div>signed in as {user.username}</div>
+          <div>Signed in as {user.username}</div>
           <Button onClick={handleSignOut}>Sign Out</Button>
         </>
       )}
-    </>
+    </div>
   );
 }

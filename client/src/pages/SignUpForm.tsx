@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from './useUser';
-import { UserData } from './UserContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../components/useUser';
+import { UserData } from '../components/UserContext';
 
 export function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,8 +33,8 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="container">
-      <h2 className="text-xl font-bold">Register</h2>
+    <div className="container px-2">
+      <h2 className="text-xl font-bold">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
@@ -64,6 +64,14 @@ export function SignUpForm() {
           Register
         </button>
       </form>
+      <p>
+        Already have an account?{' '}
+        <Link
+          className="text-blue-600 underline underline-offset-2"
+          to="/sign-in">
+          Sign In
+        </Link>
+      </p>
     </div>
   );
 }
