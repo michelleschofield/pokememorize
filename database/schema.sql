@@ -10,8 +10,7 @@ CREATE TABLE "users" (
   "userId" serial PRIMARY KEY,
   "username" text unique,
   "hashedPassword" text,
-  "avatarUrl" text,
-  "role" text
+  "avatarUrl" text
 );
 
 CREATE TABLE "studySets" (
@@ -30,7 +29,7 @@ CREATE TABLE "cards" (
   "studySetId" integer,
   "pokemonId" integer,
   "endpoint" text,
-  "info" text
+  "infoKey" text
 );
 
 CREATE TABLE "scores" (

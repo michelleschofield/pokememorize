@@ -6,6 +6,7 @@ import { readStudySets, StudySet } from '../lib';
 export function StudySets() {
   const [studySets, setStudySets] = useState<StudySet[]>();
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     async function loadSets() {
       try {

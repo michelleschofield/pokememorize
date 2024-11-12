@@ -21,7 +21,7 @@ type Card = {
   studySetId: number;
   pokemonId: number;
   endpoint: string;
-  info: string;
+  infoKey: string;
 };
 
 const hashKey = process.env.TOKEN_SECRET;
@@ -115,6 +115,26 @@ app.get('/api/sets', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/cards/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId } = req.params;
+    validateId(studySetId);
+    const sql = `
+      select "cardId",
+             "pokemonId",
+             "endpoint",
+             "infoKey"
+        from "cards"
+        where "studySetId" = $1;
+    `;
+    const result = await db.query(sql, [studySetId]);
+    const cards = result.rows;
+    res.json(cards);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/api/sets', authMiddleware, async (req, res, next) => {
   try {
     const { title } = req.body;
@@ -136,7 +156,7 @@ app.post('/api/sets', authMiddleware, async (req, res, next) => {
 
 app.post('/api/cards', authMiddleware, async (req, res, next) => {
   try {
-    const { studySetId, pokemonId, endpoint, info } = req.body;
+    const { studySetId, pokemonId, endpoint, infoKey } = req.body;
     const user = req.user as Payload;
     validateCard(req.body);
 
@@ -159,11 +179,16 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
         "studySetId",
         "pokemonId",
         "endpoint",
-        "info")
+        "infoKey")
       values ($1, $2, $3, $4)
       returning *;
     `;
-    const result = await db.query(sql, [studySetId, pokemonId, endpoint, info]);
+    const result = await db.query(sql, [
+      studySetId,
+      pokemonId,
+      endpoint,
+      infoKey,
+    ]);
     const card = result.rows[0];
     res.status(201).json(card);
   } catch (err) {
@@ -185,11 +210,16 @@ app.listen(process.env.PORT, () => {
 });
 
 function validateCard(card: Card): void {
-  const { studySetId, pokemonId, endpoint, info } = card;
-  if (!studySetId || !pokemonId || !endpoint || !info) {
+  const { studySetId, pokemonId, endpoint, infoKey } = card;
+  if (!studySetId || !pokemonId || !endpoint || !infoKey) {
     throw new ClientError(400, 'not all fields provided');
   }
   if (!Number.isInteger(pokemonId) || !Number.isInteger(studySetId)) {
     throw new ClientError(400, 'invalid information');
   }
+}
+
+function validateId(id: string): void {
+  if (!Number.isInteger(+id))
+    throw new ClientError(400, `${id} is not a valid id`);
 }
