@@ -115,21 +115,55 @@ app.get('/api/sets', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId } = req.params;
+    validateId(studySetId);
+    const sql = `
+      select "title", "studySetId"
+      from "studySets"
+      where "userId" = $1 and "studySetId" = $2
+    `;
+    const result = await db.query(sql, [req.user?.userId, studySetId]);
+    const studySet = result.rows[0];
+    if (!studySet)
+      throw new ClientError(404, `study set ${studySetId} not found`);
+    res.status(200).json(studySet);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/cards/:studySetId', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId } = req.params;
     validateId(studySetId);
     const sql = `
-      select "cardId",
-             "pokemonId",
-             "endpoint",
-             "infoKey"
+      select *
         from "cards"
         where "studySetId" = $1;
     `;
     const result = await db.query(sql, [studySetId]);
     const cards = result.rows;
     res.json(cards);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/card/:cardId', authMiddleware, async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    validateId(cardId);
+    const sql = `
+      select *
+      from "cards"
+      where "cardId" = $1
+    `;
+    const result = await db.query(sql, [cardId]);
+    const card = result.rows[0];
+    if (!card) throw new ClientError(404, `card ${cardId} not found`);
+    res.json(card);
   } catch (err) {
     next(err);
   }
