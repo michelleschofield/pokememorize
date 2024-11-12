@@ -9,7 +9,6 @@ type User = {
   userId: number;
   username: string;
   hashedPassword: string;
-  role: string;
 };
 type Auth = {
   username: string;
@@ -17,7 +16,6 @@ type Auth = {
 };
 type Payload = {
   userId: number;
-  role: string;
 };
 type Card = {
   studySetId: number;
@@ -59,9 +57,9 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
     }
     const hashedPassword = await argon2.hash(password);
     const sqlInsert = `
-      insert into "users" ("username", "hashedPassword", "role")
-      values ($1, $2, 'user')
-      returning "userId", "username", "role"
+      insert into "users" ("username", "hashedPassword")
+      values ($1, $2)
+      returning "userId", "username"
     `;
     const params = [username, hashedPassword];
     const result = await db.query<User>(sqlInsert, params);
@@ -81,7 +79,6 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     const sql = `
     select "userId",
            "hashedPassword",
-           "role"
       from "users"
      where "username" = $1
   `;
@@ -91,11 +88,11 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     if (!user) {
       throw new ClientError(401, 'invalid login');
     }
-    const { userId, hashedPassword, role } = user;
+    const { userId, hashedPassword } = user;
     if (!(await argon2.verify(hashedPassword, password))) {
       throw new ClientError(401, 'invalid login');
     }
-    const payload = { userId, username, role };
+    const payload = { userId, username };
     const token = jwt.sign(payload, hashKey);
     res.json({ token, user: payload });
   } catch (err) {
@@ -126,8 +123,6 @@ app.post('/api/sets', authMiddleware, async (req, res, next) => {
     const user = req.user as Payload;
 
     if (!title) throw new ClientError(400, `title field is required`);
-    if (user.role === 'guest')
-      throw new ClientError(401, 'Guest user cannot create');
     const sql = `
       insert into "studySets" ("title", "userId")
       values ($1, $2)
@@ -146,8 +141,6 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
     const { studySetId, pokemonId, endpoint, info } = req.body;
     const user = req.user as Payload;
     validateCard(req.body);
-    if (user.role === 'guest')
-      throw new ClientError(401, 'Guest user cannot create');
 
     const validationSql = `
       select *
