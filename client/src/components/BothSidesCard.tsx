@@ -9,7 +9,7 @@ type Props = {
 
 export function BothSidesCard({ card }: Props) {
   return (
-    <Link to={`/study-sets/card/${card.cardId}`} className="flex">
+    <Link to={`${card.cardId}`} className="flex">
       <PokemonCard imageSrc={card.pokemonImageUrl} caption={card.pokemonName} />
       <TypesCard types={card.info} />
     </Link>

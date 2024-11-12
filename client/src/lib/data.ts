@@ -17,6 +17,7 @@ type CardDB = {
   pokemonId: number;
   endpoint: string;
   infoKey: string;
+  studySetId: number;
 };
 
 export type PokemonType = {
@@ -32,6 +33,7 @@ type Pokemon = {
 };
 
 export type FilledCard = {
+  studySetId: number;
   cardId: number;
   pokemonId: number;
   pokemonName: string;
@@ -73,6 +75,18 @@ export async function readStudySets(): Promise<StudySet[]> {
   return sets;
 }
 
+export async function readStudySet(studySetId: number): Promise<StudySet> {
+  const req = {
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+  const response = await fetch(`/api/sets/${studySetId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const studySet = await response.json();
+  return studySet;
+}
+
 export async function readCards(studySetId: number): Promise<FilledCard[]> {
   const req = {
     headers: {
@@ -87,23 +101,42 @@ export async function readCards(studySetId: number): Promise<FilledCard[]> {
   return fillOutCards(cards);
 }
 
+export async function readCard(cardId: number): Promise<FilledCard> {
+  const req = {
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+
+  const response = await fetch(`/api/card/${cardId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const card = (await response.json()) as CardDB;
+  return fillOutCard(card);
+}
+
+async function fillOutCard(card: CardDB): Promise<FilledCard> {
+  const { cardId, pokemonId, infoKey, endpoint, studySetId } = card;
+  const response = await fetch(
+    `https://pokeapi.co/api/v2/${endpoint}/${pokemonId}/`
+  );
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const pokemon = (await response.json()) as Pokemon;
+  const filledCard: FilledCard = {
+    studySetId,
+    cardId,
+    pokemonId,
+    pokemonName: pokemon.name,
+    pokemonImageUrl: pokemonImgUrl(pokemonId),
+    infoType: infoKey,
+    info: pokemon[infoKey],
+  };
+  return filledCard;
+}
+
 async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
   const newCards: FilledCard[] = [];
   for (let i = 0; i < cards.length; i++) {
-    const { cardId, pokemonId, infoKey, endpoint } = cards[i];
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/${endpoint}/${pokemonId}/`
-    );
-    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-    const pokemon = (await response.json()) as Pokemon;
-    const filledCard: FilledCard = {
-      cardId,
-      pokemonId,
-      pokemonName: pokemon.name,
-      pokemonImageUrl: pokemonImgUrl(pokemonId),
-      infoType: infoKey,
-      info: pokemon[infoKey],
-    };
+    const filledCard = await fillOutCard(cards[i]);
     newCards.push(filledCard);
   }
   return newCards;
