@@ -1,3 +1,5 @@
+import { capitalizeWord } from '../lib/capitalize';
+
 type Props = {
   caption: string;
   imageSrc: string;
@@ -5,9 +7,9 @@ type Props = {
 
 export function PokemonCard({ caption, imageSrc }: Props) {
   return (
-    <div className="card">
-      <img src={imageSrc} className="card-image" />
-      <h3>{caption}</h3>
+    <div className="card justify-center">
+      <img src={imageSrc} className="w-full" />
+      <h3 className="text-2xl">{capitalizeWord(caption)}</h3>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { SignUpForm } from './pages/SignUpForm';
 import { SignInForm } from './pages/SignInForm';
 import { StudySets } from './pages/StudySets';
 import { SpecificSet } from './pages/SpecificSet';
+import { CardEditor } from './pages/CardEditor';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="sign-in" element={<SignInForm />} />
           <Route path="study-sets" element={<StudySets />} />
           <Route path="study-sets/:studySetId" element={<SpecificSet />} />
+          <Route path="study-sets/card/:cardId" element={<CardEditor />} />
         </Route>
       </Routes>
     </UserProvider>

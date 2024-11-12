@@ -19,8 +19,11 @@ type CardDB = {
   infoKey: string;
 };
 
-type PokemonType = {
-  name: string;
+export type PokemonType = {
+  slot: number;
+  type: {
+    name: string;
+  };
 };
 
 type Pokemon = {
@@ -34,7 +37,7 @@ export type FilledCard = {
   pokemonName: string;
   pokemonImageUrl: string;
   infoType: string;
-  info: PokemonType;
+  info: PokemonType[];
 };
 
 export function saveAuth(user: User, token: string): void {
