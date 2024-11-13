@@ -11,12 +11,12 @@ import {
 } from '../lib';
 import { FormEvent, useEffect, useState } from 'react';
 import { PokemonCard } from '../components/PokemonCard';
-import { TypesCard } from '../components/TypesCard';
 import { Button } from '../components/Button';
+import { BackOfCard } from '../components/BackOfCard';
 
 type FormInputs = {
   pokemon: string;
-  infoType: string;
+  infoType: 'types' | 'flavor_text_entries' | 'evolves_from_species';
 };
 
 export function CardEditor() {
@@ -129,7 +129,6 @@ export function CardEditor() {
             defaultValue={card.pokemonName}
           />
         </label>
-        <Button>Update Pokemon</Button>
         <PokemonCard
           imageSrc={card.pokemonImageUrl}
           caption={card.pokemonName}
@@ -150,11 +149,14 @@ export function CardEditor() {
             }}
             name="infoType">
             <option value="types">Types</option>
+            <option value="flavor_text_entries">Pokedex</option>
+            <option value="evolves_from_species">Evolves From</option>
           </select>
         </label>
-        <TypesCard types={card.info} />
+        <BackOfCard card={card} />
+        <Button>Refresh</Button>
       </form>
-      <Button onClick={handleAdd}>Add card</Button>
+      <Button onClick={handleAdd}>Save Changes</Button>
     </div>
   );
 }
