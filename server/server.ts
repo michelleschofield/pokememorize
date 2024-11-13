@@ -272,6 +272,31 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    const { userId } = req.user as User;
+    const studySetId = await getStudySetId(+cardId);
+
+    validateId(cardId);
+    checkOwnsSet(studySetId, userId);
+
+    const sql = `
+      delete
+      from "cards"
+      where "cardId" = $1 and "studySetId" = $2
+      returning *;
+    `;
+
+    const result = await db.query(sql, [cardId, studySetId]);
+    const deleted = result.rows[0];
+    if (!deleted) throw new ClientError(404, `card ${cardId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
@@ -284,6 +309,18 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+async function getStudySetId(cardId: number): Promise<number> {
+  const sql = `
+    select "studySetId"
+    from "cards"
+    where "cardId" = $1
+  `;
+  const result = await db.query(sql, [cardId]);
+  const { studySetId } = result.rows[0];
+  if (!studySetId) throw new ClientError(404, `card ${cardId} not found`);
+  return studySetId;
+}
 
 async function checkOwnsSet(
   studySetId: unknown,
