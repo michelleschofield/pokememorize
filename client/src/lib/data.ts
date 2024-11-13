@@ -43,6 +43,10 @@ export type NewCard = {
   info: PokemonType[];
 };
 
+export type NewSet = {
+  title: string;
+};
+
 export type FilledCard = NewCard & {
   cardId: number;
 };
@@ -139,6 +143,30 @@ export async function addCard(card: NewCard): Promise<void> {
     if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
     const newCard = await response.json();
     console.log(newCard);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  }
+}
+
+export async function addSet(set: NewSet) {
+  try {
+    const dbSet = {
+      ...set,
+      userId: readUser()?.userId,
+    };
+    const req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${readToken()}`,
+      },
+      body: JSON.stringify(dbSet),
+    };
+    const response = await fetch('/api/sets', req);
+    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+    const newSet = await response.json();
+    console.log(newSet);
   } catch (err) {
     console.error(err);
     alert(err);
