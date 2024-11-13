@@ -1,35 +1,30 @@
-import { useEffect, useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Header } from './components/Header';
+import { Home } from './pages/Home';
+import { UserProvider } from './components/UserContext';
+import { SignUpForm } from './pages/SignUpForm';
+import { SignInForm } from './pages/SignInForm';
+import { StudySets } from './pages/StudySets';
+import { SpecificSet } from './pages/SpecificSet';
+import { CardEditor } from './pages/CardEditor';
 
 export default function App() {
-  const [serverData, setServerData] = useState('');
-
-  useEffect(() => {
-    async function readServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
-
-      console.log('Data from server:', data);
-
-      setServerData(data.message);
-    }
-
-    readServerData();
-  }, []);
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>{serverData}</h1>
-    </>
+    <UserProvider>
+      <Routes>
+        <Route path="/" element={<Header />}>
+          <Route index element={<Home />} />
+          <Route path="sign-up" element={<SignUpForm />} />
+          <Route path="sign-in" element={<SignInForm />} />
+          <Route path="study-sets" element={<StudySets />} />
+          <Route path="study-sets/:studySetId" element={<SpecificSet />} />
+          <Route
+            path="study-sets/:studySetId/:cardId"
+            element={<CardEditor />}
+          />
+        </Route>
+      </Routes>
+    </UserProvider>
   );
 }
