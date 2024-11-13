@@ -203,6 +203,25 @@ export async function addSet(set: NewSet): Promise<StudySet> {
   return newSet;
 }
 
+export async function updateSet({
+  studySetId,
+  title,
+}: StudySet): Promise<StudySet> {
+  const req = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify({ title }),
+  };
+
+  const response = await fetch(`/api/sets/${studySetId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const updatedSet = await response.json();
+  return updatedSet;
+}
+
 export async function fillCardViaName(
   card: NewCard | FilledCard,
   pokemonName: string,
