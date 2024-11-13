@@ -50,7 +50,7 @@ export function SpecificSet() {
       }
     }
     setUp();
-  }, [studySetId]);
+  }, [studySetId, navigate]);
 
   return (
     <div className="container px-2">
