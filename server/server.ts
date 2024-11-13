@@ -106,6 +106,7 @@ app.get('/api/sets', authMiddleware, async (req, res, next) => {
       select "title", "studySetId"
       from "studySets"
       where "userId" = $1
+      order by "studySetId" desc;
     `;
     const result = await db.query(sql, [req.user?.userId]);
     const studySets = result.rows;
@@ -122,7 +123,7 @@ app.get('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select "title", "studySetId"
       from "studySets"
-      where "userId" = $1 and "studySetId" = $2
+      where "userId" = $1 and "studySetId" = $2;
     `;
     const result = await db.query(sql, [req.user?.userId, studySetId]);
     const studySet = result.rows[0];
@@ -141,7 +142,8 @@ app.get('/api/cards/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select *
         from "cards"
-        where "studySetId" = $1;
+        where "studySetId" = $1
+        order by "cardId" desc;
     `;
     const result = await db.query(sql, [studySetId]);
     const cards = result.rows;
@@ -191,22 +193,9 @@ app.post('/api/sets', authMiddleware, async (req, res, next) => {
 app.post('/api/cards', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId, pokemonId, endpoint, infoKey } = req.body;
-    const user = req.user as Payload;
     validateCard(req.body);
 
-    const validationSql = `
-      select *
-      from "studySets"
-      where "studySetId" = $1
-        and "userId" = $2
-      `;
-    const validationResult = await db.query(validationSql, [
-      studySetId,
-      user.userId,
-    ]);
-    if (!validationResult.rows[0]) {
-      throw new ClientError(401, `User cannot edit set ${studySetId}`);
-    }
+    checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       insert into "cards" (
@@ -230,6 +219,59 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId } = req.params;
+    const { title } = req.body;
+
+    validateId(studySetId);
+    if (!title) throw new ClientError(400, 'title field is required');
+
+    const sql = `
+      update "studySets"
+      set "title" = $1
+      where "studySetId" = $2 and "userId" = $3
+      returning *;
+    `;
+
+    const result = await db.query(sql, [title, studySetId, req.user?.userId]);
+    const updatedSet = result.rows[0];
+    if (!updatedSet)
+      throw new ClientError(404, `Study set ${studySetId} not found`);
+    res.json(updatedSet);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    const { studySetId, pokemonId, endpoint, infoKey } = req.body;
+
+    validateId(cardId);
+    validateCard(req.body);
+    checkOwnsSet(studySetId, req.user?.userId);
+
+    const sql = `
+      update "cards"
+      set "pokemonId" = $1,
+          "endpoint" = $2,
+          "infoKey" = $3
+      where "cardId" = $4 and "studySetId" = $5
+      returning *;
+    `;
+
+    const params = [pokemonId, endpoint, infoKey, cardId, studySetId];
+    const result = await db.query(sql, params);
+    const updatedCard = result.rows[0];
+    if (!updatedCard) throw new ClientError(404, `Card ${cardId} not found`);
+    res.json(updatedCard);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
@@ -242,6 +284,22 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+async function checkOwnsSet(
+  studySetId: unknown,
+  userId: unknown
+): Promise<void> {
+  const validationSql = `
+      select *
+      from "studySets"
+      where "studySetId" = $1
+        and "userId" = $2
+      `;
+  const validationResult = await db.query(validationSql, [studySetId, userId]);
+  if (!validationResult.rows[0]) {
+    throw new ClientError(401, `User cannot edit set ${studySetId}`);
+  }
+}
 
 function validateCard(card: Card): void {
   const { studySetId, pokemonId, endpoint, infoKey } = card;

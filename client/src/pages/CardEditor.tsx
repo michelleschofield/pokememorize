@@ -4,10 +4,12 @@ import {
   addCard,
   fillCardViaName,
   FilledCard,
+  isFilledCard,
   NewCard,
   readCard,
   readStudySet,
   StudySet,
+  updateCard,
 } from '../lib';
 import { FormEvent, useEffect, useState } from 'react';
 import { PokemonCard } from '../components/PokemonCard';
@@ -99,6 +101,15 @@ export function CardEditor() {
     navigate(`/study-sets/${studySetId}`);
   }
 
+  function handleUpdate(): void {
+    if (!isFilledCard(card)) {
+      alert('cannot update if not cardId');
+      return;
+    }
+    updateCard(card);
+    navigate(`/study-sets/${studySetId}`);
+  }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -156,7 +167,8 @@ export function CardEditor() {
         <BackOfCard card={card} />
         <Button>Refresh</Button>
       </form>
-      <Button onClick={handleAdd}>Save Changes</Button>
+      {cardId === 'new' && <Button onClick={handleAdd}>Add Card</Button>}
+      {cardId !== 'new' && <Button onClick={handleUpdate}>Save Changes</Button>}
     </div>
   );
 }

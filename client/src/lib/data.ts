@@ -1,5 +1,4 @@
 import { User } from '../components/UserContext';
-import { capitalizeWord } from './capitalize';
 
 const authKey = 'um.auth';
 
@@ -87,6 +86,12 @@ export type NewSet = {
 export type FilledCard = NewCard & {
   cardId: number;
 };
+
+export function isFilledCard(
+  card: FilledCard | NewCard | undefined
+): card is FilledCard {
+  return (card as FilledCard)?.cardId !== undefined;
+}
 
 export function saveAuth(user: User, token: string): void {
   const auth: Auth = { user, token };
@@ -203,6 +208,51 @@ export async function addSet(set: NewSet): Promise<StudySet> {
   return newSet;
 }
 
+export async function updateSet({
+  studySetId,
+  title,
+}: StudySet): Promise<StudySet> {
+  const req = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify({ title }),
+  };
+
+  const response = await fetch(`/api/sets/${studySetId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const updatedSet = await response.json();
+  return updatedSet;
+}
+
+export async function updateCard(card: FilledCard): Promise<void> {
+  try {
+    const dbCard = {
+      infoKey: card.infoType,
+      studySetId: card.studySetId,
+      pokemonId: card.pokemonId,
+      endpoint: 'pokemon',
+    };
+
+    const req = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${readToken()}`,
+      },
+      body: JSON.stringify(dbCard),
+    };
+
+    const response = await fetch(`/api/cards/${card.cardId}`, req);
+    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  }
+}
+
 export async function fillCardViaName(
   card: NewCard | FilledCard,
   pokemonName: string,
@@ -251,20 +301,25 @@ async function getPokemonSpecies(
 }
 
 async function fillOutCard(card: CardDB): Promise<FilledCard> {
-  const { cardId, pokemonId, infoKey, endpoint, studySetId } = card;
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/${endpoint}/${pokemonId}/`
-  );
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const pokemon = (await response.json()) as Pokemon;
+  const { cardId, pokemonId, infoKey, studySetId } = card;
+  let pokemonInfo: Pokemon | PokemonSpecies;
+  switch (infoKey) {
+    case 'types':
+      pokemonInfo = await getPokemon(pokemonId);
+      break;
+    case 'evolves_from_species':
+    case 'flavor_text_entries':
+      pokemonInfo = await getPokemonSpecies(pokemonId);
+      break;
+  }
   const filledCard: FilledCard = {
     studySetId,
     cardId,
     pokemonId,
-    pokemonName: capitalizeWord(pokemon.name),
+    pokemonName: pokemonInfo.name,
     pokemonImageUrl: pokemonImgUrl(pokemonId),
     infoType: infoKey,
-    info: pokemon[infoKey],
+    info: pokemonInfo[infoKey],
   };
   return filledCard;
 }
