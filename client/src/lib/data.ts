@@ -119,11 +119,37 @@ export async function readCard(cardId: number): Promise<FilledCard> {
   return fillOutCard(card);
 }
 
+export async function addCard(card: NewCard): Promise<void> {
+  try {
+    const dbCard = {
+      infoKey: card.infoType,
+      studySetId: card.studySetId,
+      pokemonId: card.pokemonId,
+      endpoint: 'pokemon',
+    };
+    const req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${readToken()}`,
+      },
+      body: JSON.stringify(dbCard),
+    };
+    const response = await fetch('/api/cards', req);
+    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+    const newCard = await response.json();
+    console.log(newCard);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  }
+}
+
 export async function fillCardViaName(
-  card: NewCard,
+  card: NewCard | FilledCard,
   pokemonName: string,
   infoType: string
-): Promise<NewCard> {
+): Promise<NewCard | FilledCard> {
   const formattedName = pokemonName.toLocaleLowerCase();
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon/${formattedName}/`
@@ -131,10 +157,10 @@ export async function fillCardViaName(
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
   const pokemon = (await response.json()) as Pokemon;
   const newCard: NewCard = {
+    ...card,
     pokemonId: pokemon.id,
     pokemonName: pokemon.name,
     pokemonImageUrl: pokemonImgUrl(pokemon.id),
-    studySetId: card.studySetId,
     infoType,
     info: pokemon[infoType],
   };

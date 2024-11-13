@@ -1,6 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Back } from '../components/Back';
 import {
+  addCard,
   fillCardViaName,
   FilledCard,
   NewCard,
@@ -23,6 +24,7 @@ export function CardEditor() {
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoading, setIsLoading] = useState(true);
   const { cardId, studySetId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadStudySet(studySetId: number) {
@@ -88,6 +90,15 @@ export function CardEditor() {
     }
   }
 
+  function handleAdd() {
+    if (!card) {
+      alert('cannot add if not card');
+      return;
+    }
+    addCard(card);
+    navigate(`/study-sets/${studySetId}`);
+  }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -142,6 +153,7 @@ export function CardEditor() {
         <TypesCard types={card.info} />
         <Button>Submit</Button>
       </form>
+      <Button onClick={handleAdd}>Add card</Button>
     </div>
   );
 }
