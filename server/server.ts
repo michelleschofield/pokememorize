@@ -106,6 +106,7 @@ app.get('/api/sets', authMiddleware, async (req, res, next) => {
       select "title", "studySetId"
       from "studySets"
       where "userId" = $1
+      order by "studySetId" desc;
     `;
     const result = await db.query(sql, [req.user?.userId]);
     const studySets = result.rows;
@@ -122,7 +123,7 @@ app.get('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select "title", "studySetId"
       from "studySets"
-      where "userId" = $1 and "studySetId" = $2
+      where "userId" = $1 and "studySetId" = $2;
     `;
     const result = await db.query(sql, [req.user?.userId, studySetId]);
     const studySet = result.rows[0];
@@ -141,7 +142,8 @@ app.get('/api/cards/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select *
         from "cards"
-        where "studySetId" = $1;
+        where "studySetId" = $1
+        order by "cardId" desc;
     `;
     const result = await db.query(sql, [studySetId]);
     const cards = result.rows;
