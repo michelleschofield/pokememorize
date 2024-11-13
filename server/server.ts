@@ -191,22 +191,9 @@ app.post('/api/sets', authMiddleware, async (req, res, next) => {
 app.post('/api/cards', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId, pokemonId, endpoint, infoKey } = req.body;
-    const user = req.user as Payload;
     validateCard(req.body);
 
-    const validationSql = `
-      select *
-      from "studySets"
-      where "studySetId" = $1
-        and "userId" = $2
-      `;
-    const validationResult = await db.query(validationSql, [
-      studySetId,
-      user.userId,
-    ]);
-    if (!validationResult.rows[0]) {
-      throw new ClientError(401, `User cannot edit set ${studySetId}`);
-    }
+    checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       insert into "cards" (
@@ -255,6 +242,34 @@ app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    const { studySetId, pokemonId, endpoint, infoKey } = req.body;
+
+    validateId(cardId);
+    validateCard(req.body);
+    checkOwnsSet(studySetId, req.user?.userId);
+
+    const sql = `
+      update "cards"
+      set "pokemonId" = $1,
+          "endpoint" = $2,
+          "infoKey" = $3
+      where "cardId" = $4 and "studySetId" = $5
+      returning *;
+    `;
+
+    const params = [pokemonId, endpoint, infoKey, cardId, studySetId];
+    const result = await db.query(sql, params);
+    const updatedCard = result.rows[0];
+    if (!updatedCard) throw new ClientError(404, `Card ${cardId} not found`);
+    res.json(updatedCard);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
@@ -267,6 +282,22 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+async function checkOwnsSet(
+  studySetId: unknown,
+  userId: unknown
+): Promise<void> {
+  const validationSql = `
+      select *
+      from "studySets"
+      where "studySetId" = $1
+        and "userId" = $2
+      `;
+  const validationResult = await db.query(validationSql, [studySetId, userId]);
+  if (!validationResult.rows[0]) {
+    throw new ClientError(401, `User cannot edit set ${studySetId}`);
+  }
+}
 
 function validateCard(card: Card): void {
   const { studySetId, pokemonId, endpoint, infoKey } = card;
