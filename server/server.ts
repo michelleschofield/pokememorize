@@ -230,6 +230,31 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId } = req.params;
+    const { title } = req.body;
+
+    validateId(studySetId);
+    if (!title) throw new ClientError(400, 'title field is required');
+
+    const sql = `
+      update "studySets"
+      set "title" = $1
+      where "studySetId" = $2 and "userId" = $3
+      returning *;
+    `;
+
+    const result = await db.query(sql, [title, studySetId, req.user?.userId]);
+    const updatedSet = result.rows[0];
+    if (!updatedSet)
+      throw new ClientError(404, `Study set ${studySetId} not found`);
+    res.json(updatedSet);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
