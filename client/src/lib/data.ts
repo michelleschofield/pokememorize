@@ -1,4 +1,5 @@
 import { User } from '../components/UserContext';
+import { capitalizeWord } from './capitalize';
 
 const authKey = 'um.auth';
 
@@ -28,18 +29,22 @@ export type PokemonType = {
 };
 
 type Pokemon = {
+  id: number;
   name: string;
   types: PokemonType[];
 };
 
-export type FilledCard = {
+export type NewCard = {
   studySetId: number;
-  cardId: number;
   pokemonId: number;
   pokemonName: string;
   pokemonImageUrl: string;
   infoType: string;
   info: PokemonType[];
+};
+
+export type FilledCard = NewCard & {
+  cardId: number;
 };
 
 export function saveAuth(user: User, token: string): void {
@@ -114,6 +119,28 @@ export async function readCard(cardId: number): Promise<FilledCard> {
   return fillOutCard(card);
 }
 
+export async function fillCardViaName(
+  card: NewCard,
+  pokemonName: string,
+  infoType: string
+): Promise<NewCard> {
+  const formattedName = pokemonName.toLocaleLowerCase();
+  const response = await fetch(
+    `https://pokeapi.co/api/v2/pokemon/${formattedName}/`
+  );
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const pokemon = (await response.json()) as Pokemon;
+  const newCard: NewCard = {
+    pokemonId: pokemon.id,
+    pokemonName: pokemon.name,
+    pokemonImageUrl: pokemonImgUrl(pokemon.id),
+    studySetId: card.studySetId,
+    infoType,
+    info: pokemon[infoType],
+  };
+  return newCard;
+}
+
 async function fillOutCard(card: CardDB): Promise<FilledCard> {
   const { cardId, pokemonId, infoKey, endpoint, studySetId } = card;
   const response = await fetch(
@@ -125,7 +152,7 @@ async function fillOutCard(card: CardDB): Promise<FilledCard> {
     studySetId,
     cardId,
     pokemonId,
-    pokemonName: pokemon.name,
+    pokemonName: capitalizeWord(pokemon.name),
     pokemonImageUrl: pokemonImgUrl(pokemonId),
     infoType: infoKey,
     info: pokemon[infoKey],

@@ -1,24 +1,21 @@
 import { useParams } from 'react-router-dom';
 import { Back } from '../components/Back';
 import {
+  fillCardViaName,
   FilledCard,
-  PokemonType,
+  NewCard,
   readCard,
   readStudySet,
   StudySet,
 } from '../lib';
-import { useEffect, useState } from 'react';
-import { capitalizeWord } from '../lib/capitalize';
+import { FormEvent, useEffect, useState } from 'react';
 import { PokemonCard } from '../components/PokemonCard';
 import { TypesCard } from '../components/TypesCard';
+import { Button } from '../components/Button';
 
-type NewCard = {
-  studySetId: number;
-  pokemonId: number;
-  pokemonName: string;
-  pokemonImageUrl: string;
+type FormInputs = {
+  pokemon: string;
   infoType: string;
-  info: PokemonType[];
 };
 
 export function CardEditor() {
@@ -52,7 +49,7 @@ export function CardEditor() {
             pokemonId: 0,
             pokemonName: '',
             pokemonImageUrl: '',
-            infoType: '',
+            infoType: 'types',
             info: [],
           });
         } else {
@@ -68,6 +65,29 @@ export function CardEditor() {
     setUp();
   }, [cardId, studySetId]);
 
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> {
+    event.preventDefault();
+    try {
+      if (!card) throw new Error('card is not defined');
+      setIsLoading(true);
+      const formData = new FormData(event.currentTarget);
+      const pokemonData = Object.fromEntries(formData) as FormInputs;
+      const newCard = await fillCardViaName(
+        card,
+        pokemonData.pokemon,
+        pokemonData.infoType
+      );
+      setCard(newCard);
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -79,32 +99,49 @@ export function CardEditor() {
   return (
     <div className="container px-2">
       <Back to={`/study-sets/${studySetId}`}>{studySet.title}</Back>
-      <h3 className="text-2xl">
-        Pokemon:{' '}
-        <span
+      <form onSubmit={handleSubmit}>
+        <label
+          className="text-2xl"
           style={{
-            fontFamily: 'Quicksand, sans-serif',
-            fontWeight: 'normal',
+            fontFamily: 'Kanit, sans-serif',
+            fontWeight: 600,
           }}>
-          {capitalizeWord(card.pokemonName)}
-        </span>
-      </h3>
-      <h3>change pokemon</h3>
-      <PokemonCard
-        imageSrc={card.pokemonImageUrl}
-        caption={capitalizeWord(card.pokemonName)}
-      />
-      <h3 className="text-2xl">
-        Info:{' '}
-        <span
+          Pokemon:{' '}
+          <input
+            required
+            name="pokemon"
+            className="border-2 rounded px-2"
+            style={{
+              fontFamily: 'Quicksand, sans-serif',
+              fontWeight: 'normal',
+            }}
+            defaultValue={card.pokemonName}
+          />
+        </label>
+        <PokemonCard
+          imageSrc={card.pokemonImageUrl}
+          caption={card.pokemonName}
+        />
+        <label
+          className="text-2xl"
           style={{
-            fontFamily: 'Quicksand, sans-serif',
-            fontWeight: 'normal',
+            fontFamily: 'Kanit, sans-serif',
+            fontWeight: 600,
           }}>
-          {capitalizeWord(card.infoType)}
-        </span>
-      </h3>
-      <TypesCard types={card.info} />{' '}
+          Info:{' '}
+          <input
+            required
+            name="infoType"
+            className="border-2 rounded px-2"
+            style={{
+              fontFamily: 'Quicksand, sans-serif',
+              fontWeight: 'normal',
+            }}
+            defaultValue={card.infoType}></input>
+        </label>
+        <TypesCard types={card.info} />
+        <Button>Submit</Button>
+      </form>
     </div>
   );
 }

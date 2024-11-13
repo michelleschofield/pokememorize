@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useUser } from './useUser';
 import { useState } from 'react';
 import { Modal } from './Modal';
@@ -8,6 +8,7 @@ import { Menu } from './Menu';
 export function Header() {
   const [modalOpen, setModalOpen] = useState(false);
   const { user, handleSignOut } = useUser();
+  const navigate = useNavigate();
 
   const menuItems = [
     {
@@ -41,6 +42,7 @@ export function Header() {
               onClick={() => {
                 setModalOpen(false);
                 handleSignOut();
+                navigate('/');
               }}>
               Sign out
             </Button>
