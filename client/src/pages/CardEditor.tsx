@@ -129,6 +129,7 @@ export function CardEditor() {
             defaultValue={card.pokemonName}
           />
         </label>
+        <Button>Update Pokemon</Button>
         <PokemonCard
           imageSrc={card.pokemonImageUrl}
           caption={card.pokemonName}
@@ -140,18 +141,18 @@ export function CardEditor() {
             fontWeight: 600,
           }}>
           Info:{' '}
-          <input
-            required
-            name="infoType"
+          <select
+            defaultValue={card.infoType}
             className="border-2 rounded px-2"
             style={{
               fontFamily: 'Quicksand, sans-serif',
               fontWeight: 'normal',
             }}
-            defaultValue={card.infoType}></input>
+            name="infoType">
+            <option value="types">Types</option>
+          </select>
         </label>
         <TypesCard types={card.info} />
-        <Button>Submit</Button>
       </form>
       <Button onClick={handleAdd}>Add card</Button>
     </div>

@@ -12,7 +12,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { NewCard } from '../components/NewCard';
 import { BothSidesCard } from '../components/BothSidesCard';
 import { SectionHead } from '../components/SectionHead';
-import { Button } from '../components/Button';
 
 export function SpecificSet() {
   const [cards, setCards] = useState<FilledCard[]>();
@@ -36,14 +35,16 @@ export function SpecificSet() {
       try {
         if (!studySetId) throw new Error('there must be a study set');
         if (studySetId === 'new') {
-          setStudySet({ title: 'My Set' });
-          setCards([]);
+          const defaultSet = { title: 'My Study Set' };
+          const studySet = await addSet(defaultSet);
+          navigate(`/study-sets/${studySet?.studySetId}`);
         } else {
-          await loadCards(+studySetId);
           await loadStudySet(+studySetId);
+          await loadCards(+studySetId);
         }
       } catch (err) {
         console.error(err);
+        alert(err);
       } finally {
         setIsLoading(false);
       }
@@ -51,23 +52,16 @@ export function SpecificSet() {
     setUp();
   }, [studySetId]);
 
-  function handleAdd(): void {
-    if (!studySet) {
-      alert('cannot add if not studySet');
-      return;
-    }
-    addSet(studySet);
-    navigate('/study-sets');
-  }
-
   return (
     <div className="container px-2">
       <Back to="/study-sets">All Study Sets</Back>
       <SectionHead>
-        <input
-          className='className="border-2 rounded px-2"'
-          defaultValue={studySet?.title}
-        />
+        <form>
+          <input
+            className='className="border-2 rounded px-2"'
+            defaultValue={studySet?.title}
+          />
+        </form>
       </SectionHead>
       <NewCard />
       {isLoading && <p>Loading...</p>}
@@ -76,7 +70,6 @@ export function SpecificSet() {
           {cards?.map((card) => (
             <BothSidesCard key={card.cardId} card={card} />
           ))}
-          <Button onClick={handleAdd}>Add set</Button>
         </>
       )}
     </div>

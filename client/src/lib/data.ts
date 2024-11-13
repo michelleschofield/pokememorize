@@ -141,36 +141,29 @@ export async function addCard(card: NewCard): Promise<void> {
     };
     const response = await fetch('/api/cards', req);
     if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-    const newCard = await response.json();
-    console.log(newCard);
   } catch (err) {
     console.error(err);
     alert(err);
   }
 }
 
-export async function addSet(set: NewSet) {
-  try {
-    const dbSet = {
-      ...set,
-      userId: readUser()?.userId,
-    };
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${readToken()}`,
-      },
-      body: JSON.stringify(dbSet),
-    };
-    const response = await fetch('/api/sets', req);
-    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-    const newSet = await response.json();
-    console.log(newSet);
-  } catch (err) {
-    console.error(err);
-    alert(err);
-  }
+export async function addSet(set: NewSet): Promise<StudySet> {
+  const dbSet = {
+    ...set,
+    userId: readUser()?.userId,
+  };
+  const req = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify(dbSet),
+  };
+  const response = await fetch('/api/sets', req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const newSet = (await response.json()) as StudySet;
+  return newSet;
 }
 
 export async function fillCardViaName(

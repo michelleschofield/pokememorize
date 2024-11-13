@@ -14,7 +14,7 @@ type Props = {
 export function Menu({ menuItems }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="transition-all ease-in-out grow">
+    <div className="transition-all ease-in-out grow z-10">
       {!isOpen && (
         <div className="grow">
           <FaBars size="30" onClick={() => setIsOpen(true)} />
