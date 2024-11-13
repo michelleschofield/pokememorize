@@ -17,7 +17,7 @@ type CardDB = {
   cardId: number;
   pokemonId: number;
   endpoint: string;
-  infoKey: string;
+  infoKey: 'types' | 'flavor_text_entries' | 'evolves_from_species';
   studySetId: number;
 };
 
@@ -28,20 +28,57 @@ export type PokemonType = {
   };
 };
 
+type FlavorTextEntry = {
+  flavor_text: string;
+  language: {
+    name: string;
+  };
+};
+
+export type FromSpecies = {
+  name: string;
+  url: string;
+};
+
+type PokemonSpecies = {
+  name: string;
+  id: number;
+  flavor_text_entries: FlavorTextEntry[];
+  evolves_from_species: FromSpecies | null;
+  evolution_chain: {
+    url: string;
+  };
+};
+
 type Pokemon = {
   id: number;
   name: string;
   types: PokemonType[];
 };
 
-export type NewCard = {
+type NewCardBase = {
   studySetId: number;
   pokemonId: number;
   pokemonName: string;
   pokemonImageUrl: string;
-  infoType: string;
+};
+
+type NewCardTypes = NewCardBase & {
+  infoType: 'types';
   info: PokemonType[];
 };
+
+type NewCardFlavor = NewCardBase & {
+  infoType: 'flavor_text_entries';
+  info: FlavorTextEntry[];
+};
+
+type NewCardEvolveFrom = NewCardBase & {
+  infoType: 'evolves_from_species';
+  info: FromSpecies;
+};
+
+export type NewCard = NewCardEvolveFrom | NewCardFlavor | NewCardTypes;
 
 export type NewSet = {
   title: string;
@@ -169,23 +206,48 @@ export async function addSet(set: NewSet): Promise<StudySet> {
 export async function fillCardViaName(
   card: NewCard | FilledCard,
   pokemonName: string,
-  infoType: string
+  infoType: 'types' | 'flavor_text_entries' | 'evolves_from_species'
 ): Promise<NewCard | FilledCard> {
   const formattedName = pokemonName.toLocaleLowerCase();
+  let pokemonInfo: Pokemon | PokemonSpecies;
+  switch (infoType) {
+    case 'types':
+      pokemonInfo = await getPokemon(formattedName);
+      break;
+    case 'evolves_from_species':
+    case 'flavor_text_entries':
+      pokemonInfo = await getPokemonSpecies(formattedName);
+      break;
+  }
+  const newCard: NewCard = {
+    ...card,
+    pokemonId: pokemonInfo.id,
+    pokemonName: pokemonInfo.name,
+    pokemonImageUrl: pokemonImgUrl(pokemonInfo.id),
+    infoType,
+    info: pokemonInfo[infoType],
+  };
+  return newCard;
+}
+
+async function getPokemon(idOrName: number | string): Promise<Pokemon> {
   const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/${formattedName}/`
+    `https://pokeapi.co/api/v2/pokemon/${idOrName}/`
   );
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
   const pokemon = (await response.json()) as Pokemon;
-  const newCard: NewCard = {
-    ...card,
-    pokemonId: pokemon.id,
-    pokemonName: pokemon.name,
-    pokemonImageUrl: pokemonImgUrl(pokemon.id),
-    infoType,
-    info: pokemon[infoType],
-  };
-  return newCard;
+  return pokemon;
+}
+
+async function getPokemonSpecies(
+  idOrName: number | string
+): Promise<PokemonSpecies> {
+  const response = await fetch(
+    `https://pokeapi.co/api/v2/pokemon-species/${idOrName}/`
+  );
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const pokemonSpecies = (await response.json()) as PokemonSpecies;
+  return pokemonSpecies;
 }
 
 async function fillOutCard(card: CardDB): Promise<FilledCard> {
