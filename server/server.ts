@@ -20,7 +20,6 @@ type Payload = {
 type Card = {
   studySetId: number;
   pokemonId: number;
-  endpoint: string;
   infoKey: string;
 };
 
@@ -192,7 +191,7 @@ app.post('/api/sets', authMiddleware, async (req, res, next) => {
 
 app.post('/api/cards', authMiddleware, async (req, res, next) => {
   try {
-    const { studySetId, pokemonId, endpoint, infoKey } = req.body;
+    const { studySetId, pokemonId, infoKey } = req.body;
     validateCard(req.body);
 
     await checkOwnsSet(studySetId, req.user?.userId);
@@ -201,17 +200,11 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
       insert into "cards" (
         "studySetId",
         "pokemonId",
-        "endpoint",
         "infoKey")
-      values ($1, $2, $3, $4)
+      values ($1, $2, $3)
       returning *;
     `;
-    const result = await db.query(sql, [
-      studySetId,
-      pokemonId,
-      endpoint,
-      infoKey,
-    ]);
+    const result = await db.query(sql, [studySetId, pokemonId, infoKey]);
     const card = result.rows[0];
     res.status(201).json(card);
   } catch (err) {
@@ -247,7 +240,13 @@ app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
 app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    const { studySetId, pokemonId, endpoint, infoKey } = req.body;
+    const { studySetId, pokemonId, infoKey } = req.body;
+
+    console.log('cardId', cardId);
+    console.log('card');
+    console.log(studySetId);
+    console.log(pokemonId);
+    console.log(infoKey);
 
     validateId(cardId);
     validateCard(req.body);
@@ -256,13 +255,12 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
     const sql = `
       update "cards"
       set "pokemonId" = $1,
-          "endpoint" = $2,
-          "infoKey" = $3
-      where "cardId" = $4 and "studySetId" = $5
+          "infoKey" = $2
+      where "cardId" = $3 and "studySetId" = $4
       returning *;
     `;
 
-    const params = [pokemonId, endpoint, infoKey, cardId, studySetId];
+    const params = [pokemonId, infoKey, cardId, studySetId];
     const result = await db.query(sql, params);
     const updatedCard = result.rows[0];
     if (!updatedCard) throw new ClientError(404, `Card ${cardId} not found`);
@@ -374,8 +372,8 @@ async function checkOwnsSet(
 }
 
 function validateCard(card: Card): void {
-  const { studySetId, pokemonId, endpoint, infoKey } = card;
-  if (!studySetId || !pokemonId || !endpoint || !infoKey) {
+  const { studySetId, pokemonId, infoKey } = card;
+  if (!studySetId || !pokemonId || !infoKey) {
     throw new ClientError(400, 'not all fields provided');
   }
   if (!Number.isInteger(pokemonId) || !Number.isInteger(studySetId)) {

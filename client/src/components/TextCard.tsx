@@ -1,11 +1,13 @@
+import { Card } from './Card';
+
 type Props = {
-  text: string;
+  text?: string;
 };
 
 export function TextCard({ text }: Props) {
   return (
-    <div className="card">
+    <Card>
       <p>{text}</p>
-    </div>
+    </Card>
   );
 }

@@ -23,7 +23,7 @@ export function StudySets() {
   }, []);
 
   return (
-    <div className="container px-2">
+    <div>
       <ArrowLink to="/study-sets/new" label="Make a new set" />
       <SectionHead>Your Study Sets</SectionHead>
       {isLoading && <p>Loading...</p>}

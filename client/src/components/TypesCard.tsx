@@ -1,5 +1,6 @@
 import { PokemonType } from '../lib';
 import { capitalizeWord } from '../lib/capitalize';
+import { Card } from './Card';
 
 type Props = {
   types: PokemonType[];
@@ -7,12 +8,12 @@ type Props = {
 
 export function TypesCard({ types }: Props) {
   return (
-    <div className="card justify-center">
+    <Card>
       {types.map((type) => (
         <p className="text-2xl" key={type.slot}>
           {capitalizeWord(type.type.name)}
         </p>
       ))}
-    </div>
+    </Card>
   );
 }

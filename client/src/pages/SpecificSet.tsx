@@ -93,7 +93,7 @@ export function SpecificSet() {
   }
 
   return (
-    <div className="container px-2">
+    <div>
       <Back to="/study-sets">All Study Sets</Back>
       <SectionHead>
         {isLoadingSet && <p>Loading...</p>}
@@ -103,7 +103,7 @@ export function SpecificSet() {
               <input
                 required
                 name="title"
-                className='className="border-2 rounded px-2"'
+                className="border-2 rounded px-2"
                 defaultValue={studySet?.title}
               />
               <Button>Update Title</Button>
@@ -115,11 +115,11 @@ export function SpecificSet() {
       <NewCard />
       {isLoadingCards && <p>Loading...</p>}
       {!isLoadingCards && (
-        <>
+        <div className="flex flex-wrap">
           {cards?.map((card) => (
             <BothSidesCard key={card.cardId} card={card} />
           ))}
-        </>
+        </div>
       )}
       <Modal onClose={() => setModalIsOpen(false)} isOpen={modalIsOpen}>
         <p>Are you sure you want to delete? This action cannot be undone</p>

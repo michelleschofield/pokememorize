@@ -7,7 +7,7 @@ export function Home() {
   const { user, handleSignOut, signIn } = useUser();
   const navigate = useNavigate();
   return (
-    <div className="px-2 container">
+    <div>
       {!user && (
         <div>
           <Button onClick={() => navigate('/sign-in')}>Sign In</Button>

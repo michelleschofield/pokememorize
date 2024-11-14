@@ -33,7 +33,7 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="container px-2">
+    <div>
       <h2 className="text-xl font-bold">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
