@@ -5,6 +5,9 @@
   "description": "A full stack TypeScript solo project.",
   "type": "module",
   "scripts": {
+    "tsc:client": "tsc --project client",
+    "tsc:server": "tsc --project server",
+    "tsc": "npm-run-all --continue-on-error tsc:*",
     "start": "NODE_ENV=production npm start --prefix server",
     "build": "npm run build --prefix client",
     "db:import": "sh database/import.sh",

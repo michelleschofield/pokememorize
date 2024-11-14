@@ -195,7 +195,7 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
     const { studySetId, pokemonId, endpoint, infoKey } = req.body;
     validateCard(req.body);
 
-    checkOwnsSet(studySetId, req.user?.userId);
+    await checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       insert into "cards" (
@@ -251,7 +251,7 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
 
     validateId(cardId);
     validateCard(req.body);
-    checkOwnsSet(studySetId, req.user?.userId);
+    await checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       update "cards"
@@ -272,6 +272,66 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    const { userId } = req.user as User;
+    const studySetId = await getStudySetId(+cardId);
+
+    validateId(cardId);
+    await checkOwnsSet(studySetId, userId);
+
+    const sql = `
+      delete
+      from "cards"
+      where "cardId" = $1 and "studySetId" = $2
+      returning *;
+    `;
+
+    const result = await db.query(sql, [cardId, studySetId]);
+    const deleted = result.rows[0];
+    if (!deleted) throw new ClientError(404, `card ${cardId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    console.log('you reached the delete endpoint');
+    const { studySetId } = req.params;
+    const { userId } = req.user as User;
+
+    validateId(studySetId);
+    await checkOwnsSet(studySetId, userId);
+
+    const cardSql = `
+      delete
+      from "cards"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    await db.query(cardSql, [studySetId]);
+
+    const setSql = `
+      delete
+      from "studySets"
+      where "studySetId" = $1 and "userId" = $2
+      returning *;
+    `;
+
+    const result = await db.query(setSql, [studySetId, userId]);
+    const deleted = result.rows[0];
+    if (!deleted)
+      throw new ClientError(404, `study set ${studySetId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
@@ -284,6 +344,18 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+async function getStudySetId(cardId: number): Promise<number> {
+  const sql = `
+    select "studySetId"
+    from "cards"
+    where "cardId" = $1
+  `;
+  const result = await db.query(sql, [cardId]);
+  const studySet = result.rows[0];
+  if (!studySet) throw new ClientError(404, `card ${cardId} not found`);
+  return studySet.studySetId;
+}
 
 async function checkOwnsSet(
   studySetId: unknown,

@@ -1,83 +1,18 @@
-import { User } from '../components/UserContext';
-
-const authKey = 'um.auth';
-
-type Auth = {
-  user: User;
-  token: string;
-};
+import { fillOutCard, fillOutCards, NewCard } from './pokemon-data';
+import { readToken, readUser } from './user-management';
 
 export type StudySet = {
   title: string;
   studySetId: number;
 };
 
-type CardDB = {
+export type CardDB = {
   cardId: number;
   pokemonId: number;
   endpoint: string;
   infoKey: 'types' | 'flavor_text_entries' | 'evolves_from_species';
   studySetId: number;
 };
-
-export type PokemonType = {
-  slot: number;
-  type: {
-    name: string;
-  };
-};
-
-type FlavorTextEntry = {
-  flavor_text: string;
-  language: {
-    name: string;
-  };
-};
-
-export type FromSpecies = {
-  name: string;
-  url: string;
-};
-
-type PokemonSpecies = {
-  name: string;
-  id: number;
-  flavor_text_entries: FlavorTextEntry[];
-  evolves_from_species: FromSpecies | null;
-  evolution_chain: {
-    url: string;
-  };
-};
-
-type Pokemon = {
-  id: number;
-  name: string;
-  types: PokemonType[];
-};
-
-type NewCardBase = {
-  studySetId: number;
-  pokemonId: number;
-  pokemonName: string;
-  pokemonImageUrl: string;
-};
-
-type NewCardTypes = NewCardBase & {
-  infoType: 'types';
-  info: PokemonType[];
-};
-
-type NewCardFlavor = NewCardBase & {
-  infoType: 'flavor_text_entries';
-  info: FlavorTextEntry[];
-};
-
-type NewCardEvolveFrom = NewCardBase & {
-  infoType: 'evolves_from_species';
-  info: FromSpecies;
-};
-
-export type NewCard = NewCardEvolveFrom | NewCardFlavor | NewCardTypes;
 
 export type NewSet = {
   title: string;
@@ -91,27 +26,6 @@ export function isFilledCard(
   card: FilledCard | NewCard | undefined
 ): card is FilledCard {
   return (card as FilledCard)?.cardId !== undefined;
-}
-
-export function saveAuth(user: User, token: string): void {
-  const auth: Auth = { user, token };
-  localStorage.setItem(authKey, JSON.stringify(auth));
-}
-
-export function removeAuth(): void {
-  localStorage.removeItem(authKey);
-}
-
-export function readUser(): User | undefined {
-  const auth = localStorage.getItem(authKey);
-  if (!auth) return undefined;
-  return (JSON.parse(auth) as Auth).user;
-}
-
-export function readToken(): string | undefined {
-  const auth = localStorage.getItem(authKey);
-  if (!auth) return undefined;
-  return (JSON.parse(auth) as Auth).token;
 }
 
 export async function readStudySets(): Promise<StudySet[]> {
@@ -253,90 +167,26 @@ export async function updateCard(card: FilledCard): Promise<void> {
   }
 }
 
-export async function fillCardViaName(
-  card: NewCard | FilledCard,
-  pokemonName: string,
-  infoType: 'types' | 'flavor_text_entries' | 'evolves_from_species'
-): Promise<NewCard | FilledCard> {
-  const formattedName = pokemonName.toLocaleLowerCase();
-  let pokemonInfo: Pokemon | PokemonSpecies;
-  switch (infoType) {
-    case 'types':
-      pokemonInfo = await getPokemon(formattedName);
-      break;
-    case 'evolves_from_species':
-    case 'flavor_text_entries':
-      pokemonInfo = await getPokemonSpecies(formattedName);
-      break;
-  }
-  const newCard: NewCard = {
-    ...card,
-    pokemonId: pokemonInfo.id,
-    pokemonName: pokemonInfo.name,
-    pokemonImageUrl: pokemonImgUrl(pokemonInfo.id),
-    infoType,
-    info: pokemonInfo[infoType],
+export async function deleteSet(studySetId: number): Promise<void> {
+  const req = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   };
-  return newCard;
-}
 
-async function getPokemon(idOrName: number | string): Promise<Pokemon> {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/${idOrName}/`
-  );
+  const response = await fetch(`/api/sets/${studySetId}`, req);
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const pokemon = (await response.json()) as Pokemon;
-  return pokemon;
 }
 
-async function getPokemonSpecies(
-  idOrName: number | string
-): Promise<PokemonSpecies> {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon-species/${idOrName}/`
-  );
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const pokemonSpecies = (await response.json()) as PokemonSpecies;
-  return pokemonSpecies;
-}
-
-async function fillOutCard(card: CardDB): Promise<FilledCard> {
-  const { cardId, pokemonId, infoKey, studySetId } = card;
-  let pokemonInfo: Pokemon | PokemonSpecies;
-  switch (infoKey) {
-    case 'types':
-      pokemonInfo = await getPokemon(pokemonId);
-      break;
-    case 'evolves_from_species':
-    case 'flavor_text_entries':
-      pokemonInfo = await getPokemonSpecies(pokemonId);
-      break;
-  }
-  const filledCard: FilledCard = {
-    studySetId,
-    cardId,
-    pokemonId,
-    pokemonName: pokemonInfo.name,
-    pokemonImageUrl: pokemonImgUrl(pokemonId),
-    infoType: infoKey,
-    info: pokemonInfo[infoKey],
+export async function deleteCard(cardId: number): Promise<void> {
+  const req = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   };
-  return filledCard;
-}
 
-async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
-  const newCards: FilledCard[] = [];
-  for (let i = 0; i < cards.length; i++) {
-    const filledCard = await fillOutCard(cards[i]);
-    newCards.push(filledCard);
-  }
-  return newCards;
-}
-
-function pokemonImgUrl(pokemonId: number): string {
-  let formattedId = `${pokemonId}`;
-  while (formattedId.length < 3) {
-    formattedId = '0' + formattedId;
-  }
-  return `https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/${formattedId}.png`;
+  const response = await fetch(`/api/cards/${cardId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
 }

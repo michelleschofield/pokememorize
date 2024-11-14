@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { Back } from '../components/Back';
 import {
   addSet,
+  deleteSet,
   FilledCard,
   readCards,
   readStudySet,
@@ -13,12 +14,14 @@ import { NewCard } from '../components/NewCard';
 import { BothSidesCard } from '../components/BothSidesCard';
 import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
+import { Modal } from '../components/Modal';
 
 export function SpecificSet() {
   const [cards, setCards] = useState<FilledCard[]>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [isLoadingSet, setIsLoadingSet] = useState(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const { studySetId } = useParams();
   const navigate = useNavigate();
 
@@ -75,14 +78,28 @@ export function SpecificSet() {
     }
   }
 
+  async function handleDelete(): Promise<void> {
+    try {
+      if (!studySetId) {
+        alert('cannot delete if not study set id');
+        return;
+      }
+      await deleteSet(+studySetId);
+      navigate('/study-sets');
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    }
+  }
+
   return (
     <div className="container px-2">
       <Back to="/study-sets">All Study Sets</Back>
       <SectionHead>
-        <form onSubmit={handleSubmit}>
-          {isLoadingSet && <p>Loading...</p>}
-          {!isLoadingSet && (
-            <>
+        {isLoadingSet && <p>Loading...</p>}
+        {!isLoadingSet && (
+          <>
+            <form onSubmit={handleSubmit}>
               <input
                 required
                 name="title"
@@ -90,9 +107,10 @@ export function SpecificSet() {
                 defaultValue={studySet?.title}
               />
               <Button>Update Title</Button>
-            </>
-          )}
-        </form>
+            </form>
+            <Button onClick={() => setModalIsOpen(true)}>Delete Set</Button>
+          </>
+        )}
       </SectionHead>
       <NewCard />
       {isLoadingCards && <p>Loading...</p>}
@@ -103,6 +121,11 @@ export function SpecificSet() {
           ))}
         </>
       )}
+      <Modal onClose={() => setModalIsOpen(false)} isOpen={modalIsOpen}>
+        <p>Are you sure you want to delete? This action cannot be undone</p>
+        <Button onClick={() => setModalIsOpen(false)}>Cancel</Button>
+        <Button onClick={handleDelete}>Delete</Button>
+      </Modal>
     </div>
   );
 }
