@@ -21,6 +21,11 @@ export function Header() {
       path: '/study-sets',
       iconUrl: '',
     },
+    {
+      name: 'Flashcards',
+      path: '/flashcards',
+      iconUrl: '/images/flashcards.svg',
+    },
   ];
 
   return (

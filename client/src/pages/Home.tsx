@@ -22,7 +22,8 @@ export function Home() {
         <>
           <div>Signed in as {user.username}</div>
           <Button onClick={handleSignOut}>Sign Out</Button>
-          <ArrowLink to="/study-sets" label="Study sets" />
+          <ArrowLink to="/study-sets">Study Sets</ArrowLink>
+          <ArrowLink to="/flashcards">Flashcards</ArrowLink>
         </>
       )}
     </div>

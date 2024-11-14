@@ -8,12 +8,16 @@ import { SignInForm } from './pages/SignInForm';
 import { StudySets } from './pages/StudySets';
 import { SpecificSet } from './pages/SpecificSet';
 import { CardEditor } from './pages/CardEditor';
+import { FlashcardsSelect } from './pages/FlashcardsSelect';
+import { NotFound } from './pages/NotFound';
+import { Flashcards } from './pages/Flashcards';
 
 export default function App() {
   return (
     <UserProvider>
       <Routes>
         <Route path="/" element={<Header />}>
+          <Route path="*" element={<NotFound />} />
           <Route index element={<Home />} />
           <Route path="sign-up" element={<SignUpForm />} />
           <Route path="sign-in" element={<SignInForm />} />
@@ -23,6 +27,8 @@ export default function App() {
             path="study-sets/:studySetId/:cardId"
             element={<CardEditor />}
           />
+          <Route path="flashcards" element={<FlashcardsSelect />} />
+          <Route path="flashcards/:studySetId" element={<Flashcards />} />
         </Route>
       </Routes>
     </UserProvider>
