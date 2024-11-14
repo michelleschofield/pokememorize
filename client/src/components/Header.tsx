@@ -27,7 +27,7 @@ export function Header() {
           Authorization: `Bearer ${readToken()}`,
         },
       };
-      const response = await fetch('/api/cards/9', req);
+      const response = await fetch('/api/sets/9', req);
       alert(response.status);
     } catch (err) {
       alert(err);

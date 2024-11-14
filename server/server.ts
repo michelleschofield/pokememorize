@@ -195,7 +195,7 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
     const { studySetId, pokemonId, endpoint, infoKey } = req.body;
     validateCard(req.body);
 
-    checkOwnsSet(studySetId, req.user?.userId);
+    await checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       insert into "cards" (
@@ -251,7 +251,7 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
 
     validateId(cardId);
     validateCard(req.body);
-    checkOwnsSet(studySetId, req.user?.userId);
+    await checkOwnsSet(studySetId, req.user?.userId);
 
     const sql = `
       update "cards"
@@ -279,7 +279,7 @@ app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
     const studySetId = await getStudySetId(+cardId);
 
     validateId(cardId);
-    checkOwnsSet(studySetId, userId);
+    await checkOwnsSet(studySetId, userId);
 
     const sql = `
       delete
@@ -299,11 +299,12 @@ app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
 
 app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
+    console.log('you reached the delete endpoint');
     const { studySetId } = req.params;
     const { userId } = req.user as User;
 
     validateId(studySetId);
-    checkOwnsSet(studySetId, userId);
+    await checkOwnsSet(studySetId, userId);
 
     const cardSql = `
       delete
@@ -312,17 +313,16 @@ app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
       returning *;
     `;
 
-    const params = [studySetId];
-
-    await db.query(cardSql, params);
+    await db.query(cardSql, [studySetId]);
 
     const setSql = `
       delete
       from "studySets"
-      where "studySetId" = $1
+      where "studySetId" = $1 and "userId" = $2
+      returning *;
     `;
 
-    const result = await db.query(setSql, params);
+    const result = await db.query(setSql, [studySetId, userId]);
     const deleted = result.rows[0];
     if (!deleted)
       throw new ClientError(404, `study set ${studySetId} not found`);
@@ -352,9 +352,9 @@ async function getStudySetId(cardId: number): Promise<number> {
     where "cardId" = $1
   `;
   const result = await db.query(sql, [cardId]);
-  const { studySetId } = result.rows[0];
-  if (!studySetId) throw new ClientError(404, `card ${cardId} not found`);
-  return studySetId;
+  const studySet = result.rows[0];
+  if (!studySet) throw new ClientError(404, `card ${cardId} not found`);
+  return studySet.studySetId;
 }
 
 async function checkOwnsSet(
