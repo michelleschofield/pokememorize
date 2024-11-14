@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { Back } from '../components/Back';
 import {
   addSet,
+  deleteSet,
   FilledCard,
   readCards,
   readStudySet,
@@ -77,6 +78,20 @@ export function SpecificSet() {
     }
   }
 
+  async function handleDelete(): Promise<void> {
+    try {
+      if (!studySetId) {
+        alert('cannot delete if not study set id');
+        return;
+      }
+      await deleteSet(+studySetId);
+      navigate('/study-sets');
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    }
+  }
+
   return (
     <div className="container px-2">
       <Back to="/study-sets">All Study Sets</Back>
@@ -109,7 +124,7 @@ export function SpecificSet() {
       <Modal onClose={() => setModalIsOpen(false)} isOpen={modalIsOpen}>
         <p>Are you sure you want to delete? This action cannot be undone</p>
         <Button onClick={() => setModalIsOpen(false)}>Cancel</Button>
-        <Button>Delete</Button>
+        <Button onClick={handleDelete}>Delete</Button>
       </Modal>
     </div>
   );

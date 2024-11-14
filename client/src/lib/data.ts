@@ -166,3 +166,20 @@ export async function updateCard(card: FilledCard): Promise<void> {
     alert(err);
   }
 }
+
+export async function deleteSet(studySetId: number): Promise<void> {
+  try {
+    const req = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${readToken()}`,
+      },
+    };
+
+    const response = await fetch(`/api/sets/${studySetId}`, req);
+    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  }
+}
