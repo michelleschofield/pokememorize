@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Modal } from './Modal';
 import { Button } from './Button';
 import { Menu } from './Menu';
-import { readToken } from '../lib';
 
 export function Header() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,24 +18,8 @@ export function Header() {
     },
   ];
 
-  async function test() {
-    try {
-      const req = {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${readToken()}`,
-        },
-      };
-      const response = await fetch('/api/sets/9', req);
-      alert(response.status);
-    } catch (err) {
-      alert(err);
-    }
-  }
-
   return (
     <>
-      <button onClick={test}>test</button>
       <div className="bg-blue-300 flex items-center justify-end px-2 h-16">
         <Menu menuItems={menuItems} />
         <div className="w-2/3">
