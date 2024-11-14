@@ -297,6 +297,41 @@ app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const { studySetId } = req.params;
+    const { userId } = req.user as User;
+
+    validateId(studySetId);
+    checkOwnsSet(studySetId, userId);
+
+    const cardSql = `
+      delete
+      from "cards"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    const params = [studySetId];
+
+    await db.query(cardSql, params);
+
+    const setSql = `
+      delete
+      from "studySets"
+      where "studySetId" = $1
+    `;
+
+    const result = await db.query(setSql, params);
+    const deleted = result.rows[0];
+    if (!deleted)
+      throw new ClientError(404, `study set ${studySetId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
