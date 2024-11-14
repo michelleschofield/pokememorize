@@ -1,4 +1,5 @@
 import { FromSpecies } from '../lib';
+import { Card } from './Card';
 
 type Props = {
   info: FromSpecies;
@@ -6,9 +7,9 @@ type Props = {
 
 export function EvolvesFromCard({ info }: Props) {
   return (
-    <div className="card">
+    <Card>
       <p>Evolves From</p>
       <p>{info?.name ?? 'no pokemon'}</p>
-    </div>
+    </Card>
   );
 }
