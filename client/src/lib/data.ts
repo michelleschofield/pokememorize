@@ -168,18 +168,25 @@ export async function updateCard(card: FilledCard): Promise<void> {
 }
 
 export async function deleteSet(studySetId: number): Promise<void> {
-  try {
-    const req = {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${readToken()}`,
-      },
-    };
+  const req = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
 
-    const response = await fetch(`/api/sets/${studySetId}`, req);
-    if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  } catch (err) {
-    console.error(err);
-    alert(err);
-  }
+  const response = await fetch(`/api/sets/${studySetId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+}
+
+export async function deleteCard(cardId: number): Promise<void> {
+  const req = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+
+  const response = await fetch(`/api/cards/${cardId}`, req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
 }

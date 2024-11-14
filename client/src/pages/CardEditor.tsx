@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Back } from '../components/Back';
 import {
   addCard,
+  deleteCard,
   fillCardViaName,
   FilledCard,
   isFilledCard,
@@ -110,6 +111,18 @@ export function CardEditor() {
     navigate(`/study-sets/${studySetId}`);
   }
 
+  async function handleDelete(): Promise<void> {
+    try {
+      if (!cardId) throw new Error('no cardId provided');
+      setIsLoading(true);
+      await deleteCard(+cardId);
+      navigate(`/study-sets/${studySetId}`);
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    }
+  }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -168,7 +181,12 @@ export function CardEditor() {
         <Button>Refresh</Button>
       </form>
       {cardId === 'new' && <Button onClick={handleAdd}>Add Card</Button>}
-      {cardId !== 'new' && <Button onClick={handleUpdate}>Save Changes</Button>}
+      {cardId !== 'new' && (
+        <>
+          <Button onClick={handleUpdate}>Save Changes</Button>
+          <Button onClick={handleDelete}>Delete card</Button>
+        </>
+      )}
     </div>
   );
 }
