@@ -28,7 +28,6 @@ CREATE TABLE "cards" (
   "cardId" serial PRIMARY KEY,
   "studySetId" integer,
   "pokemonId" integer,
-  "endpoint" text,
   "infoKey" text
 );
 

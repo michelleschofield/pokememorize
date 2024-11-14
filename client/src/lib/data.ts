@@ -85,7 +85,6 @@ export async function addCard(card: NewCard): Promise<void> {
       infoKey: card.infoType,
       studySetId: card.studySetId,
       pokemonId: card.pokemonId,
-      endpoint: 'pokemon',
     };
     const req = {
       method: 'POST',
@@ -147,7 +146,6 @@ export async function updateCard(card: FilledCard): Promise<void> {
       infoKey: card.infoType,
       studySetId: card.studySetId,
       pokemonId: card.pokemonId,
-      endpoint: 'pokemon',
     };
 
     const req = {
