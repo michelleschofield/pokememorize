@@ -242,6 +242,12 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
     const { cardId } = req.params;
     const { studySetId, pokemonId, infoKey } = req.body;
 
+    console.log('cardId', cardId);
+    console.log('card');
+    console.log(studySetId);
+    console.log(pokemonId);
+    console.log(infoKey);
+
     validateId(cardId);
     validateCard(req.body);
     await checkOwnsSet(studySetId, req.user?.userId);
@@ -250,7 +256,7 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
       update "cards"
       set "pokemonId" = $1,
           "infoKey" = $2
-      where "cardId" = $4 and "studySetId" = $5
+      where "cardId" = $3 and "studySetId" = $4
       returning *;
     `;
 

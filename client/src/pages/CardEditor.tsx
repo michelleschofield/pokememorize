@@ -112,6 +112,7 @@ export function CardEditor() {
 
   async function handleUpdate(): Promise<void> {
     try {
+      console.log(card);
       setIsLoading(true);
       if (!isFilledCard(card)) {
         alert('cannot update if not cardId');
