@@ -28,7 +28,11 @@ export function Menu({ menuItems }: Props) {
               <FaBars onClick={() => setIsOpen(false)} size="40" />
               <ul>
                 {menuItems.map((item) => (
-                  <MenuItemDisplay key={item.name} menuItem={item} />
+                  <MenuItemDisplay
+                    onClick={() => setIsOpen(false)}
+                    key={item.name}
+                    menuItem={item}
+                  />
                 ))}
               </ul>
             </nav>

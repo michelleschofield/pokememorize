@@ -3,13 +3,17 @@ import { type MenuItem } from './Menu';
 
 type Props = {
   menuItem: MenuItem;
+  onClick?: () => void;
 };
 
-export function MenuItemDisplay({ menuItem }: Props) {
+export function MenuItemDisplay({ menuItem, onClick }: Props) {
   const { name, path, iconUrl } = menuItem;
   return (
     <li className="inline-block  w-full">
-      <Link className="w-full flex items-center justify-end py-2" to={path}>
+      <Link
+        onClick={onClick}
+        className="w-full flex items-center justify-end py-2"
+        to={path}>
         <img className="w-8 h-8" src={iconUrl} />
         <p className="px-2">{name}</p>
       </Link>

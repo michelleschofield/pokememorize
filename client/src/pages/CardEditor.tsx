@@ -132,7 +132,7 @@ export function CardEditor() {
   }
 
   return (
-    <div className="container px-2">
+    <div>
       <Back to={`/study-sets/${studySetId}`}>{studySet.title}</Back>
       <form onSubmit={handleSubmit}>
         <label
