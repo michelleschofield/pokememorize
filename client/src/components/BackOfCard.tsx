@@ -14,7 +14,11 @@ export function BackOfCard({ card }: Props) {
     case 'types':
       return <TypesCard types={info} />;
     case 'flavor_text_entries':
-      return <TextCard text={info[0].flavor_text} />;
+      return (
+        <TextCard
+          text={info.find((entry) => entry.language.name === 'en')?.flavor_text}
+        />
+      );
     case 'evolves_from_species':
       return <EvolvesFromCard info={info} />;
   }

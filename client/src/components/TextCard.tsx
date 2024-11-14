@@ -1,7 +1,7 @@
 import { Card } from './Card';
 
 type Props = {
-  text: string;
+  text?: string;
 };
 
 export function TextCard({ text }: Props) {

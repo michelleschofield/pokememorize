@@ -197,7 +197,9 @@ export function CardEditor() {
         <BackOfCard card={card} />
         <Button>Refresh</Button>
       </form>
-      {cardId === 'new' && <Button onClick={handleAdd}>Add Card</Button>}
+      {cardId === 'new' && card.pokemonName && (
+        <Button onClick={handleAdd}>Add Card</Button>
+      )}
       {cardId !== 'new' && (
         <>
           <Button onClick={handleUpdate}>Save Changes</Button>

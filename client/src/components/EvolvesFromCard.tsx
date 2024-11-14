@@ -7,9 +7,9 @@ type Props = {
 
 export function EvolvesFromCard({ info }: Props) {
   return (
-    <Card>
-      <p>Evolves From</p>
-      <p>{info?.name ?? 'no pokemon'}</p>
+    <Card className="text-center">
+      <p className="text-2xl">Evolves From</p>
+      <h4 className="text-2xl">{info?.name ?? 'no pokemon'}</h4>
     </Card>
   );
 }
