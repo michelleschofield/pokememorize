@@ -8,6 +8,7 @@ import { SignInForm } from './pages/SignInForm';
 import { StudySets } from './pages/StudySets';
 import { SpecificSet } from './pages/SpecificSet';
 import { CardEditor } from './pages/CardEditor';
+import { FlashCardsPage } from './pages/FlashCardsPage';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             path="study-sets/:studySetId/:cardId"
             element={<CardEditor />}
           />
+          <Route path="flashcards" element={<FlashCardsPage />} />
         </Route>
       </Routes>
     </UserProvider>
