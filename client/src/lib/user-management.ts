@@ -16,12 +16,22 @@ export function removeAuth(): void {
   localStorage.removeItem(authKey);
 }
 
+/**
+ * Read the user from local storage
+ * @returns the user
+ * @returns undefined if there is no auth in local storage
+ */
 export function readUser(): User | undefined {
   const auth = localStorage.getItem(authKey);
   if (!auth) return undefined;
   return (JSON.parse(auth) as Auth).user;
 }
 
+/**
+ * Read the authorization token from local storage
+ * @returns the token
+ * @returns undefined if there is no auth in local storage
+ */
 export function readToken(): string | undefined {
   const auth = localStorage.getItem(authKey);
   if (!auth) return undefined;

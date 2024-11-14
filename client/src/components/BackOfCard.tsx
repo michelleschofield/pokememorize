@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function BackOfCard({ card }: Props) {
-  const { infoType, info } = card;
+  const { infoKey: infoType, info } = card;
 
   switch (infoType) {
     case 'types':

@@ -19,6 +19,8 @@ export type FromSpecies = {
   url: string;
 };
 
+type InfoKey = 'types' | 'flavor_text_entries' | 'evolves_from_species';
+
 type PokemonSpecies = {
   name: string;
   id: number;
@@ -43,49 +45,28 @@ type NewCardBase = {
 };
 
 type NewCardTypes = NewCardBase & {
-  infoType: 'types';
+  infoKey: 'types';
   info: PokemonType[];
 };
 
 type NewCardFlavor = NewCardBase & {
-  infoType: 'flavor_text_entries';
+  infoKey: 'flavor_text_entries';
   info: FlavorTextEntry[];
 };
 
 type NewCardEvolveFrom = NewCardBase & {
-  infoType: 'evolves_from_species';
+  infoKey: 'evolves_from_species';
   info: FromSpecies;
 };
 
 export type NewCard = NewCardEvolveFrom | NewCardFlavor | NewCardTypes;
 
-export async function fillCardViaName(
-  card: NewCard | FilledCard,
-  pokemonName: string,
-  infoType: 'types' | 'flavor_text_entries' | 'evolves_from_species'
-): Promise<NewCard | FilledCard> {
-  const formattedName = pokemonName.toLocaleLowerCase();
-  let pokemonInfo: Pokemon | PokemonSpecies;
-  switch (infoType) {
-    case 'types':
-      pokemonInfo = await getPokemon(formattedName);
-      break;
-    case 'evolves_from_species':
-    case 'flavor_text_entries':
-      pokemonInfo = await getPokemonSpecies(formattedName);
-      break;
-  }
-  const newCard: NewCard = {
-    ...card,
-    pokemonId: pokemonInfo.id,
-    pokemonName: pokemonInfo.name,
-    pokemonImageUrl: pokemonImgUrl(pokemonInfo.id),
-    infoType,
-    info: pokemonInfo[infoType],
-  };
-  return newCard;
-}
-
+/**
+ * Send a fetch request to the pokeapi pokemon endpoint
+ * @param idOrName
+ * @returns A promise that resolves to the pokeapi json for the pokemon
+ * @throws an error if the response is not ok
+ */
 async function getPokemon(idOrName: number | string): Promise<Pokemon> {
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon/${idOrName}/`
@@ -95,6 +76,12 @@ async function getPokemon(idOrName: number | string): Promise<Pokemon> {
   return pokemon;
 }
 
+/**
+ * Send a fetch request to the pokeapi pokemon species endpoint
+ * @param idOrName
+ * @returns A promise that resolves to the pokeapi json for the pokemon
+ * @throws an error if response is not ok
+ */
 async function getPokemonSpecies(
   idOrName: number | string
 ): Promise<PokemonSpecies> {
@@ -106,30 +93,83 @@ async function getPokemonSpecies(
   return pokemonSpecies;
 }
 
-export async function fillOutCard(card: CardDB): Promise<FilledCard> {
-  const { cardId, pokemonId, infoKey, studySetId } = card;
-  let pokemonInfo: Pokemon | PokemonSpecies;
+/**
+ * Figure out which endpoint needs to be fetched and make the fetch call
+ * @param idOrName the id or name for the pokemon who's info you want to get
+ * @param infoKey the key for the information you want to get
+ * @returns A promise that resolves to the pokeapi json that contains the infoKey
+ * @throws an error if the response from pokeapi is not ok
+ */
+async function getRightEndpoint(
+  idOrName: number | string,
+  infoKey: InfoKey
+): Promise<Pokemon | PokemonSpecies> {
+  let pokemon: Pokemon | PokemonSpecies;
   switch (infoKey) {
     case 'types':
-      pokemonInfo = await getPokemon(pokemonId);
+      pokemon = await getPokemon(idOrName);
       break;
     case 'evolves_from_species':
     case 'flavor_text_entries':
-      pokemonInfo = await getPokemonSpecies(pokemonId);
+      pokemon = await getPokemonSpecies(idOrName);
       break;
   }
+  return pokemon;
+}
+
+/**
+ * Make a copy of card populated with the information for the pokemon
+ * @param card provides studySetId and cardId if cardId is provided
+ * @param pokemonName the pokemon
+ * @param infoKey the information type to fill the card with
+ * @returns A promise that resolves to a new card populated with the information (infoKey) for the pokemon (pokemonName)
+ * @throws an error if the response to the fetch call is not ok
+ */
+export async function fillCardViaName(
+  card: NewCard | FilledCard,
+  pokemonName: string,
+  infoKey: InfoKey
+): Promise<NewCard | FilledCard> {
+  const formattedName = pokemonName.toLocaleLowerCase();
+  const pokemon = await getRightEndpoint(formattedName, infoKey);
+  const newCard: NewCard = {
+    ...card,
+    pokemonId: pokemon.id,
+    pokemonName: pokemon.name,
+    pokemonImageUrl: pokemonImgUrl(pokemon.id),
+    infoKey,
+    info: pokemon[infoKey],
+  };
+  return newCard;
+}
+
+/**
+ * Populate a card from the database with information from the pokeapi
+ * @param card a card retrieved from the database
+ * @returns a new card populated with the information from the pokeapi
+ * @throws an error if the response from pokeapi is not ok
+ */
+export async function fillOutCard(card: CardDB): Promise<FilledCard> {
+  const { cardId, pokemonId, infoKey, studySetId } = card;
+  const pokemon = await getRightEndpoint(pokemonId, infoKey);
   const filledCard: FilledCard = {
     studySetId,
     cardId,
     pokemonId,
-    pokemonName: pokemonInfo.name,
+    pokemonName: pokemon.name,
     pokemonImageUrl: pokemonImgUrl(pokemonId),
-    infoType: infoKey,
-    info: pokemonInfo[infoKey],
+    infoKey: infoKey,
+    info: pokemon[infoKey],
   };
   return filledCard;
 }
 
+/**
+ * Call fillOutCard on every card in array
+ * @param cards an array of cards from the database
+ * @returns a new array of cards that have been populated with information from pokeapi
+ * @throws if the pokeapi response is at any point not ok
+ */
 export async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
   const newCards: FilledCard[] = [];
   for (let i = 0; i < cards.length; i++) {
@@ -139,6 +179,11 @@ export async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
   return newCards;
 }
 
+/**
+ *
+ * @param pokemonId
+ * @returns a url that leads to an image of the pokemon
+ */
 function pokemonImgUrl(pokemonId: number): string {
   let formattedId = `${pokemonId}`;
   while (formattedId.length < 3) {

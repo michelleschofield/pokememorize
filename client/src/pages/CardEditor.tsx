@@ -54,7 +54,7 @@ export function CardEditor() {
             pokemonId: 0,
             pokemonName: '',
             pokemonImageUrl: '',
-            infoType: 'types',
+            infoKey: 'types',
             info: [],
           });
         } else {
@@ -93,22 +93,38 @@ export function CardEditor() {
     }
   }
 
-  function handleAdd() {
-    if (!card) {
-      alert('cannot add if not card');
-      return;
+  async function handleAdd() {
+    try {
+      setIsLoading(true);
+      if (!card) {
+        alert('cannot add if not card');
+        return;
+      }
+      await addCard(card);
+      navigate(`/study-sets/${studySetId}`);
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    } finally {
+      setIsLoading(false);
     }
-    addCard(card);
-    navigate(`/study-sets/${studySetId}`);
   }
 
-  function handleUpdate(): void {
-    if (!isFilledCard(card)) {
-      alert('cannot update if not cardId');
-      return;
+  async function handleUpdate(): Promise<void> {
+    try {
+      setIsLoading(true);
+      if (!isFilledCard(card)) {
+        alert('cannot update if not cardId');
+        return;
+      }
+      await updateCard(card);
+      navigate(`/study-sets/${studySetId}`);
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    } finally {
+      setIsLoading(false);
     }
-    updateCard(card);
-    navigate(`/study-sets/${studySetId}`);
   }
 
   async function handleDelete(): Promise<void> {
@@ -165,7 +181,7 @@ export function CardEditor() {
           }}>
           Info:{' '}
           <select
-            defaultValue={card.infoType}
+            defaultValue={card.infoKey}
             className="border-2 rounded px-2"
             style={{
               fontFamily: 'Quicksand, sans-serif',
