@@ -89,18 +89,16 @@ export function Match(): JSX.Element {
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
         {cards.length
           ? cards.map((card) => (
-              <div>
+              <div key={card.cardId + card.side} className={'lunchtime!'}>
                 {card.side === 'front' ? (
                   <PokemonCard
                     onClick={() => handleSelect(card.cardId, 'front')}
-                    key={card.cardId + card.side}
                     caption={card.pokemonName}
                     imageSrc={card.pokemonImageUrl}
                   />
                 ) : (
                   <BackOfCard
                     onClick={() => handleSelect(card.cardId, 'back')}
-                    key={card.cardId + card.side}
                     card={card}
                   />
                 )}
