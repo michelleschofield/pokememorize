@@ -26,6 +26,11 @@ export function Header() {
       path: '/flashcards',
       iconUrl: '/images/flashcards.svg',
     },
+    {
+      name: 'Match',
+      path: '/match',
+      iconUrl: '',
+    },
   ];
 
   return (
