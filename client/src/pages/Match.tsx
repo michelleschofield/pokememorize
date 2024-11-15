@@ -23,7 +23,8 @@ type CardSide = CardBack | CardFront;
 
 export function Match(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
-  const [cards, setCards] = useState<CardSide[]>();
+  const [allCards, setAllCards] = useState<CardSide[]>();
+  const [currentCards, setCurrentCards] = useState<CardSide[]>();
   const [selected, setSelected] = useState<{
     cardId: number;
     side: 'front' | 'back';
@@ -49,7 +50,8 @@ export function Match(): JSX.Element {
         cardElements.sort(() => Math.random() - 0.5);
 
         setStudySet(studySet);
-        setCards(cardElements);
+        setAllCards(cardElements);
+        setCurrentCards(cardElements);
       } catch (err) {
         console.error(err);
         alert(err);
@@ -62,15 +64,15 @@ export function Match(): JSX.Element {
   }, [studySetId]);
 
   function handleSelect(cardId: number, side: 'front' | 'back'): void {
-    if (!cards) throw new Error('cards is undefined');
+    if (!currentCards) throw new Error('cards is undefined');
     if (!selected) {
       setSelected({ cardId, side });
       return;
     }
 
     if (selected.cardId === cardId && selected.side !== side) {
-      const filtered = cards.filter((card) => card.cardId !== cardId);
-      setCards(filtered);
+      const filtered = currentCards.filter((card) => card.cardId !== cardId);
+      setCurrentCards(filtered);
       setSelected(undefined);
       setScore(score + 1);
       if (!filtered.length) handleWin();
@@ -92,6 +94,7 @@ export function Match(): JSX.Element {
   }
 
   function restartGame(): void {
+    setCurrentCards(allCards);
     setScore(0);
   }
 
@@ -99,7 +102,7 @@ export function Match(): JSX.Element {
     return <div>Loading...</div>;
   }
 
-  if (!studySet || !cards) {
+  if (!studySet || !currentCards) {
     return <div>There was an Error</div>;
   }
 
@@ -109,8 +112,8 @@ export function Match(): JSX.Element {
       <Link to="/match">Change Study Set</Link>
       <p>Score: {score}</p>
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
-        {cards.length
-          ? cards.map((card) => (
+        {currentCards.length
+          ? currentCards.map((card) => (
               <div
                 key={card.cardId + card.side}
                 className={
@@ -135,7 +138,7 @@ export function Match(): JSX.Element {
             ))
           : null}
 
-        {!cards.length && (
+        {!currentCards.length && (
           <>
             <div className="m-2">You matched all the cards!!</div>
             <Button onClick={restartGame}>Play Again?</Button>
