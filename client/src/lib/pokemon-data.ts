@@ -19,7 +19,7 @@ export type FromSpecies = {
   url: string;
 };
 
-type InfoKey = 'types' | 'flavor_text_entries' | 'evolves_from_species';
+export type InfoKey = 'types' | 'flavor_text_entries' | 'evolves_from_species';
 
 type PokemonSpecies = {
   name: string;
@@ -138,7 +138,8 @@ export async function fillCardViaName(
     pokemonName: pokemon.name,
     pokemonImageUrl: pokemonImgUrl(pokemon.id),
     infoKey,
-    info: pokemon[infoKey],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- I know this works!
+    info: (pokemon as any)[infoKey],
   };
   return newCard;
 }
@@ -159,7 +160,8 @@ export async function fillOutCard(card: CardDB): Promise<FilledCard> {
     pokemonName: pokemon.name,
     pokemonImageUrl: pokemonImgUrl(pokemonId),
     infoKey: infoKey,
-    info: pokemon[infoKey],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- I know this works!
+    info: (pokemon as any)[infoKey],
   };
   return filledCard;
 }
