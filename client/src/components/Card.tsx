@@ -7,7 +7,12 @@ type Props = {
   children: ReactNode;
 };
 
-export function Card({ children, className, style, onClick }: Props) {
+export function Card({
+  children,
+  className,
+  style,
+  onClick,
+}: Props): JSX.Element {
   return (
     <div
       onClick={onClick}

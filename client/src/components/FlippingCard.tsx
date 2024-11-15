@@ -12,8 +12,8 @@ export function FlippingCard({
   backSide,
   onFlip,
   isFlipped,
-}: Props) {
-  function flipCard() {
+}: Props): JSX.Element {
+  function flipCard(): void {
     if (onFlip) {
       onFlip();
     }

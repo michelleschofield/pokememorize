@@ -14,7 +14,7 @@ import { Flashcards } from './pages/Flashcards';
 import { MatchSelect } from './pages/MatchSelect';
 import { Match } from './pages/Match';
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <UserProvider>
       <Routes>

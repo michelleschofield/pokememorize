@@ -16,7 +16,7 @@ import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 
-export function SpecificSet() {
+export function SpecificSet(): JSX.Element {
   const [cards, setCards] = useState<FilledCard[]>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoadingCards, setIsLoadingCards] = useState(true);
@@ -26,17 +26,17 @@ export function SpecificSet() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadStudySet(studySetId: number) {
+    async function loadStudySet(studySetId: number): Promise<void> {
       const studySet = await readStudySet(studySetId);
       setStudySet(studySet);
     }
 
-    async function loadCards(studySetId: number) {
+    async function loadCards(studySetId: number): Promise<void> {
       const cards = await readCards(studySetId);
       setCards(cards);
     }
 
-    async function setUp() {
+    async function setUp(): Promise<void> {
       try {
         if (!studySetId) throw new Error('there must be a study set');
         if (studySetId === 'new') {
@@ -58,7 +58,9 @@ export function SpecificSet() {
     setUp();
   }, [studySetId, navigate]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> {
     event.preventDefault();
     try {
       setIsLoadingSet(true);

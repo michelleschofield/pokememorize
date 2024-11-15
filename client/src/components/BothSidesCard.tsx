@@ -7,7 +7,7 @@ type Props = {
   card: FilledCard;
 };
 
-export function BothSidesCard({ card }: Props) {
+export function BothSidesCard({ card }: Props): JSX.Element {
   return (
     <Link to={`${card.cardId}`} className="flex">
       <PokemonCard imageSrc={card.pokemonImageUrl} caption={card.pokemonName} />

@@ -6,7 +6,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function Modal({ isOpen, onClose, children }: Props) {
+export function Modal({ isOpen, onClose, children }: Props): JSX.Element {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

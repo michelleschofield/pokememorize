@@ -1,6 +1,6 @@
 import { Card } from './Card';
 
-export function PokeballCard() {
+export function PokeballCard(): JSX.Element {
   return (
     <Card className="pokeball">
       <div className="red-half"></div>

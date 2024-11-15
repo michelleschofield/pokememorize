@@ -1,6 +1,6 @@
 import { StudySetSelector } from '../components/StudySetSelector';
 
-export function MatchSelect() {
+export function MatchSelect(): JSX.Element {
   return (
     <>
       <h1 className="text-3xl">Match Game!</h1>

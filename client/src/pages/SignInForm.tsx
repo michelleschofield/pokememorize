@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 
-export function SignInForm() {
+export function SignInForm(): JSX.Element {
   const { signIn } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { user } = useUser();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> {
     event.preventDefault();
     try {
       setIsLoading(true);

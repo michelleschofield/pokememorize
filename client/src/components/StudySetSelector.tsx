@@ -7,12 +7,12 @@ type Props = {
   linkTo: string;
 };
 
-export function StudySetSelector({ linkTo }: Props) {
+export function StudySetSelector({ linkTo }: Props): JSX.Element {
   const [studySets, setStudySets] = useState<StudySet[]>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function loadSets() {
+    async function loadSets(): Promise<void> {
       try {
         const studySets = await readStudySets();
         setStudySets(studySets);

@@ -5,7 +5,7 @@ import { Modal } from './Modal';
 import { Button } from './Button';
 import { Menu } from './Menu';
 
-export function Header() {
+export function Header(): JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
   const { user, handleSignOut } = useUser();
   const navigate = useNavigate();

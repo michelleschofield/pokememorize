@@ -5,7 +5,7 @@ type Props = {
   onClick?: () => void;
 };
 
-export function Button({ onClick, children }: Props) {
+export function Button({ onClick, children }: Props): JSX.Element {
   return (
     <button
       onClick={onClick}

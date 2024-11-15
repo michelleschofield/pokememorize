@@ -22,7 +22,7 @@ type FormInputs = {
   infoType: 'types' | 'flavor_text_entries' | 'evolves_from_species';
 };
 
-export function CardEditor() {
+export function CardEditor(): JSX.Element {
   const [card, setCard] = useState<FilledCard | NewCard>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoading, setIsLoading] = useState(true);
@@ -30,17 +30,17 @@ export function CardEditor() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadStudySet(studySetId: number) {
+    async function loadStudySet(studySetId: number): Promise<void> {
       const studySet = await readStudySet(studySetId);
       setStudySet(studySet);
     }
 
-    async function loadCard(cardId: number) {
+    async function loadCard(cardId: number): Promise<void> {
       const card = await readCard(cardId);
       setCard(card);
     }
 
-    async function setUp() {
+    async function setUp(): Promise<void> {
       try {
         if (!studySetId || !cardId) {
           throw new Error('studySetId and cardId are required');
@@ -93,7 +93,7 @@ export function CardEditor() {
     }
   }
 
-  async function handleAdd() {
+  async function handleAdd(): Promise<void> {
     try {
       setIsLoading(true);
       if (!card) {

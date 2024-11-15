@@ -4,14 +4,14 @@ import { StudySet, readStudySet, readCards } from '../lib';
 import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
 
-export function Match() {
+export function Match(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
   const [cards, setCards] = useState<JSX.Element[]>();
   const [isLoading, setIsLoading] = useState(true);
   const { studySetId } = useParams();
 
   useEffect(() => {
-    async function load() {
+    async function load(): Promise<void> {
       try {
         if (!studySetId) throw new Error('there is no studySetId');
         const studySet = await readStudySet(+studySetId);
@@ -21,11 +21,19 @@ export function Match() {
         cards.forEach((card) => {
           cardElements.push(
             <PokemonCard
+              onClick={() => undefined}
+              key={card.cardId + card.pokemonId}
               caption={card.pokemonName}
               imageSrc={card.pokemonImageUrl}
             />
           );
-          cardElements.push(<BackOfCard card={card} />);
+          cardElements.push(
+            <BackOfCard
+              onClick={() => undefined}
+              key={card.cardId + card.infoKey}
+              card={card}
+            />
+          );
         });
 
         cardElements.sort(() => Math.random() - 0.5);
