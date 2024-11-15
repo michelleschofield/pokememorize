@@ -20,9 +20,14 @@ export function FlippingCard({
   }
 
   return (
-    <div style={{ display: 'inline-block' }} onClick={flipCard}>
-      {!isFlipped && frontSide}
-      {isFlipped && backSide}
+    <div
+      className={`flip-card ${isFlipped}`}
+      // style={{ display: 'inline-block' }}
+      onClick={flipCard}>
+      <div className="flip-card-inner">
+        <div className="flip-card-front">{frontSide}</div>
+        <div className="flip-card-back">{backSide}</div>
+      </div>
     </div>
   );
 }

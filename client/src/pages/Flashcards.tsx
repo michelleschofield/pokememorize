@@ -82,7 +82,10 @@ export function Flashcards() {
         <Indicators
           items={cards}
           current={index}
-          onClick={(index) => setIndex(index)}
+          onClick={(index) => {
+            setIndex(index);
+            setIsFlipped(false);
+          }}
         />
       </div>
     </>
