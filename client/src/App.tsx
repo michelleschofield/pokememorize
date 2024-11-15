@@ -13,6 +13,8 @@ import { NotFound } from './pages/NotFound';
 import { Flashcards } from './pages/Flashcards';
 import { MatchSelect } from './pages/MatchSelect';
 import { Match } from './pages/Match';
+import { MemorySelect } from './pages/MemorySelect';
+import { Memory } from './pages/Memory';
 
 export default function App(): JSX.Element {
   return (
@@ -33,6 +35,8 @@ export default function App(): JSX.Element {
           <Route path="flashcards/:studySetId" element={<Flashcards />} />
           <Route path="match" element={<MatchSelect />} />
           <Route path="match/:studySetId" element={<Match />} />
+          <Route path="memory" element={<MemorySelect />} />
+          <Route path="memory/:studySetId" element={<Memory />} />
         </Route>
       </Routes>
     </UserProvider>

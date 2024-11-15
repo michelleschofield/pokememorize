@@ -31,6 +31,11 @@ export function Header(): JSX.Element {
       path: '/match',
       iconUrl: '',
     },
+    {
+      name: 'Memory',
+      path: '/memory',
+      iconUrl: '',
+    },
   ];
 
   return (

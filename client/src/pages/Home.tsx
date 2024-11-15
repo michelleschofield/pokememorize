@@ -24,6 +24,8 @@ export function Home(): JSX.Element {
           <Button onClick={handleSignOut}>Sign Out</Button>
           <ArrowLink to="/study-sets">Study Sets</ArrowLink>
           <ArrowLink to="/flashcards">Flashcards</ArrowLink>
+          <ArrowLink to="/match">Matching Game</ArrowLink>
+          <ArrowLink to="/memory">Memory Game</ArrowLink>
         </>
       )}
     </div>
