@@ -3,7 +3,7 @@ import { Button } from '../components/Button';
 import { useUser } from '../components/useUser';
 import { ArrowLink } from '../components/ArrowLink';
 
-export function Home() {
+export function Home(): JSX.Element {
   const { user, handleSignOut, signIn } = useUser();
   const navigate = useNavigate();
   return (

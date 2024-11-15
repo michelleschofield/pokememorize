@@ -6,7 +6,7 @@ type Props = {
   onClick?: () => void;
 };
 
-export function MenuItemDisplay({ menuItem, onClick }: Props) {
+export function MenuItemDisplay({ menuItem, onClick }: Props): JSX.Element {
   const { name, path, iconUrl } = menuItem;
   return (
     <li className="inline-block  w-full">

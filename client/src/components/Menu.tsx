@@ -11,7 +11,7 @@ export type MenuItem = {
 type Props = {
   menuItems: MenuItem[];
 };
-export function Menu({ menuItems }: Props) {
+export function Menu({ menuItems }: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="transition-all ease-in-out grow z-10">

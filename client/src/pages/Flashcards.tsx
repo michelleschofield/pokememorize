@@ -7,7 +7,7 @@ import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
 import { Indicators } from '../components/Indicators';
 
-export function Flashcards() {
+export function Flashcards(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
   const [cards, setCards] = useState<FilledCard[]>();
   const [index, setIndex] = useState(0);
@@ -16,7 +16,7 @@ export function Flashcards() {
   const { studySetId } = useParams();
 
   useEffect(() => {
-    async function load() {
+    async function load(): Promise<void> {
       try {
         if (!studySetId) throw new Error('there is no studySetId');
         const studySet = await readStudySet(+studySetId);
@@ -34,13 +34,13 @@ export function Flashcards() {
     load();
   }, [studySetId]);
 
-  function incrementIndex() {
+  function incrementIndex(): void {
     if (!cards) throw new Error("cards don't exist");
     setIndex((index + 1) % cards.length);
     setIsFlipped(false);
   }
 
-  function decrementIndex() {
+  function decrementIndex(): void {
     if (!cards) throw new Error('cards dont exist');
     setIndex((index - 1 + cards.length) % cards.length);
     setIsFlipped(false);
@@ -82,7 +82,10 @@ export function Flashcards() {
         <Indicators
           items={cards}
           current={index}
-          onClick={(index) => setIndex(index)}
+          onClick={(index) => {
+            setIndex(index);
+            setIsFlipped(false);
+          }}
         />
       </div>
     </>

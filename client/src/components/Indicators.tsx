@@ -6,7 +6,7 @@ type Props = {
   onClick: (index: number) => void;
 };
 
-export function Indicators({ current, items, onClick }: Props) {
+export function Indicators({ current, items, onClick }: Props): JSX.Element {
   return (
     <div className="flex justify-center flex-wrap">
       {items.map((_, index) => (

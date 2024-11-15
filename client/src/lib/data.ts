@@ -22,6 +22,12 @@ export type FilledCard = NewCard & {
   cardId: number;
 };
 
+type Score = {
+  score: number;
+  studySetId: number;
+  gameId: number;
+};
+
 /**
  * Check if a card is a FilledCard or not
  * @param card that will checked to see if it is a filled card
@@ -133,6 +139,19 @@ export async function addCard({
     body: JSON.stringify(dbCard),
   };
   const response = await fetch('/api/cards', req);
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+}
+
+export async function addScore(score: Score): Promise<void> {
+  const req = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify(score),
+  };
+  const response = await fetch('/api/scores', req);
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
 }
 

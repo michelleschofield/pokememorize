@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export function NotFound() {
+export function NotFound(): JSX.Element {
   return (
     <>
       <div>Sorry, we couldn't find the page you were looking for</div>

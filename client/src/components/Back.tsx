@@ -7,7 +7,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function Back({ to, children }: Props) {
+export function Back({ to, children }: Props): JSX.Element {
   return (
     <Link to={to} className="flex items-center">
       <FaArrowLeft />

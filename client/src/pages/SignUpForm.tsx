@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 
-export function SignUpForm() {
+export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useUser();
   const navigate = useNavigate();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> {
     event.preventDefault();
     try {
       setIsLoading(true);

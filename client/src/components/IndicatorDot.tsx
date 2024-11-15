@@ -5,7 +5,7 @@ type Props = {
   active: boolean;
 };
 
-export function IndicatorDot({ onClick, active }: Props) {
+export function IndicatorDot({ onClick, active }: Props): JSX.Element {
   return (
     <>
       {active ? (

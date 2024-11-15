@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PokeballCard } from './PokeballCard';
 
-export function NewCard() {
+export function NewCard(): JSX.Element {
   return (
     <Link to="new" className="flex items-center">
       <PokeballCard />

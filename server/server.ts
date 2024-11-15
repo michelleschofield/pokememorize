@@ -212,6 +212,30 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.post('/api/scores', authMiddleware, async (req, res, next) => {
+  try {
+    const { score, studySetId, gameId } = req.body;
+    if (!score || !studySetId || !gameId) {
+      throw new ClientError(400, 'not all fields provided');
+    }
+    validateId(studySetId);
+
+    const sql = `
+      insert into "scores" ("score", "studySetId", "gameId", "userId")
+      values ($1, $2, $3, $4)
+      returning *;
+    `;
+
+    const params = [score, studySetId, gameId, req.user?.userId];
+
+    const result = await db.query(sql, params);
+    const insertedScore = result.rows[0];
+    res.status(201).json(insertedScore);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId } = req.params;

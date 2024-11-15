@@ -7,7 +7,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function ArrowLink({ to, children }: Props) {
+export function ArrowLink({ to, children }: Props): JSX.Element {
   return (
     <Link
       className="flex items-center text-2xl w-full justify-end hover:bg-gradient-to-l from-slate-300 transition-all ease-in-out duration-1000"

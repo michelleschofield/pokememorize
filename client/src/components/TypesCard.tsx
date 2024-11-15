@@ -4,11 +4,12 @@ import { Card } from './Card';
 
 type Props = {
   types: PokemonType[];
+  onClick?: () => void;
 };
 
-export function TypesCard({ types }: Props) {
+export function TypesCard({ types, onClick }: Props): JSX.Element {
   return (
-    <Card>
+    <Card onClick={onClick}>
       {types.map((type) => (
         <p className="text-2xl" key={type.slot}>
           {capitalizeWord(type.type.name)}

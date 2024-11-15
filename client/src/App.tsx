@@ -11,8 +11,10 @@ import { CardEditor } from './pages/CardEditor';
 import { FlashcardsSelect } from './pages/FlashcardsSelect';
 import { NotFound } from './pages/NotFound';
 import { Flashcards } from './pages/Flashcards';
+import { MatchSelect } from './pages/MatchSelect';
+import { Match } from './pages/Match';
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <UserProvider>
       <Routes>
@@ -29,6 +31,8 @@ export default function App() {
           />
           <Route path="flashcards" element={<FlashcardsSelect />} />
           <Route path="flashcards/:studySetId" element={<Flashcards />} />
+          <Route path="match" element={<MatchSelect />} />
+          <Route path="match/:studySetId" element={<Match />} />
         </Route>
       </Routes>
     </UserProvider>

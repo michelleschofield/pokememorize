@@ -34,7 +34,7 @@ export const UserContext = createContext<UserContextValues>({
 type Props = {
   children: ReactNode;
 };
-export function UserProvider({ children }: Props) {
+export function UserProvider({ children }: Props): JSX.Element {
   const [user, setUser] = useState<User>();
   const [token, setToken] = useState<string>();
 
@@ -43,19 +43,19 @@ export function UserProvider({ children }: Props) {
     setToken(readToken());
   }, []);
 
-  function handleSignIn(user: User, token: string) {
+  function handleSignIn(user: User, token: string): void {
     setUser(user);
     setToken(token);
     saveAuth(user, token);
   }
 
-  function handleSignOut() {
+  function handleSignOut(): void {
     setUser(undefined);
     setToken(undefined);
     removeAuth();
   }
 
-  async function signIn(userData: UserData) {
+  async function signIn(userData: UserData): Promise<void> {
     const req = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
