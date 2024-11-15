@@ -69,11 +69,11 @@ export function Match(): JSX.Element {
     }
 
     if (selected.cardId === cardId && selected.side !== side) {
-      cards.filter((card) => card.cardId !== cardId);
-      if (!cards.length) handleWin();
-      setCards([...cards]);
+      const filtered = cards.filter((card) => card.cardId !== cardId);
+      setCards(filtered);
       setSelected(undefined);
       setScore(score + 1);
+      if (!filtered.length) handleWin();
       return;
     } else {
       setScore(score - 1);
