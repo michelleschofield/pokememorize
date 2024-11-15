@@ -119,3 +119,7 @@ dialog::backdrop {
 .selected {
   box-shadow: 0 0 15px 5px #f4db5a;
 }
+
+.match > :first-child {
+  margin: 0;
+}

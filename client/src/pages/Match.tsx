@@ -119,8 +119,8 @@ export function Match(): JSX.Element {
                 className={
                   card.cardId === selected?.cardId &&
                   card.side === selected.side
-                    ? 'selected m-2'
-                    : 'm-2'
+                    ? 'selected m-2 match'
+                    : 'm-2 match'
                 }>
                 {card.side === 'front' ? (
                   <PokemonCard
