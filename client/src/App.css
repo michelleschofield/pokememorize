@@ -113,3 +113,9 @@ dialog::backdrop {
 .flip-card-back {
   transform: rotateY(180deg);
 }
+
+/* game selected class */
+
+.selected {
+  box-shadow: 0 0 15px 5px #f4db5a;
+}

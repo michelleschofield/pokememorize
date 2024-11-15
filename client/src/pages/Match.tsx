@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { StudySet, readStudySet, readCards, FilledCard } from '../lib';
+import {
+  StudySet,
+  readStudySet,
+  readCards,
+  FilledCard,
+  addScore,
+} from '../lib';
 import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
 import { Button } from '../components/Button';
@@ -63,7 +69,9 @@ export function Match(): JSX.Element {
     }
 
     if (selected.cardId === cardId && selected.side !== side) {
-      setCards([...cards.filter((card) => card.cardId !== cardId)]);
+      cards.filter((card) => card.cardId !== cardId);
+      if (!cards.length) handleWin();
+      setCards([...cards]);
       setSelected(undefined);
       setScore(score + 1);
       return;
@@ -71,6 +79,20 @@ export function Match(): JSX.Element {
       setScore(score - 1);
       setSelected(undefined);
     }
+  }
+
+  async function handleWin(): Promise<void> {
+    try {
+      if (!studySetId) throw new Error('there is no studySetId');
+      await addScore({ score, gameId: 1, studySetId: +studySetId });
+    } catch (err) {
+      console.error(err);
+      alert(err);
+    }
+  }
+
+  function restartGame(): void {
+    setScore(0);
   }
 
   if (isLoading) {
@@ -89,7 +111,14 @@ export function Match(): JSX.Element {
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
         {cards.length
           ? cards.map((card) => (
-              <div key={card.cardId + card.side} className={'lunchtime!'}>
+              <div
+                key={card.cardId + card.side}
+                className={
+                  card.cardId === selected?.cardId &&
+                  card.side === selected.side
+                    ? 'selected m-2'
+                    : 'm-2'
+                }>
                 {card.side === 'front' ? (
                   <PokemonCard
                     onClick={() => handleSelect(card.cardId, 'front')}
@@ -109,7 +138,7 @@ export function Match(): JSX.Element {
         {!cards.length && (
           <>
             <div className="m-2">You matched all the cards!!</div>
-            <Button>Play Again?</Button>
+            <Button onClick={restartGame}>Play Again?</Button>
           </>
         )}
       </div>
