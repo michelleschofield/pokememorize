@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { StudySet, readStudySet, readCards, FilledCard } from '../lib';
 import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
+import { Button } from '../components/Button';
 
 type CardFront = FilledCard & {
   side: 'front';
@@ -87,25 +88,31 @@ export function Match(): JSX.Element {
       <p>Score: {score}</p>
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
         {cards.length
-          ? cards.map((card) =>
-              card.side === 'front' ? (
-                <PokemonCard
-                  onClick={() => handleSelect(card.cardId, 'front')}
-                  key={card.cardId + card.side}
-                  caption={card.pokemonName}
-                  imageSrc={card.pokemonImageUrl}
-                />
-              ) : (
-                <BackOfCard
-                  onClick={() => handleSelect(card.cardId, 'back')}
-                  key={card.cardId + card.side}
-                  card={card}
-                />
-              )
-            )
+          ? cards.map((card) => (
+              <div>
+                {card.side === 'front' ? (
+                  <PokemonCard
+                    onClick={() => handleSelect(card.cardId, 'front')}
+                    key={card.cardId + card.side}
+                    caption={card.pokemonName}
+                    imageSrc={card.pokemonImageUrl}
+                  />
+                ) : (
+                  <BackOfCard
+                    onClick={() => handleSelect(card.cardId, 'back')}
+                    key={card.cardId + card.side}
+                    card={card}
+                  />
+                )}
+              </div>
+            ))
           : null}
+
         {!cards.length && (
-          <div className="m-2">You matched all the cards!!</div>
+          <>
+            <div className="m-2">You matched all the cards!!</div>
+            <Button>Play Again?</Button>
+          </>
         )}
       </div>
     </>
