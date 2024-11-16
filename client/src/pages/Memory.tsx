@@ -93,7 +93,7 @@ export function Memory(): JSX.Element {
   async function handleWin(): Promise<void> {
     try {
       if (!studySetId) throw new Error('there is no studySetId');
-      await addScore({ score, gameId: 1, studySetId: +studySetId });
+      await addScore({ score, gameId: 2, studySetId: +studySetId });
     } catch (err) {
       console.error(err);
       alert(err);
