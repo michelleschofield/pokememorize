@@ -80,7 +80,7 @@ export function Memory(): JSX.Element {
       setMatchedCards(matches);
       setSelected([]);
       setScore(score + 1);
-      if (matchedCards.length === allCards.length) {
+      if (matches.length === allCards.length) {
         handleWin();
       }
       return;
