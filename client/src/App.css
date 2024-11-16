@@ -14,6 +14,7 @@ body {
   margin: 0;
   height: 100%;
   font-family: Quicksand, sans-serif;
+  overflow: scroll;
 }
 
 h1,
@@ -119,7 +120,7 @@ dialog::backdrop {
   transform: rotateY(180deg);
 }
 
-/* game selected class */
+/* game classes */
 
 .selected {
   box-shadow: 0 0 15px 5px #f4db5a;
@@ -127,4 +128,8 @@ dialog::backdrop {
 
 .match > :first-child {
   margin: 0;
+}
+
+.correct {
+  box-shadow: 0 0 9px 3px #5df7a3;
 }

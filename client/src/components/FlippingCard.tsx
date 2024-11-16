@@ -23,7 +23,7 @@ export function FlippingCard({
 
   return (
     <div
-      className={`flip-card ${isFlipped} ${className}`}
+      className={`flip-card cursor-pointer ${isFlipped} ${className}`}
       // style={{ display: 'inline-block' }}
       onClick={flipCard}>
       <div className="flip-card-inner">
