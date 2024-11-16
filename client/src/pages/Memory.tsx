@@ -26,13 +26,8 @@ type CardSide = CardBack | CardFront;
 export function Memory(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
   const [allCards, setAllCards] = useState<CardSide[]>();
-  const [currentCards, setCurrentCards] = useState<CardSide[]>();
-  const [selected, setSelected] = useState<
-    {
-      cardId: number;
-      side: 'front' | 'back';
-    }[]
-  >([]);
+  const [matchedCards, setMatchedCards] = useState<CardSide[]>([]);
+  const [selected, setSelected] = useState<CardSide[]>([]);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const { studySetId } = useParams();
@@ -44,18 +39,17 @@ export function Memory(): JSX.Element {
         const studySet = await readStudySet(+studySetId);
         const cards = await readCards(+studySetId);
 
-        const cardElements: CardSide[] = [];
+        const cardSides: CardSide[] = [];
 
         cards.forEach((card) => {
-          cardElements.push({ ...card, side: 'front' });
-          cardElements.push({ ...card, side: 'back' });
+          cardSides.push({ ...card, side: 'front' });
+          cardSides.push({ ...card, side: 'back' });
         });
 
-        cardElements.sort(() => Math.random() - 0.5);
+        cardSides.sort(() => Math.random() - 0.5);
 
         setStudySet(studySet);
-        setAllCards(cardElements);
-        setCurrentCards(cardElements);
+        setAllCards(cardSides);
       } catch (err) {
         console.error(err);
         alert(err);
@@ -67,23 +61,32 @@ export function Memory(): JSX.Element {
     load();
   }, [studySetId]);
 
-  function handleSelect(cardId: number, side: 'front' | 'back'): void {
-    if (!currentCards) throw new Error('cards is undefined');
-    if (!selected) {
-      setSelected([{ cardId, side }]);
+  function handleSelect(card: CardSide): void {
+    console.log('handling select');
+    console.log(selected);
+    if (!allCards) throw new Error('cards is undefined');
+    if (!selected.length) {
+      setSelected([card]);
       return;
     }
 
-    if (selected[0].cardId === cardId && selected[0].side !== side) {
-      const filtered = currentCards.filter((card) => card.cardId !== cardId);
-      setCurrentCards(filtered);
-      setSelected(undefined);
+    if (
+      selected.find(
+        (cardSide) =>
+          cardSide.cardId === card.cardId && cardSide.side !== card.side
+      )
+    ) {
+      const matches = [...selected, ...matchedCards, card];
+      setMatchedCards(matches);
+      setSelected([]);
       setScore(score + 1);
-      if (!filtered.length) handleWin();
+      if (matchedCards.length === allCards.length) {
+        handleWin();
+      }
       return;
     } else {
       setScore(score - 1);
-      setSelected(undefined);
+      setSelected([]);
     }
   }
 
@@ -98,15 +101,34 @@ export function Memory(): JSX.Element {
   }
 
   function restartGame(): void {
-    setCurrentCards(allCards);
+    setMatchedCards([]);
     setScore(0);
+  }
+
+  function shouldBeFlipped(card: CardSide): boolean {
+    if (
+      selected.find(
+        (cardSide) =>
+          cardSide.cardId === card.cardId && cardSide.side === card.side
+      )
+    ) {
+      return true;
+    } else if (
+      matchedCards.find(
+        (cardSide) =>
+          cardSide.cardId === card.cardId && cardSide.side === card.side
+      )
+    ) {
+      return true;
+    }
+    return false;
   }
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!studySet || !currentCards) {
+  if (!studySet || !allCards) {
     return <div>There was an Error</div>;
   }
 
@@ -116,44 +138,31 @@ export function Memory(): JSX.Element {
       <Link to="/match">Change Study Set</Link>
       <p>Score: {score} This game does not work lol</p>
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
-        {currentCards.map((card) => (
-          <>
-            {card.side === 'front' ? (
-              <FlippingCard
-                onFlip={() => handleSelect(card.cardId, card.side)}
-                isFlipped={
-                  card.cardId === selected[0]?.cardId &&
-                  card.side === selected[0].side
-                }
-                className="m-2"
-                frontSide={<PokeballCard />}
-                backSide={
-                  <PokemonCard
-                    caption={card.pokemonName}
-                    imageSrc={card.pokemonImageUrl}
-                  />
-                }
-              />
-            ) : (
-              <FlippingCard
-                onFlip={() => handleSelect(card.cardId, card.side)}
-                isFlipped={
-                  card.cardId === selected?.cardId &&
-                  card.side === selected.side
-                }
-                className="m-2"
-                frontSide={<PokeballCard />}
-                backSide={<BackOfCard card={card} />}
-              />
-            )}
-          </>
-        ))}
-        {!currentCards.length && (
+        {allCards.length === matchedCards.length && (
           <>
             <div className="m-2">You matched all the cards!!</div>
             <Button onClick={restartGame}>Play Again?</Button>
           </>
         )}
+        {allCards.map((card) => (
+          <FlippingCard
+            key={card.cardId + card.side}
+            onFlip={() => handleSelect(card)}
+            isFlipped={shouldBeFlipped(card)}
+            className="m-2"
+            frontSide={<PokeballCard />}
+            backSide={
+              card.side === 'front' ? (
+                <PokemonCard
+                  caption={card.pokemonName}
+                  imageSrc={card.pokemonImageUrl}
+                />
+              ) : (
+                <BackOfCard card={card} />
+              )
+            }
+          />
+        ))}
       </div>
     </>
   );
