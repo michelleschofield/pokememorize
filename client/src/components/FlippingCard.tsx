@@ -3,7 +3,8 @@ import { ReactNode } from 'react';
 type Props = {
   frontSide: JSX.Element;
   backSide: ReactNode;
-  isFlipped?: boolean;
+  isFlipped: boolean;
+  className?: string;
   onFlip?: () => void;
 };
 
@@ -12,6 +13,7 @@ export function FlippingCard({
   backSide,
   onFlip,
   isFlipped,
+  className,
 }: Props): JSX.Element {
   function flipCard(): void {
     if (onFlip) {
@@ -21,7 +23,7 @@ export function FlippingCard({
 
   return (
     <div
-      className={`flip-card ${isFlipped}`}
+      className={`flip-card ${isFlipped} ${className}`}
       // style={{ display: 'inline-block' }}
       onClick={flipCard}>
       <div className="flip-card-inner">
