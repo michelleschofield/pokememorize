@@ -170,6 +170,32 @@ app.get('/api/card/:cardId', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get(
+  '/api/scores/:gameId/:studySetId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { studySetId, gameId } = req.params;
+      validateId(studySetId);
+      validateId(gameId);
+
+      const sql = `
+      select *
+        from "scores"
+       where "studySetId" = $1
+         and "gameId" = $2
+    order by "score" desc
+    `;
+
+      const result = await db.query(sql, [studySetId, gameId]);
+      const scores = result.rows;
+      res.json(scores);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 app.post('/api/sets', authMiddleware, async (req, res, next) => {
   try {
     const { title } = req.body;
@@ -215,10 +241,11 @@ app.post('/api/cards', authMiddleware, async (req, res, next) => {
 app.post('/api/scores', authMiddleware, async (req, res, next) => {
   try {
     const { score, studySetId, gameId } = req.body;
-    if (!score || !studySetId || !gameId) {
+    if (score === undefined || !studySetId || !gameId) {
       throw new ClientError(400, 'not all fields provided');
     }
     validateId(studySetId);
+    validateId(gameId);
 
     const sql = `
       insert into "scores" ("score", "studySetId", "gameId", "userId")

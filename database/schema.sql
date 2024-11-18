@@ -33,7 +33,7 @@ CREATE TABLE "cards" (
 
 CREATE TABLE "scores" (
   "scoreId" serial PRIMARY KEY,
-  "score" numeric,
+  "score" integer,
   "studySetId" integer,
   "userId" integer,
   "scoredOn" timestamptz,
