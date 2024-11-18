@@ -133,3 +133,7 @@ dialog::backdrop {
 .correct {
   box-shadow: 0 0 9px 3px #5df7a3;
 }
+
+.incorrect {
+  box-shadow: 0 0 9px 3px #f12525;
+}
