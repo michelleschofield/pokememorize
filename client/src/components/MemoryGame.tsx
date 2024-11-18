@@ -16,9 +16,14 @@ type GameCard = FilledCard & {
 type Props = {
   cards: FilledCard[];
   onWin: (score: number) => void;
+  onStopPlaying: () => void;
 };
 
-export function MemoryGame({ cards, onWin }: Props): JSX.Element {
+export function MemoryGame({
+  cards,
+  onWin,
+  onStopPlaying,
+}: Props): JSX.Element {
   const [selected, setSelected] = useState<GameCard>();
   const [gameCards, setGameCards] = useState<GameCard[]>([]);
   const [acceptClicks, setAcceptClicks] = useState(true);
@@ -64,14 +69,14 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
     }
   }
 
-  function checkForWin(): void {
+  function checkForWin(cards: GameCard[], finalScore: number): void {
     if (hasWon || !gameCards.length) return;
     let matchedCards = 0;
-    gameCards.forEach((card) => {
+    cards.forEach((card) => {
       if (card.isMatched) matchedCards++;
     });
-    if (matchedCards === gameCards.length) {
-      onWin(score);
+    if (matchedCards === cards.length) {
+      onWin(finalScore);
       setHasWon(true);
     }
   }
@@ -95,8 +100,9 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
   }
 
   function makeMatch(cardId: number): void {
-    setScore(score + 3);
-    const updated = gameCards.map((gameCard) => {
+    const updatedScore = score + 3;
+    setScore(updatedScore);
+    const updatedCards = gameCards.map((gameCard) => {
       if (gameCard.cardId === cardId) {
         return {
           ...gameCard,
@@ -107,9 +113,9 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
       }
       return gameCard;
     });
-    setGameCards(updated);
+    setGameCards(updatedCards);
     setSelected(undefined);
-    return;
+    checkForWin(updatedCards, updatedScore);
   }
 
   function selectCard(card: GameCard): void {
@@ -156,8 +162,6 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
     setScore(0);
   }
 
-  checkForWin();
-
   return (
     <>
       <p>Score: {score}</p>
@@ -166,6 +170,7 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
           <div className="m-2 w-full">
             <div>You matched all the cards!!</div>
             <Button onClick={restartGame}>Play Again?</Button>
+            <Button onClick={onStopPlaying}>Stop Playing</Button>
           </div>
         )}
         {gameCards.map((card) => (

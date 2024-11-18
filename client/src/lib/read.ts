@@ -1,4 +1,4 @@
-import { StudySet, FilledCard, CardDB } from './data';
+import { StudySet, FilledCard, CardDB, Score } from './data';
 import { fillOutCards, fillOutCard } from './pokemon-data';
 import { readToken } from './user-management';
 
@@ -75,4 +75,20 @@ export async function readCard(cardId: number): Promise<FilledCard> {
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
   const card = (await response.json()) as CardDB;
   return fillOutCard(card);
+}
+
+export async function readScores(
+  gameId: number,
+  studySetId: number
+): Promise<Score[]> {
+  const req = {
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+
+  const response = await fetch(`/api/scores/${gameId}/${studySetId}`, req);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  return json as Score[];
 }

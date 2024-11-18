@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Modal } from './Modal';
 import { Button } from './Button';
 import { Menu } from './Menu';
-import { readToken } from '../lib';
 
 export function Header(): JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,24 +38,8 @@ export function Header(): JSX.Element {
     },
   ];
 
-  async function test(): Promise<void> {
-    try {
-      const req = {
-        headers: {
-          Authorization: `Bearer ${readToken()}`,
-        },
-      };
-      const response = await fetch('/api/scores/1/1', req);
-      const json = await response.json();
-      console.log(json);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   return (
     <>
-      <button onClick={test}>test</button>
       <div className="bg-blue-300 flex items-center justify-end px-2 h-16">
         <Menu menuItems={menuItems} />
         <div className="w-2/3 sm:w-2/5 md:w-1/4 xl:w-1/5">

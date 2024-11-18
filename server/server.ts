@@ -185,6 +185,7 @@ app.get(
        where "studySetId" = $1
          and "gameId" = $2
     order by "score" desc
+       limit 10;
     `;
 
       const result = await db.query(sql, [studySetId, gameId]);
