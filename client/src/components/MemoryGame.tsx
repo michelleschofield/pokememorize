@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FilledCard } from '../lib';
 import { BackOfCard } from './BackOfCard';
 import { Button } from './Button';
@@ -25,8 +25,12 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
   const [score, setScore] = useState(0);
   const [hasWon, setHasWon] = useState(false);
 
+  const shuffle = useCallback((cards: GameCard[]): GameCard[] => {
+    return cards.toSorted(() => Math.random() - 0.5);
+  }, []);
+
   useEffect(() => {
-    const cardSides: GameCard[] = [];
+    const gameCards: GameCard[] = [];
 
     cards.forEach((card) => {
       const withoutSide = {
@@ -35,14 +39,12 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
         isMatched: false,
         className: '',
       };
-      cardSides.push({ ...withoutSide, side: 'front' });
-      cardSides.push({ ...withoutSide, side: 'back' });
+      gameCards.push({ ...withoutSide, side: 'front' });
+      gameCards.push({ ...withoutSide, side: 'back' });
     });
 
-    cardSides.sort(() => Math.random() - 0.5);
-
-    setGameCards(cardSides);
-  }, [cards]);
+    setGameCards(shuffle(gameCards));
+  }, [cards, shuffle]);
 
   function handleSelect(card: GameCard): void {
     if (!acceptClicks) return;
@@ -141,16 +143,15 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
   }
 
   function restartGame(): void {
-    setGameCards(
-      gameCards.map((card) => {
-        return {
-          ...card,
-          isFlipped: false,
-          isMatched: false,
-          className: '',
-        };
-      })
-    );
+    const resetCards = gameCards.map((card) => {
+      return {
+        ...card,
+        isFlipped: false,
+        isMatched: false,
+        className: '',
+      };
+    });
+    setGameCards(shuffle(resetCards));
     setHasWon(false);
     setScore(0);
   }
