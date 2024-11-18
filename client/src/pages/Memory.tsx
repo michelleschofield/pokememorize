@@ -56,7 +56,7 @@ export function Memory(): JSX.Element {
   return (
     <>
       <h2 className="text-3xl">{studySet.title}</h2>
-      <Link to="/match">Change Study Set</Link>
+      <Link to="/memory">Change Study Set</Link>
       <MemoryGame onWin={handleWin} cards={cards} />
     </>
   );
