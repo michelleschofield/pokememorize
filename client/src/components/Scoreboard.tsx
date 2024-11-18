@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { readScores, Score } from '../lib';
+import { ScoreDisplayItem } from './ScoreDisplayItem';
 
 type Props = {
   gameId: number;
@@ -31,9 +32,14 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
 
   return (
     <>
-      <div>Scoreboard</div>
-      {scores &&
-        scores.map((score) => <div key={score.scoreId}>{score.score}</div>)}
+      <div>Your Scores</div>
+      {scores && (
+        <ul>
+          {scores.map((score) => (
+            <ScoreDisplayItem score={score} key={score.scoreId} />
+          ))}
+        </ul>
+      )}
     </>
   );
 }
