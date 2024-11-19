@@ -67,3 +67,20 @@ export async function addSet(set: NewSet): Promise<StudySet> {
   const newSet = (await response.json()) as StudySet;
   return newSet;
 }
+
+export async function shareSet(
+  studySetId: number,
+  username: string
+): Promise<void> {
+  const req = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify({ username }),
+  };
+  const response = await fetch(`/api/sharing/${studySetId}`, req);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+}

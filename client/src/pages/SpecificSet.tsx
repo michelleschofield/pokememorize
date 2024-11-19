@@ -6,6 +6,7 @@ import {
   FilledCard,
   readCards,
   readStudySet,
+  shareSet,
   StudySet,
   updateSet,
 } from '../lib';
@@ -21,7 +22,8 @@ export function SpecificSet(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [isLoadingSet, setIsLoadingSet] = useState(true);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const { studySetId } = useParams();
   const navigate = useNavigate();
 
@@ -58,7 +60,7 @@ export function SpecificSet(): JSX.Element {
     setUp();
   }, [studySetId, navigate]);
 
-  async function handleSubmit(
+  async function handleTitleChange(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
@@ -94,6 +96,21 @@ export function SpecificSet(): JSX.Element {
     }
   }
 
+  async function handleShare(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    try {
+      if (!studySetId) throw new Error('there is no studySetId');
+      const formData = new FormData(event.currentTarget);
+      const { username } = Object.fromEntries(formData) as { username: string };
+      await shareSet(+studySetId, username);
+    } catch (err) {
+      alert(err);
+      console.error(err);
+    } finally {
+      setShareModalOpen(false);
+    }
+  }
+
   return (
     <div>
       <Back to="/study-sets">All Study Sets</Back>
@@ -101,7 +118,7 @@ export function SpecificSet(): JSX.Element {
         {isLoadingSet && <p>Loading...</p>}
         {!isLoadingSet && (
           <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleTitleChange}>
               <input
                 required
                 name="title"
@@ -110,7 +127,10 @@ export function SpecificSet(): JSX.Element {
               />
               <Button>Update Title</Button>
             </form>
-            <Button onClick={() => setModalIsOpen(true)}>Delete Set</Button>
+            <Button onClick={() => setDeleteModalIsOpen(true)}>
+              Delete Set
+            </Button>
+            <Button onClick={() => setShareModalOpen(true)}>Share Set</Button>
           </>
         )}
       </SectionHead>
@@ -123,10 +143,29 @@ export function SpecificSet(): JSX.Element {
           ))}
         </div>
       )}
-      <Modal onClose={() => setModalIsOpen(false)} isOpen={modalIsOpen}>
+      <Modal
+        onClose={() => setDeleteModalIsOpen(false)}
+        isOpen={deleteModalIsOpen}>
         <p>Are you sure you want to delete? This action cannot be undone</p>
-        <Button onClick={() => setModalIsOpen(false)}>Cancel</Button>
+        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
         <Button onClick={handleDelete}>Delete</Button>
+      </Modal>
+      <Modal onClose={() => setShareModalOpen(false)} isOpen={shareModalOpen}>
+        <form onSubmit={handleShare}>
+          <label>
+            Username:{' '}
+            <input
+              name="username"
+              className="border-2 rounded px-2"
+              style={{
+                fontFamily: 'Quicksand, sans-serif',
+                fontWeight: 'normal',
+              }}
+            />
+          </label>
+          <Button>Share</Button>
+        </form>
+        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
       </Modal>
     </div>
   );
