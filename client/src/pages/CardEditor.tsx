@@ -12,10 +12,11 @@ import {
   StudySet,
   updateCard,
 } from '../lib';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { PokemonCard } from '../components/PokemonCard';
 import { Button } from '../components/Button';
 import { BackOfCard } from '../components/BackOfCard';
+import { Popup } from '../components/Popup';
 
 type FormInputs = {
   pokemon: string;
@@ -26,7 +27,9 @@ export function CardEditor(): JSX.Element {
   const [card, setCard] = useState<FilledCard | NewCard>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoading, setIsLoading] = useState(true);
+  const [autocompleteOpen, setAutocompleteOpen] = useState(false);
   const { cardId, studySetId } = useParams();
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -159,6 +162,9 @@ export function CardEditor(): JSX.Element {
           }}>
           Pokemon:{' '}
           <input
+            onFocus={() => setAutocompleteOpen(true)}
+            onBlur={() => setAutocompleteOpen(false)}
+            ref={inputRef}
             required
             name="pokemon"
             className="border-2 rounded px-2"
@@ -168,6 +174,12 @@ export function CardEditor(): JSX.Element {
             }}
             defaultValue={card.pokemonName}
           />
+          <Popup
+            onClose={() => setAutocompleteOpen(false)}
+            positionTo={inputRef.current}
+            isOpen={autocompleteOpen}>
+            <div className="bg-white p-2">Open!</div>
+          </Popup>
         </label>
         <PokemonCard
           imageSrc={card.pokemonImageUrl}
