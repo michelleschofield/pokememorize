@@ -19,6 +19,19 @@ export async function readStudySets(): Promise<StudySet[]> {
   return sets;
 }
 
+export async function readSharedSets(): Promise<StudySet[]> {
+  const req = {
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+  const response = await fetch('/api/sharing/sets', req);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const sets = json as StudySet[];
+  return sets;
+}
+
 /**
  * Retrieve the study set with the provided id.
  * The study set has title, studySetId, and userId properties. It does not include the cards

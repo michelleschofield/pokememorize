@@ -122,9 +122,9 @@ app.get('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select "title", "studySetId"
       from "studySets"
-      where "userId" = $1 and "studySetId" = $2;
+      where "studySetId" = $1;
     `;
-    const result = await db.query(sql, [req.user?.userId, studySetId]);
+    const result = await db.query(sql, [studySetId]);
     const studySet = result.rows[0];
     if (!studySet)
       throw new ClientError(404, `study set ${studySetId} not found`);
