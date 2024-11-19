@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FilledCard } from '../lib';
 import { BackOfCard } from './BackOfCard';
 import { Button } from './Button';
@@ -16,17 +16,26 @@ type GameCard = FilledCard & {
 type Props = {
   cards: FilledCard[];
   onWin: (score: number) => void;
+  onStopPlaying: () => void;
 };
 
-export function MemoryGame({ cards, onWin }: Props): JSX.Element {
+export function MemoryGame({
+  cards,
+  onWin,
+  onStopPlaying,
+}: Props): JSX.Element {
   const [selected, setSelected] = useState<GameCard>();
   const [gameCards, setGameCards] = useState<GameCard[]>([]);
   const [acceptClicks, setAcceptClicks] = useState(true);
   const [score, setScore] = useState(0);
   const [hasWon, setHasWon] = useState(false);
 
+  const shuffle = useCallback((cards: GameCard[]): GameCard[] => {
+    return cards.toSorted(() => Math.random() - 0.5);
+  }, []);
+
   useEffect(() => {
-    const cardSides: GameCard[] = [];
+    const gameCards: GameCard[] = [];
 
     cards.forEach((card) => {
       const withoutSide = {
@@ -35,14 +44,12 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
         isMatched: false,
         className: '',
       };
-      cardSides.push({ ...withoutSide, side: 'front' });
-      cardSides.push({ ...withoutSide, side: 'back' });
+      gameCards.push({ ...withoutSide, side: 'front' });
+      gameCards.push({ ...withoutSide, side: 'back' });
     });
 
-    cardSides.sort(() => Math.random() - 0.5);
-
-    setGameCards(cardSides);
-  }, [cards]);
+    setGameCards(shuffle(gameCards));
+  }, [cards, shuffle]);
 
   function handleSelect(card: GameCard): void {
     if (!acceptClicks) return;
@@ -62,14 +69,14 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
     }
   }
 
-  function checkForWin(): void {
+  function checkForWin(cards: GameCard[], finalScore: number): void {
     if (hasWon || !gameCards.length) return;
     let matchedCards = 0;
-    gameCards.forEach((card) => {
+    cards.forEach((card) => {
       if (card.isMatched) matchedCards++;
     });
-    if (matchedCards === gameCards.length) {
-      onWin(score);
+    if (matchedCards === cards.length) {
+      onWin(finalScore);
       setHasWon(true);
     }
   }
@@ -93,8 +100,9 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
   }
 
   function makeMatch(cardId: number): void {
-    setScore(score + 3);
-    const updated = gameCards.map((gameCard) => {
+    const updatedScore = score + 3;
+    setScore(updatedScore);
+    const updatedCards = gameCards.map((gameCard) => {
       if (gameCard.cardId === cardId) {
         return {
           ...gameCard,
@@ -105,9 +113,9 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
       }
       return gameCard;
     });
-    setGameCards(updated);
+    setGameCards(updatedCards);
     setSelected(undefined);
-    return;
+    checkForWin(updatedCards, updatedScore);
   }
 
   function selectCard(card: GameCard): void {
@@ -141,21 +149,18 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
   }
 
   function restartGame(): void {
-    setGameCards(
-      gameCards.map((card) => {
-        return {
-          ...card,
-          isFlipped: false,
-          isMatched: false,
-          className: '',
-        };
-      })
-    );
+    const resetCards = gameCards.map((card) => {
+      return {
+        ...card,
+        isFlipped: false,
+        isMatched: false,
+        className: '',
+      };
+    });
+    setGameCards(shuffle(resetCards));
     setHasWon(false);
     setScore(0);
   }
-
-  checkForWin();
 
   return (
     <>
@@ -165,6 +170,7 @@ export function MemoryGame({ cards, onWin }: Props): JSX.Element {
           <div className="m-2 w-full">
             <div>You matched all the cards!!</div>
             <Button onClick={restartGame}>Play Again?</Button>
+            <Button onClick={onStopPlaying}>Stop Playing</Button>
           </div>
         )}
         {gameCards.map((card) => (

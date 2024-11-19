@@ -1,65 +1,11 @@
-import { CardDB, FilledCard } from './data';
-
-export type PokemonType = {
-  slot: number;
-  type: {
-    name: string;
-  };
-};
-
-type FlavorTextEntry = {
-  flavor_text: string;
-  language: {
-    name: string;
-  };
-};
-
-export type FromSpecies = {
-  name: string;
-  url: string;
-};
-
-export type InfoKey = 'types' | 'flavor_text_entries' | 'evolves_from_species';
-
-type PokemonSpecies = {
-  name: string;
-  id: number;
-  flavor_text_entries: FlavorTextEntry[];
-  evolves_from_species: FromSpecies | null;
-  evolution_chain: {
-    url: string;
-  };
-};
-
-type Pokemon = {
-  id: number;
-  name: string;
-  types: PokemonType[];
-};
-
-type NewCardBase = {
-  studySetId: number;
-  pokemonId: number;
-  pokemonName: string;
-  pokemonImageUrl: string;
-};
-
-type NewCardTypes = NewCardBase & {
-  infoKey: 'types';
-  info: PokemonType[];
-};
-
-type NewCardFlavor = NewCardBase & {
-  infoKey: 'flavor_text_entries';
-  info: FlavorTextEntry[];
-};
-
-type NewCardEvolveFrom = NewCardBase & {
-  infoKey: 'evolves_from_species';
-  info: FromSpecies;
-};
-
-export type NewCard = NewCardEvolveFrom | NewCardFlavor | NewCardTypes;
+import {
+  CardDB,
+  FilledCard,
+  InfoKey,
+  NewCard,
+  Pokemon,
+  PokemonSpecies,
+} from './data';
 
 /**
  * Send a fetch request to the pokeapi pokemon endpoint
