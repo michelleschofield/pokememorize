@@ -10,7 +10,6 @@ CREATE TABLE "users" (
   "userId" serial PRIMARY KEY,
   "username" text unique,
   "hashedPassword" text,
-  "avatarUrl" text
 );
 
 CREATE TABLE "studySets" (

@@ -264,6 +264,38 @@ app.post('/api/scores', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.post('/api/sharing/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const ownerId = req.user?.userId;
+    const { username } = req.body;
+    const { studySetId } = req.params;
+    validateId(studySetId);
+    await checkOwnsSet(studySetId, ownerId);
+
+    const userSql = `
+      select "userId"
+      from "users"
+      where "username" = $1;
+    `;
+
+    const userResult = await db.query(userSql, [username]);
+    const sharedUserId = userResult.rows[0].userId;
+    if (!sharedUserId) throw new ClientError(404, `user ${username} not found`);
+
+    const shareSql = `
+      insert into "sharedSets" ("studySetId", "userId")
+      values ($1, $2)
+      returning *;
+    `;
+
+    const shareResult = await db.query(shareSql, [studySetId, sharedUserId]);
+    const shared = shareResult.rows[0];
+    res.status(201).json(shared);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId } = req.params;
