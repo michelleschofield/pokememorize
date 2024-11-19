@@ -10,6 +10,7 @@ type Props = {
 export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
   const [ownScores, setOwnScores] = useState<Score[]>();
   const [allScores, setAllScores] = useState<Score[]>();
+  const [onlyOwnScores, setOnlyOwnScores] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,18 +34,29 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
     return <div>Loading...</div>;
   }
 
+  if (!ownScores || !allScores) {
+    return <div>There was an Error </div>;
+  }
+
   return (
     <>
-      <div>Your Scores</div>
-      {ownScores && (
+      <h4 className="text-lg">Scores</h4>
+      <label>
+        <input
+          type="checkbox"
+          onChange={() => setOnlyOwnScores(!onlyOwnScores)}
+          checked={onlyOwnScores}
+        />{' '}
+        Show only my scores
+      </label>
+      {onlyOwnScores && (
         <ul>
           {ownScores.map((score) => (
             <ScoreDisplayItem score={score} key={score.scoreId} />
           ))}
         </ul>
       )}
-      <div>All Scores</div>
-      {allScores && (
+      {!onlyOwnScores && (
         <ul>
           {allScores.map((score) => (
             <ScoreDisplayItem showName score={score} key={score.scoreId} />
