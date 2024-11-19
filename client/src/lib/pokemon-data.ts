@@ -43,11 +43,13 @@ type AllPokemonRes = {
   results: { name: string }[];
 };
 
-export async function getAllPokemon(): Promise<{ name: string }[]> {
-  const response = await fetch('https://pokeapi.co/api/v2/pokemon/?limit=2000');
+export async function getAllPokemon(): Promise<string[]> {
+  const response = await fetch(
+    'https://pokeapi.co/api/v2/pokemon-species/?limit=2000'
+  );
   if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
   const allPokemon = (await response.json()) as AllPokemonRes;
-  return allPokemon.results;
+  return allPokemon.results.map((pokemon) => pokemon.name);
 }
 
 /**
