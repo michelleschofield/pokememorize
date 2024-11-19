@@ -383,12 +383,6 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
     const { cardId } = req.params;
     const { studySetId, pokemonId, infoKey } = req.body;
 
-    console.log('cardId', cardId);
-    console.log('card');
-    console.log(studySetId);
-    console.log(pokemonId);
-    console.log(infoKey);
-
     validateId(cardId);
     validateCard(req.body);
     await checkOwnsSet(studySetId, req.user?.userId);
@@ -438,7 +432,6 @@ app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
 
 app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
-    console.log('you reached the delete endpoint');
     const { studySetId } = req.params;
     const { userId } = req.user as User;
 
@@ -453,6 +446,24 @@ app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     `;
 
     await db.query(cardSql, [studySetId]);
+
+    const scoresSql = `
+      delete
+      from "scores"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    await db.query(scoresSql, [studySetId]);
+
+    const sharedSql = `
+      delete
+      from "sharedSets"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    await db.query(sharedSql, [studySetId]);
 
     const setSql = `
       delete
