@@ -5,9 +5,10 @@ import { SectionHead } from './SectionHead';
 
 type Props = {
   linkTo: string;
+  sharedTo?: string;
 };
 
-export function StudySetSelector({ linkTo }: Props): JSX.Element {
+export function StudySetSelector({ linkTo, sharedTo }: Props): JSX.Element {
   const [studySets, setStudySets] = useState<StudySet[]>();
   const [sharedSets, setSharedSets] = useState<StudySet[]>();
   const [isLoadingOwn, setIsLoadingOwn] = useState(true);
@@ -48,7 +49,7 @@ export function StudySetSelector({ linkTo }: Props): JSX.Element {
       {!isLoadingShared &&
         sharedSets?.map((studySet) => (
           <ArrowLink
-            to={linkTo + studySet.studySetId}
+            to={(sharedTo ?? linkTo) + studySet.studySetId}
             key={studySet.studySetId}>
             {studySet.title}
           </ArrowLink>

@@ -10,14 +10,18 @@ import {
   StudySet,
   updateSet,
 } from '../lib';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { NewCard } from '../components/NewCard';
 import { BothSidesCard } from '../components/BothSidesCard';
 import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 
-export function SpecificSet(): JSX.Element {
+type Props = {
+  shared?: boolean;
+};
+
+export function SpecificSet({ shared }: Props): JSX.Element {
   const [cards, setCards] = useState<FilledCard[]>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoadingCards, setIsLoadingCards] = useState(true);
@@ -120,26 +124,38 @@ export function SpecificSet(): JSX.Element {
           <>
             <form onSubmit={handleTitleChange}>
               <input
+                disabled={shared}
                 required
                 name="title"
                 className="border-2 rounded px-2"
                 defaultValue={studySet?.title}
               />
-              <Button>Update Title</Button>
+              {!shared && <Button>Update Title</Button>}
             </form>
-            <Button onClick={() => setDeleteModalIsOpen(true)}>
-              Delete Set
-            </Button>
-            <Button onClick={() => setShareModalOpen(true)}>Share Set</Button>
+            {!shared && (
+              <>
+                <Button onClick={() => setDeleteModalIsOpen(true)}>
+                  Delete Set
+                </Button>
+                <Button onClick={() => setShareModalOpen(true)}>
+                  Share Set
+                </Button>
+              </>
+            )}
           </>
         )}
       </SectionHead>
-      <NewCard />
+      {!shared && <NewCard />}
       {isLoadingCards && <p>Loading...</p>}
       {!isLoadingCards && (
         <div className="flex flex-wrap">
           {cards?.map((card) => (
-            <BothSidesCard key={card.cardId} card={card} />
+            <Link
+              className={shared ? 'cursor-default' : ''}
+              key={card.cardId}
+              to={shared ? '' : `${card.cardId}`}>
+              <BothSidesCard card={card} />
+            </Link>
           ))}
         </div>
       )}
