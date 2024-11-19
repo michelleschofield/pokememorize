@@ -9,7 +9,7 @@ create schema "public";
 CREATE TABLE "users" (
   "userId" serial PRIMARY KEY,
   "username" text unique,
-  "hashedPassword" text,
+  "hashedPassword" text
 );
 
 CREATE TABLE "studySets" (
@@ -20,7 +20,8 @@ CREATE TABLE "studySets" (
 
 CREATE TABLE "sharedSets" (
   "studySetId" integer,
-  "userId" integer
+  "userId" integer,
+  PRIMARY KEY ("studySetId", "userId")
 );
 
 CREATE TABLE "cards" (

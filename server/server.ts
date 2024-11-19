@@ -197,6 +197,23 @@ app.get(
   }
 );
 
+app.get('/api/sharing/sets', authMiddleware, async (req, res, next) => {
+  try {
+    const sql = `
+     select "studySets"."title", "studySets"."studySetId"
+     from "sharedSets"
+     join "studySets" using ("studySetId")
+     where "sharedSets"."userId" = $1
+    `;
+
+    const result = await db.query(sql, [req.user?.userId]);
+    const studySets = result.rows;
+    res.json(studySets);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/api/sets', authMiddleware, async (req, res, next) => {
   try {
     const { title } = req.body;
