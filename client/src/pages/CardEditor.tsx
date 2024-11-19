@@ -5,6 +5,7 @@ import {
   deleteCard,
   fillCardViaName,
   FilledCard,
+  getAllPokemon,
   isFilledCard,
   NewCard,
   readCard,
@@ -16,6 +17,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { PokemonCard } from '../components/PokemonCard';
 import { Button } from '../components/Button';
 import { BackOfCard } from '../components/BackOfCard';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 
 type FormInputs = {
   pokemon: string;
@@ -26,6 +28,7 @@ export function CardEditor(): JSX.Element {
   const [card, setCard] = useState<FilledCard | NewCard>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoading, setIsLoading] = useState(true);
+  const [allPokemon, setAllPokemon] = useState<string[]>([]);
   const { cardId, studySetId } = useParams();
   const navigate = useNavigate();
 
@@ -60,6 +63,9 @@ export function CardEditor(): JSX.Element {
         } else {
           await loadCard(+cardId);
         }
+
+        const allPokemon = await getAllPokemon();
+        setAllPokemon(allPokemon);
       } catch (err) {
         console.error(err);
         alert(err);
@@ -158,14 +164,9 @@ export function CardEditor(): JSX.Element {
             fontWeight: 600,
           }}>
           Pokemon:{' '}
-          <input
-            required
-            name="pokemon"
-            className="border-2 rounded px-2"
-            style={{
-              fontFamily: 'Quicksand, sans-serif',
-              fontWeight: 'normal',
-            }}
+          <AutocompleteInput
+            required={true}
+            completeWith={allPokemon}
             defaultValue={card.pokemonName}
           />
         </label>

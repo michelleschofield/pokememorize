@@ -39,6 +39,19 @@ async function getPokemonSpecies(
   return pokemonSpecies;
 }
 
+type AllPokemonRes = {
+  results: { name: string }[];
+};
+
+export async function getAllPokemon(): Promise<string[]> {
+  const response = await fetch(
+    'https://pokeapi.co/api/v2/pokemon-species/?limit=2000'
+  );
+  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const allPokemon = (await response.json()) as AllPokemonRes;
+  return allPokemon.results.map((pokemon) => pokemon.name);
+}
+
 /**
  * Figure out which endpoint needs to be fetched and make the fetch call
  * @param idOrName the id or name for the pokemon who's info you want to get
