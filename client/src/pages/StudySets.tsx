@@ -5,7 +5,7 @@ export function StudySets(): JSX.Element {
   return (
     <div>
       <ArrowLink to="/study-sets/new">Make a new set</ArrowLink>
-      <StudySetSelector linkTo="/study-sets/" />
+      <StudySetSelector linkTo="/study-sets/" sharedTo="/study-sets/shared/" />
     </div>
   );
 }

@@ -6,22 +6,28 @@ import {
   FilledCard,
   readCards,
   readStudySet,
+  shareSet,
   StudySet,
   updateSet,
 } from '../lib';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { NewCard } from '../components/NewCard';
 import { BothSidesCard } from '../components/BothSidesCard';
 import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 
-export function SpecificSet(): JSX.Element {
+type Props = {
+  shared?: boolean;
+};
+
+export function SpecificSet({ shared }: Props): JSX.Element {
   const [cards, setCards] = useState<FilledCard[]>();
   const [studySet, setStudySet] = useState<StudySet>();
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [isLoadingSet, setIsLoadingSet] = useState(true);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const { studySetId } = useParams();
   const navigate = useNavigate();
 
@@ -58,7 +64,7 @@ export function SpecificSet(): JSX.Element {
     setUp();
   }, [studySetId, navigate]);
 
-  async function handleSubmit(
+  async function handleTitleChange(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
@@ -94,6 +100,21 @@ export function SpecificSet(): JSX.Element {
     }
   }
 
+  async function handleShare(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    try {
+      if (!studySetId) throw new Error('there is no studySetId');
+      const formData = new FormData(event.currentTarget);
+      const { username } = Object.fromEntries(formData) as { username: string };
+      await shareSet(+studySetId, username);
+    } catch (err) {
+      alert(err);
+      console.error(err);
+    } finally {
+      setShareModalOpen(false);
+    }
+  }
+
   return (
     <div>
       <Back to="/study-sets">All Study Sets</Back>
@@ -101,32 +122,66 @@ export function SpecificSet(): JSX.Element {
         {isLoadingSet && <p>Loading...</p>}
         {!isLoadingSet && (
           <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleTitleChange}>
               <input
+                disabled={shared}
                 required
                 name="title"
                 className="border-2 rounded px-2"
                 defaultValue={studySet?.title}
               />
-              <Button>Update Title</Button>
+              {!shared && <Button>Update Title</Button>}
             </form>
-            <Button onClick={() => setModalIsOpen(true)}>Delete Set</Button>
+            {!shared && (
+              <>
+                <Button onClick={() => setDeleteModalIsOpen(true)}>
+                  Delete Set
+                </Button>
+                <Button onClick={() => setShareModalOpen(true)}>
+                  Share Set
+                </Button>
+              </>
+            )}
           </>
         )}
       </SectionHead>
-      <NewCard />
+      {!shared && <NewCard />}
       {isLoadingCards && <p>Loading...</p>}
       {!isLoadingCards && (
         <div className="flex flex-wrap">
           {cards?.map((card) => (
-            <BothSidesCard key={card.cardId} card={card} />
+            <Link
+              className={shared ? 'cursor-default' : ''}
+              key={card.cardId}
+              to={shared ? '' : `${card.cardId}`}>
+              <BothSidesCard card={card} />
+            </Link>
           ))}
         </div>
       )}
-      <Modal onClose={() => setModalIsOpen(false)} isOpen={modalIsOpen}>
+      <Modal
+        onClose={() => setDeleteModalIsOpen(false)}
+        isOpen={deleteModalIsOpen}>
         <p>Are you sure you want to delete? This action cannot be undone</p>
-        <Button onClick={() => setModalIsOpen(false)}>Cancel</Button>
+        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
         <Button onClick={handleDelete}>Delete</Button>
+      </Modal>
+      <Modal onClose={() => setShareModalOpen(false)} isOpen={shareModalOpen}>
+        <form onSubmit={handleShare}>
+          <label>
+            Username:{' '}
+            <input
+              name="username"
+              className="border-2 rounded px-2"
+              style={{
+                fontFamily: 'Quicksand, sans-serif',
+                fontWeight: 'normal',
+              }}
+            />
+          </label>
+          <Button>Share</Button>
+        </form>
+        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
       </Modal>
     </div>
   );

@@ -1,26 +1,32 @@
 import { useEffect, useState } from 'react';
-import { readStudySets, StudySet } from '../lib';
+import { readSharedSets, readStudySets, StudySet } from '../lib';
 import { ArrowLink } from './ArrowLink';
 import { SectionHead } from './SectionHead';
 
 type Props = {
   linkTo: string;
+  sharedTo?: string;
 };
 
-export function StudySetSelector({ linkTo }: Props): JSX.Element {
+export function StudySetSelector({ linkTo, sharedTo }: Props): JSX.Element {
   const [studySets, setStudySets] = useState<StudySet[]>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [sharedSets, setSharedSets] = useState<StudySet[]>();
+  const [isLoadingOwn, setIsLoadingOwn] = useState(true);
+  const [isLoadingShared, setIsLoadingShared] = useState(true);
 
   useEffect(() => {
     async function loadSets(): Promise<void> {
       try {
         const studySets = await readStudySets();
+        const sharedSets = await readSharedSets();
         setStudySets(studySets);
+        setSharedSets(sharedSets);
       } catch (err) {
         console.error(err);
         alert(err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingOwn(false);
+        setIsLoadingShared(false);
       }
     }
     loadSets();
@@ -29,11 +35,21 @@ export function StudySetSelector({ linkTo }: Props): JSX.Element {
   return (
     <>
       <SectionHead>Your Study Sets</SectionHead>
-      {isLoading && <p>Loading...</p>}
-      {!isLoading &&
+      {isLoadingOwn && <p>Loading...</p>}
+      {!isLoadingOwn &&
         studySets?.map((studySet) => (
           <ArrowLink
             to={linkTo + studySet.studySetId}
+            key={studySet.studySetId}>
+            {studySet.title}
+          </ArrowLink>
+        ))}
+      <SectionHead>Shared with you</SectionHead>
+      {isLoadingShared && <p>Loading...</p>}
+      {!isLoadingShared &&
+        sharedSets?.map((studySet) => (
+          <ArrowLink
+            to={(sharedTo ?? linkTo) + studySet.studySetId}
             key={studySet.studySetId}>
             {studySet.title}
           </ArrowLink>

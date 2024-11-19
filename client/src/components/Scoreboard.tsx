@@ -8,14 +8,18 @@ type Props = {
 };
 
 export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
-  const [scores, setScores] = useState<Score[]>();
+  const [ownScores, setOwnScores] = useState<Score[]>();
+  const [allScores, setAllScores] = useState<Score[]>();
+  const [onlyOwnScores, setOnlyOwnScores] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadScores(): Promise<void> {
       try {
-        const scores = await readScores(gameId, studySetId);
-        setScores(scores);
+        const ownScores = await readScores(gameId, studySetId);
+        const allScores = await readScores(gameId, studySetId, true);
+        setOwnScores(ownScores);
+        setAllScores(allScores);
       } catch (err) {
         console.error(err);
         alert(err);
@@ -30,13 +34,32 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
     return <div>Loading...</div>;
   }
 
+  if (!ownScores || !allScores) {
+    return <div>There was an Error </div>;
+  }
+
   return (
     <>
-      <div>Your Scores</div>
-      {scores && (
+      <h4 className="text-lg">Scores</h4>
+      <label>
+        <input
+          type="checkbox"
+          onChange={() => setOnlyOwnScores(!onlyOwnScores)}
+          checked={onlyOwnScores}
+        />{' '}
+        Show only my scores
+      </label>
+      {onlyOwnScores && (
         <ul>
-          {scores.map((score) => (
+          {ownScores.map((score) => (
             <ScoreDisplayItem score={score} key={score.scoreId} />
+          ))}
+        </ul>
+      )}
+      {!onlyOwnScores && (
+        <ul>
+          {allScores.map((score) => (
+            <ScoreDisplayItem showName score={score} key={score.scoreId} />
           ))}
         </ul>
       )}

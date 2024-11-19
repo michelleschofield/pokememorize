@@ -28,6 +28,10 @@ export default function App(): JSX.Element {
           <Route path="study-sets" element={<StudySets />} />
           <Route path="study-sets/:studySetId" element={<SpecificSet />} />
           <Route
+            path="study-sets/shared/:studySetId"
+            element={<SpecificSet shared={true} />}
+          />
+          <Route
             path="study-sets/:studySetId/:cardId"
             element={<CardEditor />}
           />

@@ -19,6 +19,19 @@ export async function readStudySets(): Promise<StudySet[]> {
   return sets;
 }
 
+export async function readSharedSets(): Promise<StudySet[]> {
+  const req = {
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
+  };
+  const response = await fetch('/api/sharing/sets', req);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const sets = json as StudySet[];
+  return sets;
+}
+
 /**
  * Retrieve the study set with the provided id.
  * The study set has title, studySetId, and userId properties. It does not include the cards
@@ -79,7 +92,8 @@ export async function readCard(cardId: number): Promise<FilledCard> {
 
 export async function readScores(
   gameId: number,
-  studySetId: number
+  studySetId: number,
+  all?: boolean
 ): Promise<Score[]> {
   const req = {
     headers: {
@@ -87,7 +101,10 @@ export async function readScores(
     },
   };
 
-  const response = await fetch(`/api/scores/${gameId}/${studySetId}`, req);
+  const response = await fetch(
+    `/api/scores/${gameId}/${studySetId}${all ? '/all' : ''}`,
+    req
+  );
   const json = await response.json();
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
   return json as Score[];

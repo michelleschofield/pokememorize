@@ -122,9 +122,9 @@ app.get('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     const sql = `
       select "title", "studySetId"
       from "studySets"
-      where "userId" = $1 and "studySetId" = $2;
+      where "studySetId" = $1;
     `;
-    const result = await db.query(sql, [req.user?.userId, studySetId]);
+    const result = await db.query(sql, [studySetId]);
     const studySet = result.rows[0];
     if (!studySet)
       throw new ClientError(404, `study set ${studySetId} not found`);
@@ -171,7 +171,7 @@ app.get('/api/card/:cardId', authMiddleware, async (req, res, next) => {
 });
 
 app.get(
-  '/api/scores/:gameId/:studySetId',
+  '/api/scores/:gameId/:studySetId/all',
   authMiddleware,
   async (req, res, next) => {
     try {
@@ -180,8 +180,12 @@ app.get(
       validateId(gameId);
 
       const sql = `
-      select *
+      select "scoreId",
+             "score",
+             "userId",
+             "username"
         from "scores"
+        join "users" using ("userId")
        where "studySetId" = $1
          and "gameId" = $2
     order by "score" desc
@@ -196,6 +200,59 @@ app.get(
     }
   }
 );
+
+app.get(
+  '/api/scores/:gameId/:studySetId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { studySetId, gameId } = req.params;
+      validateId(studySetId);
+      validateId(gameId);
+
+      const sql = `
+      select "scoreId",
+             "score",
+             "userId",
+             "username"
+        from "scores"
+        join "users" using ("userId")
+       where "studySetId" = $1
+         and "gameId" = $2
+         and "userId" = $3
+    order by "score" desc
+       limit 10;
+    `;
+
+      const result = await db.query(sql, [
+        studySetId,
+        gameId,
+        req.user?.userId,
+      ]);
+      const scores = result.rows;
+      res.json(scores);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.get('/api/sharing/sets', authMiddleware, async (req, res, next) => {
+  try {
+    const sql = `
+     select "studySets"."title", "studySets"."studySetId"
+     from "sharedSets"
+     join "studySets" using ("studySetId")
+     where "sharedSets"."userId" = $1
+    `;
+
+    const result = await db.query(sql, [req.user?.userId]);
+    const studySets = result.rows;
+    res.json(studySets);
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.post('/api/sets', authMiddleware, async (req, res, next) => {
   try {
@@ -264,6 +321,38 @@ app.post('/api/scores', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.post('/api/sharing/:studySetId', authMiddleware, async (req, res, next) => {
+  try {
+    const ownerId = req.user?.userId;
+    const { username } = req.body;
+    const { studySetId } = req.params;
+    validateId(studySetId);
+    await checkOwnsSet(studySetId, ownerId);
+
+    const userSql = `
+      select "userId"
+      from "users"
+      where "username" = $1;
+    `;
+
+    const userResult = await db.query(userSql, [username]);
+    const sharedUserId = userResult.rows[0].userId;
+    if (!sharedUserId) throw new ClientError(404, `user ${username} not found`);
+
+    const shareSql = `
+      insert into "sharedSets" ("studySetId", "userId")
+      values ($1, $2)
+      returning *;
+    `;
+
+    const shareResult = await db.query(shareSql, [studySetId, sharedUserId]);
+    const shared = shareResult.rows[0];
+    res.status(201).json(shared);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.put('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
     const { studySetId } = req.params;
@@ -293,12 +382,6 @@ app.put('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const { studySetId, pokemonId, infoKey } = req.body;
-
-    console.log('cardId', cardId);
-    console.log('card');
-    console.log(studySetId);
-    console.log(pokemonId);
-    console.log(infoKey);
 
     validateId(cardId);
     validateCard(req.body);
@@ -349,7 +432,6 @@ app.delete('/api/cards/:cardId', authMiddleware, async (req, res, next) => {
 
 app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
   try {
-    console.log('you reached the delete endpoint');
     const { studySetId } = req.params;
     const { userId } = req.user as User;
 
@@ -364,6 +446,24 @@ app.delete('/api/sets/:studySetId', authMiddleware, async (req, res, next) => {
     `;
 
     await db.query(cardSql, [studySetId]);
+
+    const scoresSql = `
+      delete
+      from "scores"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    await db.query(scoresSql, [studySetId]);
+
+    const sharedSql = `
+      delete
+      from "sharedSets"
+      where "studySetId" = $1
+      returning *;
+    `;
+
+    await db.query(sharedSql, [studySetId]);
 
     const setSql = `
       delete
