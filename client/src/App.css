@@ -137,3 +137,36 @@ dialog::backdrop {
 .incorrect {
   box-shadow: 0 0 9px 3px #f12525;
 }
+
+/* scoreboard podium styling */
+
+.score:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.score:first-child {
+  background: linear-gradient(-45deg, #fff0c0 40%, #fafafa 50%, #fff0c0 60%);
+  background-size: 300%;
+  background-position-x: 100%;
+  animation: shimmer 1.5s 1 linear;
+}
+
+.score:nth-child(2) {
+  background: linear-gradient(-45deg, #eee 40%, #fafafa 50%, #eee 60%);
+  background-size: 300%;
+  background-position-x: 100%;
+  animation: shimmer 1.5s 1 linear;
+}
+
+.score:nth-child(3) {
+  background: linear-gradient(-45deg, #ffdebf 40%, #fafafa 50%, #ffdebf 60%);
+  background-size: 300%;
+  background-position-x: 100%;
+  animation: shimmer 1.5s 1 linear;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: 0%;
+  }
+}

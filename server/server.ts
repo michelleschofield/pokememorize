@@ -171,6 +171,37 @@ app.get('/api/card/:cardId', authMiddleware, async (req, res, next) => {
 });
 
 app.get(
+  '/api/scores/:gameId/:studySetId/all',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { studySetId, gameId } = req.params;
+      validateId(studySetId);
+      validateId(gameId);
+
+      const sql = `
+      select "scoreId",
+             "score",
+             "userId",
+             "username"
+        from "scores"
+        join "users" using ("userId")
+       where "studySetId" = $1
+         and "gameId" = $2
+    order by "score" desc
+       limit 10;
+    `;
+
+      const result = await db.query(sql, [studySetId, gameId]);
+      const scores = result.rows;
+      res.json(scores);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.get(
   '/api/scores/:gameId/:studySetId',
   authMiddleware,
   async (req, res, next) => {
@@ -180,15 +211,24 @@ app.get(
       validateId(gameId);
 
       const sql = `
-      select *
+      select "scoreId",
+             "score",
+             "userId",
+             "username"
         from "scores"
+        join "users" using ("userId")
        where "studySetId" = $1
          and "gameId" = $2
+         and "userId" = $3
     order by "score" desc
        limit 10;
     `;
 
-      const result = await db.query(sql, [studySetId, gameId]);
+      const result = await db.query(sql, [
+        studySetId,
+        gameId,
+        req.user?.userId,
+      ]);
       const scores = result.rows;
       res.json(scores);
     } catch (err) {

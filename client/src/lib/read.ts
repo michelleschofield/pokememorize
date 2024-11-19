@@ -92,7 +92,8 @@ export async function readCard(cardId: number): Promise<FilledCard> {
 
 export async function readScores(
   gameId: number,
-  studySetId: number
+  studySetId: number,
+  all?: boolean
 ): Promise<Score[]> {
   const req = {
     headers: {
@@ -100,7 +101,10 @@ export async function readScores(
     },
   };
 
-  const response = await fetch(`/api/scores/${gameId}/${studySetId}`, req);
+  const response = await fetch(
+    `/api/scores/${gameId}/${studySetId}${all ? '/all' : ''}`,
+    req
+  );
   const json = await response.json();
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
   return json as Score[];

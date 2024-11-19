@@ -8,14 +8,17 @@ type Props = {
 };
 
 export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
-  const [scores, setScores] = useState<Score[]>();
+  const [ownScores, setOwnScores] = useState<Score[]>();
+  const [allScores, setAllScores] = useState<Score[]>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadScores(): Promise<void> {
       try {
-        const scores = await readScores(gameId, studySetId);
-        setScores(scores);
+        const ownScores = await readScores(gameId, studySetId);
+        const allScores = await readScores(gameId, studySetId, true);
+        setOwnScores(ownScores);
+        setAllScores(allScores);
       } catch (err) {
         console.error(err);
         alert(err);
@@ -33,10 +36,18 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
   return (
     <>
       <div>Your Scores</div>
-      {scores && (
+      {ownScores && (
         <ul>
-          {scores.map((score) => (
+          {ownScores.map((score) => (
             <ScoreDisplayItem score={score} key={score.scoreId} />
+          ))}
+        </ul>
+      )}
+      <div>All Scores</div>
+      {allScores && (
+        <ul>
+          {allScores.map((score) => (
+            <ScoreDisplayItem showName score={score} key={score.scoreId} />
           ))}
         </ul>
       )}

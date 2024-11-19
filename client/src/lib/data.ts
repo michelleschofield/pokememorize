@@ -20,9 +20,8 @@ export type FilledCard = NewCard & {
 };
 
 export type Score = {
+  username: string;
   score: number;
-  studySetId: number;
-  gameId: number;
   scoreId?: number;
 };
 
