@@ -6,7 +6,6 @@ import {
   FilledCard,
   readCards,
   readStudySet,
-  shareSet,
   StudySet,
   updateSet,
 } from '../lib';
@@ -19,6 +18,7 @@ import { Modal } from '../components/Modal';
 import { RedButton } from '../components/RedButton';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
+import { ShareForm } from '../components/ShareForm';
 
 type Props = {
   shared?: boolean;
@@ -105,19 +105,8 @@ export function SpecificSet({ shared }: Props): JSX.Element {
     }
   }
 
-  async function handleShare(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    try {
-      if (!studySetId) throw new Error('there is no studySetId');
-      const formData = new FormData(event.currentTarget);
-      const { username } = Object.fromEntries(formData) as { username: string };
-      await shareSet(+studySetId, username);
-    } catch (err) {
-      alert(err);
-      console.error(err);
-    } finally {
-      setShareModalOpen(false);
-    }
+  if (!studySetId) {
+    return <div>Sorry, there is no studySetId</div>;
   }
 
   return (
@@ -176,19 +165,10 @@ export function SpecificSet({ shared }: Props): JSX.Element {
         className="rounded p-2"
         onClose={() => setShareModalOpen(false)}
         isOpen={shareModalOpen}>
-        <form className="flex items-center" onSubmit={handleShare}>
-          <label className="flex">
-            <p className="mr-2">Username:</p>
-            <TextInput
-              name="username"
-              style={{
-                fontFamily: 'Quicksand, sans-serif',
-                fontWeight: 'normal',
-              }}
-            />
-          </label>
-          <Button>Share</Button>
-        </form>
+        <ShareForm
+          onShare={() => setShareModalOpen(false)}
+          studySetId={+studySetId}
+        />
         <Button onClick={() => setShareModalOpen(false)}>Cancel</Button>
       </Modal>
     </div>

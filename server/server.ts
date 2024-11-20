@@ -358,7 +358,7 @@ app.post('/api/sharing/:studySetId', authMiddleware, async (req, res, next) => {
     const userResult = await db.query(userSql, [username]);
     const sharedUser = userResult.rows[0];
     if (!sharedUser) throw new ClientError(404, `user ${username} not found`);
-    const { sharedUserId } = sharedUser;
+    const sharedUserId = sharedUser.userId;
 
     const shareSql = `
       insert into "sharedSets" ("studySetId", "userId")

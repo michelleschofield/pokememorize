@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { FaCircleNotch } from 'react-icons/fa';
+import { FaGear } from 'react-icons/fa6';
 
 type Props = {
   children: ReactNode;
@@ -8,7 +8,7 @@ type Props = {
 export function LoadingMessage({ children }: Props): JSX.Element {
   return (
     <div className="border border-slate-400 bg-slate-50 rounded px-2 flex items-center">
-      <FaCircleNotch className="spin" />
+      <FaGear className="spin" />
       <p className="mx-2">{children}</p>
     </div>
   );
