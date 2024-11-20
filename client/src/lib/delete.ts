@@ -14,7 +14,8 @@ export async function deleteSet(studySetId: number): Promise<void> {
   };
 
   const response = await fetch(`/api/sets/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
 }
 
 /**
@@ -31,5 +32,6 @@ export async function deleteCard(cardId: number): Promise<void> {
   };
 
   const response = await fetch(`/api/cards/${cardId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
 }

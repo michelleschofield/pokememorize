@@ -14,8 +14,9 @@ export async function readStudySets(): Promise<StudySet[]> {
     },
   };
   const response = await fetch('/api/sets', req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const sets = (await response.json()) as StudySet[];
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const sets = json as StudySet[];
   return sets;
 }
 
@@ -46,8 +47,9 @@ export async function readStudySet(studySetId: number): Promise<StudySet> {
     },
   };
   const response = await fetch(`/api/sets/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const studySet = await response.json();
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const studySet = await json;
   return studySet;
 }
 
@@ -65,7 +67,8 @@ export async function readCards(studySetId: number): Promise<FilledCard[]> {
   };
 
   const response = await fetch(`/api/cards/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
   const cards = (await response.json()) as CardDB[];
 
   return fillOutCards(cards);
@@ -85,7 +88,8 @@ export async function readCard(cardId: number): Promise<FilledCard> {
   };
 
   const response = await fetch(`/api/card/${cardId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
   const card = (await response.json()) as CardDB;
   return fillOutCard(card);
 }

@@ -26,7 +26,8 @@ export async function addCard({
     body: JSON.stringify(dbCard),
   };
   const response = await fetch('/api/cards', req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
 }
 
 export async function addScore(score: Score): Promise<void> {
@@ -63,8 +64,9 @@ export async function addSet(set: NewSet): Promise<StudySet> {
     body: JSON.stringify(dbSet),
   };
   const response = await fetch('/api/sets', req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const newSet = (await response.json()) as StudySet;
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const newSet = json as StudySet;
   return newSet;
 }
 

@@ -21,8 +21,9 @@ export async function updateSet({
   };
 
   const response = await fetch(`/api/sets/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const updatedSet = await response.json();
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const updatedSet = json;
   return updatedSet;
 }
 
@@ -48,5 +49,6 @@ export async function updateCard(card: FilledCard): Promise<void> {
   };
 
   const response = await fetch(`/api/cards/${card.cardId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
 }
