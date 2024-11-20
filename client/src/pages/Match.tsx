@@ -65,7 +65,9 @@ export function Match(): JSX.Element {
     <>
       <Back to="/match">Change Study Set</Back>
       <div>
-        <SectionHead>{studySet.title}</SectionHead>
+        <SectionHead />
+        <h1 className="text-3xl">Match Game</h1>
+        <h2 className="text-2xl">Study Set: {studySet.title}</h2>
         {!isPlaying && (
           <>
             {!cards.length && (

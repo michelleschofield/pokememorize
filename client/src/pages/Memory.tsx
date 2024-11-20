@@ -65,7 +65,9 @@ export function Memory(): JSX.Element {
     <>
       <Back to="/memory">Change Study Set</Back>
       <div>
-        <SectionHead>{studySet.title}</SectionHead>
+        <SectionHead />
+        <h1 className="text-3xl">Memory Game</h1>
+        <h2 className="text-2xl">Study Set: {studySet.title}</h2>
         {!isPlaying && (
           <>
             {!cards.length && (

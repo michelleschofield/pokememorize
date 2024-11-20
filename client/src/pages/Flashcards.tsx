@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { StudySet, FilledCard, readStudySet, readCards } from '../lib';
 import { FlippingCard } from '../components/FlippingCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
 import { Indicators } from '../components/Indicators';
+import { Back } from '../components/Back';
 
 export function Flashcards(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -58,36 +59,46 @@ export function Flashcards(): JSX.Element {
 
   return (
     <>
-      <h2 className="text-3xl">{studySet.title}</h2>
-      <Link to="/flashcards">Change Study Set</Link>
-      <div className="max-w-96">
-        <div className="flex justify-evenly items-center max-w-md">
-          <FaChevronLeft
-            className="cursor-pointer rounded hover:bg-slate-400"
-            onClick={decrementIndex}
+      <Back to="/flashcards">Change Study Set</Back>
+      <h1 className="text-3xl">FlashCards</h1>
+      <h2 className="text-2xl">Study Set: {studySet.title}</h2>
+      {!!cards.length && (
+        <div className="max-w-96">
+          <div className="flex justify-evenly items-center max-w-md">
+            <div className="cursor-pointer rounded-lg hover:bg-slate-200">
+              <FaChevronLeft className="m-1" onClick={decrementIndex} />
+            </div>
+            <FlippingCard
+              className="cursor-pointer"
+              isFlipped={isFlipped}
+              onFlip={() => setIsFlipped(!isFlipped)}
+              frontSide={
+                <PokemonCard
+                  imageSrc={card.pokemonImageUrl}
+                  caption={card.pokemonName}
+                />
+              }
+              backSide={<BackOfCard card={card} />}
+            />
+            <div className="cursor-pointer rounded-lg hover:bg-slate-200">
+              <FaChevronRight className="m-1" onClick={incrementIndex} />
+            </div>
+          </div>
+          <Indicators
+            items={cards}
+            current={index}
+            onClick={(index) => {
+              setIndex(index);
+              setIsFlipped(false);
+            }}
           />
-          <FlippingCard
-            isFlipped={isFlipped}
-            onFlip={() => setIsFlipped(!isFlipped)}
-            frontSide={
-              <PokemonCard
-                imageSrc={card.pokemonImageUrl}
-                caption={card.pokemonName}
-              />
-            }
-            backSide={<BackOfCard card={card} />}
-          />
-          <FaChevronRight onClick={incrementIndex} />
         </div>
-        <Indicators
-          items={cards}
-          current={index}
-          onClick={(index) => {
-            setIndex(index);
-            setIsFlipped(false);
-          }}
-        />
-      </div>
+      )}
+      {!cards.length && (
+        <p>
+          There are no cards in this study set, please select a different one
+        </p>
+      )}
     </>
   );
 }
