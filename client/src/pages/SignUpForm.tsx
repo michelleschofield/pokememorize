@@ -2,8 +2,11 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
-import { usernameAvailable } from '../lib';
+import { usernameExists } from '../lib';
 import { AvailabilityMessage } from '../components/AvailabilityMessage';
+import { Button } from '../components/Button';
+import { LoadingMessage } from '../components/LoadingMessage';
+import { TextInput } from '../components/TextInput';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +20,7 @@ export function SignUpForm(): JSX.Element {
     async function checkUsername(): Promise<void> {
       try {
         setIsChecking(true);
-        const available = await usernameAvailable(username);
+        const available = !(await usernameExists(username));
         setIsAvailable(available);
       } catch (err) {
         console.error(err);
@@ -59,18 +62,18 @@ export function SignUpForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign Up</h2>
+      {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
             <label className="mb-1 block">
               Username
-              <input
+              <TextInput
                 value={username}
                 onChange={(e) => setUsername(e.currentTarget.value)}
                 required
                 name="username"
                 type="text"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
               />
             </label>
             {username && (
@@ -81,20 +84,13 @@ export function SignUpForm(): JSX.Element {
             )}
             <label className="mb-1 block">
               Password
-              <input
-                required
-                name="password"
-                type="password"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>
-        <button
-          disabled={isLoading || isChecking || !isAvailable}
-          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white disabled:bg-slate-400">
+        <Button disabled={isLoading || isChecking || !isAvailable || !username}>
           Register
-        </button>
+        </Button>
       </form>
       <p>
         Already have an account?{' '}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { readSharedSets, readStudySets, StudySet } from '../lib';
 import { ArrowLink } from './ArrowLink';
 import { SectionHead } from './SectionHead';
+import { LoadingMessage } from './LoadingMessage';
 
 type Props = {
   linkTo: string;
@@ -35,7 +36,7 @@ export function StudySetSelector({ linkTo, sharedTo }: Props): JSX.Element {
   return (
     <>
       <SectionHead>Your Study Sets</SectionHead>
-      {isLoadingOwn && <p>Loading...</p>}
+      {isLoadingOwn && <LoadingMessage>Loading study sets...</LoadingMessage>}
       {!isLoadingOwn &&
         studySets?.map((studySet) => (
           <ArrowLink
@@ -44,8 +45,13 @@ export function StudySetSelector({ linkTo, sharedTo }: Props): JSX.Element {
             {studySet.title}
           </ArrowLink>
         ))}
+      {!isLoadingOwn && !studySets?.length && (
+        <p>You have not created any study sets</p>
+      )}
       <SectionHead>Shared with you</SectionHead>
-      {isLoadingShared && <p>Loading...</p>}
+      {isLoadingShared && (
+        <LoadingMessage>Loading study sets...</LoadingMessage>
+      )}
       {!isLoadingShared &&
         sharedSets?.map((studySet) => (
           <ArrowLink
@@ -54,6 +60,9 @@ export function StudySetSelector({ linkTo, sharedTo }: Props): JSX.Element {
             {studySet.title}
           </ArrowLink>
         ))}
+      {!isLoadingShared && !sharedSets?.length && (
+        <p>There are no study sets shared with you</p>
+      )}
     </>
   );
 }

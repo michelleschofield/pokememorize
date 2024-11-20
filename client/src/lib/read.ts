@@ -14,8 +14,9 @@ export async function readStudySets(): Promise<StudySet[]> {
     },
   };
   const response = await fetch('/api/sets', req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const sets = (await response.json()) as StudySet[];
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const sets = json as StudySet[];
   return sets;
 }
 
@@ -46,8 +47,9 @@ export async function readStudySet(studySetId: number): Promise<StudySet> {
     },
   };
   const response = await fetch(`/api/sets/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const studySet = await response.json();
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const studySet = json;
   return studySet;
 }
 
@@ -65,8 +67,9 @@ export async function readCards(studySetId: number): Promise<FilledCard[]> {
   };
 
   const response = await fetch(`/api/cards/${studySetId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const cards = (await response.json()) as CardDB[];
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const cards = json as CardDB[];
 
   return fillOutCards(cards);
 }
@@ -85,8 +88,9 @@ export async function readCard(cardId: number): Promise<FilledCard> {
   };
 
   const response = await fetch(`/api/card/${cardId}`, req);
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
-  const card = (await response.json()) as CardDB;
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  const card = json as CardDB;
   return fillOutCard(card);
 }
 
@@ -110,7 +114,7 @@ export async function readScores(
   return json as Score[];
 }
 
-export async function usernameAvailable(username: string): Promise<boolean> {
+export async function usernameExists(username: string): Promise<boolean> {
   const req = {
     method: 'POST',
     headers: {
@@ -119,8 +123,8 @@ export async function usernameAvailable(username: string): Promise<boolean> {
     },
     body: JSON.stringify({ username }),
   };
-  const response = await fetch('/api/auth/username-available', req);
+  const response = await fetch('/api/auth/username-exists', req);
   const json = await response.json();
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
-  return json.available;
+  return json.exists;
 }

@@ -17,7 +17,11 @@ export function Menu({ menuItems }: Props): JSX.Element {
     <div className="transition-all ease-in-out grow z-10">
       {!isOpen && (
         <div className="grow">
-          <FaBars size="30" onClick={() => setIsOpen(true)} />
+          <FaBars
+            className="cursor-pointer"
+            size="30"
+            onClick={() => setIsOpen(true)}
+          />
         </div>
       )}
       {isOpen && (
@@ -25,7 +29,11 @@ export function Menu({ menuItems }: Props): JSX.Element {
           <div className="flex bg-red-600 text-white  h-screen">
             <nav
               className={`py-2 pl-4 flex flex-col ${isOpen ? 'w-64' : 'w-0'}`}>
-              <FaBars onClick={() => setIsOpen(false)} size="40" />
+              <FaBars
+                className="cursor-pointer"
+                onClick={() => setIsOpen(false)}
+                size="40"
+              />
               <ul>
                 {menuItems.map((item) => (
                   <MenuItemDisplay

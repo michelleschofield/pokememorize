@@ -60,9 +60,29 @@ export function MatchGame({ cards, onWin, onStopPlaying }: Props): JSX.Element {
       if (!filtered.length) onWin(updatedScore);
       return;
     } else {
+      const updated = gameCards.map((gameCard) => {
+        if (
+          (gameCard.cardId === card.cardId && gameCard.side === card.side) ||
+          (gameCard.cardId === selected.cardId &&
+            gameCard.side === selected.side)
+        ) {
+          return { ...gameCard, className: 'incorrect' };
+        }
+        return gameCard;
+      });
+      setGameCards(updated);
+      setTimeout(clearIncorrect, 1500);
       setScore(score - 1);
       setSelected(undefined);
     }
+  }
+
+  function clearIncorrect(): void {
+    setGameCards(
+      gameCards.map((card) => {
+        return { ...card, className: '' };
+      })
+    );
   }
 
   function restartGame(): void {
@@ -83,7 +103,7 @@ export function MatchGame({ cards, onWin, onStopPlaying }: Props): JSX.Element {
                   card.side === selected.side
                     ? 'selected'
                     : ''
-                }`}>
+                } ${card.className}`}>
                 {card.side === 'front' ? (
                   <PokemonCard
                     onClick={() => handleSelect(card)}

@@ -17,7 +17,12 @@ async function getPokemon(idOrName: number | string): Promise<Pokemon> {
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon/${idOrName}/`
   );
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Could not find pokemon ${idOrName}`);
+    }
+    throw new Error(`fetch error status: ${response.status}`);
+  }
   const pokemon = (await response.json()) as Pokemon;
   return pokemon;
 }
@@ -34,7 +39,12 @@ async function getPokemonSpecies(
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon-species/${idOrName}/`
   );
-  if (!response.ok) throw new Error(`fetch error status: ${response.status}`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Could not find pokemon ${idOrName}`);
+    }
+    throw new Error(`fetch error status: ${response.status}`);
+  }
   const pokemonSpecies = (await response.json()) as PokemonSpecies;
   return pokemonSpecies;
 }
@@ -141,7 +151,7 @@ export async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {
 }
 
 /**
- *
+ *  Construct url for pokemon image
  * @param pokemonId
  * @returns a url that leads to an image of the pokemon
  */

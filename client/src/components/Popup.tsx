@@ -15,7 +15,7 @@ export function Popup({
   onClose,
 }: Props): JSX.Element {
   const rectangle = positionTo?.getBoundingClientRect();
-  const top = rectangle ? rectangle.top + rectangle.height : '50%';
+  const top = rectangle ? rectangle.bottom : '50%';
   const left = rectangle ? rectangle.left : '50%';
 
   return (

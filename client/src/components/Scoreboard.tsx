@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { readScores, Score } from '../lib';
 import { ScoreDisplayItem } from './ScoreDisplayItem';
+import { LoadingMessage } from './LoadingMessage';
 
 type Props = {
   gameId: number;
@@ -31,7 +32,7 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
   }, [gameId, studySetId]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingMessage>Loading Scoreboard...</LoadingMessage>;
   }
 
   if (!ownScores || !allScores) {

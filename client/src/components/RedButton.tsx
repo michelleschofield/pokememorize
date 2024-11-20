@@ -6,12 +6,12 @@ type Props = {
   disabled?: boolean;
 };
 
-export function Button({ onClick, children, disabled }: Props): JSX.Element {
+export function RedButton({ onClick, children, disabled }: Props): JSX.Element {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
-      className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white disabled:bg-slate-400 active:bg-blue-800">
+      className="align-middle text-center border rounded py-1 px-3 bg-red-600 text-white disabled:bg-slate-400 active:bg-red-800">
       {children}
     </button>
   );

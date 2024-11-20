@@ -2,6 +2,9 @@ import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
+import { Button } from '../components/Button';
+import { LoadingMessage } from '../components/LoadingMessage';
+import { TextInput } from '../components/TextInput';
 
 export function SignInForm(): JSX.Element {
   const { signIn } = useUser();
@@ -33,34 +36,21 @@ export function SignInForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign In</h2>
+      {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
             <label className="mb-1 block">
               Username
-              <input
-                required
-                name="username"
-                type="text"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="username" type="text" />
             </label>
             <label className="mb-1 block">
               Password
-              <input
-                required
-                name="password"
-                type="password"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>
-        <button
-          disabled={isLoading}
-          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
-          Sign In
-        </button>
+        <Button disabled={isLoading}>Sign In</Button>
       </form>
       <p>
         Don't have an account?{' '}
