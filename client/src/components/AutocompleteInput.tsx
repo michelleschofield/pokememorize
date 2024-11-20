@@ -1,5 +1,6 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { Popup } from './Popup';
+import { TextInput } from './TextInput';
 
 type Props = {
   completeWith: string[];
@@ -48,12 +49,11 @@ export function AutocompleteInput({
 
   return (
     <>
-      <input
+      <TextInput
         onFocus={() => setAutocompleteOpen(true)}
         ref={inputRef}
         required={required}
         name="pokemon"
-        className="border-2 rounded px-2 max-w-52"
         style={{
           fontFamily: 'Quicksand, sans-serif',
           fontWeight: 'normal',

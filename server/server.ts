@@ -111,8 +111,9 @@ app.post('/api/auth/username-exists', async (req, res, next) => {
     const user = result.rows[0];
     if (user) {
       res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
     }
-    res.json({ exists: false });
   } catch (err) {
     next(err);
   }
@@ -355,8 +356,9 @@ app.post('/api/sharing/:studySetId', authMiddleware, async (req, res, next) => {
     `;
 
     const userResult = await db.query(userSql, [username]);
-    const sharedUserId = userResult.rows[0].userId;
-    if (!sharedUserId) throw new ClientError(404, `user ${username} not found`);
+    const sharedUser = userResult.rows[0];
+    if (!sharedUser) throw new ClientError(404, `user ${username} not found`);
+    const { sharedUserId } = sharedUser;
 
     const shareSql = `
       insert into "sharedSets" ("studySetId", "userId")

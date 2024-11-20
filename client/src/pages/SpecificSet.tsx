@@ -18,6 +18,7 @@ import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { RedButton } from '../components/RedButton';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { TextInput } from '../components/TextInput';
 
 type Props = {
   shared?: boolean;
@@ -65,6 +66,8 @@ export function SpecificSet({ shared }: Props): JSX.Element {
     }
     setUp();
   }, [studySetId, navigate]);
+
+  useEffect(() => {}, []);
 
   async function handleTitleChange(
     event: FormEvent<HTMLFormElement>
@@ -125,11 +128,10 @@ export function SpecificSet({ shared }: Props): JSX.Element {
         {!isLoadingSet && (
           <>
             <form onSubmit={handleTitleChange}>
-              <input
+              <TextInput
                 disabled={shared}
                 required
                 name="title"
-                className="border-2 rounded px-2"
                 defaultValue={studySet?.title}
               />
               {!shared && <Button>Update Title</Button>}
@@ -164,17 +166,21 @@ export function SpecificSet({ shared }: Props): JSX.Element {
       <Modal
         onClose={() => setDeleteModalIsOpen(false)}
         isOpen={deleteModalIsOpen}>
-        <p>Are you sure you want to delete? This action cannot be undone</p>
-        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
-        <Button onClick={handleDelete}>Delete</Button>
+        <div className="m-2">
+          <p>Are you sure you want to delete? This action cannot be undone</p>
+          <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
+          <Button onClick={handleDelete}>Delete</Button>
+        </div>
       </Modal>
-      <Modal onClose={() => setShareModalOpen(false)} isOpen={shareModalOpen}>
-        <form onSubmit={handleShare}>
-          <label>
-            Username:{' '}
-            <input
+      <Modal
+        className="rounded p-2"
+        onClose={() => setShareModalOpen(false)}
+        isOpen={shareModalOpen}>
+        <form className="flex items-center" onSubmit={handleShare}>
+          <label className="flex">
+            <p className="mr-2">Username:</p>
+            <TextInput
               name="username"
-              className="border-2 rounded px-2"
               style={{
                 fontFamily: 'Quicksand, sans-serif',
                 fontWeight: 'normal',
@@ -183,7 +189,7 @@ export function SpecificSet({ shared }: Props): JSX.Element {
           </label>
           <Button>Share</Button>
         </form>
-        <Button onClick={() => setDeleteModalIsOpen(false)}>Cancel</Button>
+        <Button onClick={() => setShareModalOpen(false)}>Cancel</Button>
       </Modal>
     </div>
   );

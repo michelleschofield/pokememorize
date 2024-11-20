@@ -3,10 +3,16 @@ import { ReactNode, useEffect, useRef } from 'react';
 type Props = {
   isOpen: boolean;
   onClose?: () => void;
+  className?: string;
   children: ReactNode;
 };
 
-export function Modal({ isOpen, onClose, children }: Props): JSX.Element {
+export function Modal({
+  isOpen,
+  onClose,
+  className,
+  children,
+}: Props): JSX.Element {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -18,7 +24,7 @@ export function Modal({ isOpen, onClose, children }: Props): JSX.Element {
   }, [isOpen]);
 
   return (
-    <dialog ref={modalRef} onClose={onClose}>
+    <dialog className={className} ref={modalRef} onClose={onClose}>
       {children}
     </dialog>
   );

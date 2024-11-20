@@ -6,6 +6,7 @@ import { usernameExists } from '../lib';
 import { AvailabilityMessage } from '../components/AvailabilityMessage';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { TextInput } from '../components/TextInput';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,13 +68,12 @@ export function SignUpForm(): JSX.Element {
           <div className="w-1/2">
             <label className="mb-1 block">
               Username
-              <input
+              <TextInput
                 value={username}
                 onChange={(e) => setUsername(e.currentTarget.value)}
                 required
                 name="username"
                 type="text"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
               />
             </label>
             {username && (
@@ -84,12 +84,7 @@ export function SignUpForm(): JSX.Element {
             )}
             <label className="mb-1 block">
               Password
-              <input
-                required
-                name="password"
-                type="password"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>

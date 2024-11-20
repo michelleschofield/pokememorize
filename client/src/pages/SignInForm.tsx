@@ -4,6 +4,7 @@ import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { TextInput } from '../components/TextInput';
 
 export function SignInForm(): JSX.Element {
   const { signIn } = useUser();
@@ -41,21 +42,11 @@ export function SignInForm(): JSX.Element {
           <div className="w-1/2">
             <label className="mb-1 block">
               Username
-              <input
-                required
-                name="username"
-                type="text"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="username" type="text" />
             </label>
             <label className="mb-1 block">
               Password
-              <input
-                required
-                name="password"
-                type="password"
-                className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
-              />
+              <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>
