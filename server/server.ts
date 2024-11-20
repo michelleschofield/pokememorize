@@ -99,6 +99,25 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
+app.post('/api/auth/username-available', async (req, res, next) => {
+  try {
+    const { username } = req.body;
+    const sql = `
+      select *
+      from "users"
+      where "username" = $1
+    `;
+    const result = await db.query(sql, [username]);
+    const user = result.rows[0];
+    if (user) {
+      res.json({ available: false });
+    }
+    res.json({ available: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/sets', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
