@@ -1,6 +1,6 @@
-import { FaSpinner } from 'react-icons/fa';
 import { FaRegCircleCheck } from 'react-icons/fa6';
 import { RedMessage } from './RedMessage';
+import { LoadingMessage } from './LoadingMessage';
 
 type Props = {
   available: boolean;
@@ -12,12 +12,7 @@ export function AvailabilityMessage({
   checking,
 }: Props): JSX.Element {
   if (checking) {
-    return (
-      <div className="border border-slate-400 bg-slate-50 rounded px-2 flex items-center">
-        <FaSpinner className="spin" />
-        <p className="mx-2">Checking availability...</p>
-      </div>
-    );
+    return <LoadingMessage>Checking availability...</LoadingMessage>;
   }
 
   if (available) {
