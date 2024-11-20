@@ -13,6 +13,7 @@ import { Button } from '../components/Button';
 import { Scoreboard } from '../components/Scoreboard';
 import { MatchGame } from '../components/MatchGame';
 import { RedMessage } from '../components/RedMessage';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 export function Match(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -54,7 +55,7 @@ export function Match(): JSX.Element {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingMessage>Loading Cards...</LoadingMessage>;
   }
 
   if (!studySet || !cards || !studySetId) {

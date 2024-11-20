@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { Button } from '../components/Button';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 export function SignInForm(): JSX.Element {
   const { signIn } = useUser();
@@ -34,6 +35,7 @@ export function SignInForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign In</h2>
+      {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">

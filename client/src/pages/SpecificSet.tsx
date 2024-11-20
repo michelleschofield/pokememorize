@@ -17,6 +17,7 @@ import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { RedButton } from '../components/RedButton';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 type Props = {
   shared?: boolean;
@@ -120,7 +121,7 @@ export function SpecificSet({ shared }: Props): JSX.Element {
     <div>
       <Back to="/study-sets">All Study Sets</Back>
       <SectionHead>
-        {isLoadingSet && <p>Loading...</p>}
+        {isLoadingSet && <LoadingMessage>Loading Study Set...</LoadingMessage>}
         {!isLoadingSet && (
           <>
             <form onSubmit={handleTitleChange}>
@@ -147,7 +148,7 @@ export function SpecificSet({ shared }: Props): JSX.Element {
         )}
       </SectionHead>
       {!shared && <NewCard />}
-      {isLoadingCards && <p>Loading...</p>}
+      {isLoadingCards && <LoadingMessage>Loading Cards...</LoadingMessage>}
       {!isLoadingCards && (
         <div className="flex flex-wrap">
           {cards?.map((card) => (

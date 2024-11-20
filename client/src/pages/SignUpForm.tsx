@@ -5,6 +5,7 @@ import { UserData } from '../components/UserContext';
 import { usernameAvailable } from '../lib';
 import { AvailabilityMessage } from '../components/AvailabilityMessage';
 import { Button } from '../components/Button';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +61,7 @@ export function SignUpForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign Up</h2>
+      {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">

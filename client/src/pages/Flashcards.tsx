@@ -7,6 +7,7 @@ import { PokemonCard } from '../components/PokemonCard';
 import { BackOfCard } from '../components/BackOfCard';
 import { Indicators } from '../components/Indicators';
 import { Back } from '../components/Back';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 export function Flashcards(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -48,7 +49,7 @@ export function Flashcards(): JSX.Element {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingMessage>Loading Cards...</LoadingMessage>;
   }
 
   if (!studySet || !cards) {

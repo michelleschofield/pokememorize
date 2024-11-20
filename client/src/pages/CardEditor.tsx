@@ -19,6 +19,7 @@ import { Button } from '../components/Button';
 import { BackOfCard } from '../components/BackOfCard';
 import { AutocompleteInput } from '../components/AutocompleteInput';
 import { RedButton } from '../components/RedButton';
+import { LoadingMessage } from '../components/LoadingMessage';
 
 type FormInputs = {
   pokemon: string;
@@ -147,7 +148,7 @@ export function CardEditor(): JSX.Element {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingMessage>Loading Card Information...</LoadingMessage>;
   }
 
   if (!card || !studySet) {
