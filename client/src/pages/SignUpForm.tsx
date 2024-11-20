@@ -1,12 +1,34 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
+import { usernameAvailable } from '../lib';
+import { AvailabilityMessage } from '../components/AvailabilityMessage';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
+  const [isChecking, setIsChecking] = useState(false);
   const { signIn } = useUser();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkUsername(): Promise<void> {
+      try {
+        setIsChecking(true);
+        const available = await usernameAvailable(username);
+        setIsAvailable(available);
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      } finally {
+        setIsChecking(false);
+      }
+    }
+    const timeoutId = setTimeout(checkUsername, 500);
+    return (): void => clearTimeout(timeoutId);
+  }, [username]);
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
@@ -43,12 +65,20 @@ export function SignUpForm(): JSX.Element {
             <label className="mb-1 block">
               Username
               <input
+                value={username}
+                onChange={(e) => setUsername(e.currentTarget.value)}
                 required
                 name="username"
                 type="text"
                 className="block border border-gray-600 rounded p-2 h-8 w-full mb-2"
               />
             </label>
+            {username && (
+              <AvailabilityMessage
+                available={isAvailable}
+                checking={isChecking}
+              />
+            )}
             <label className="mb-1 block">
               Password
               <input
@@ -61,8 +91,8 @@ export function SignUpForm(): JSX.Element {
           </div>
         </div>
         <button
-          disabled={isLoading}
-          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
+          disabled={isLoading || isChecking || !isAvailable}
+          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white disabled:bg-slate-400">
           Register
         </button>
       </form>

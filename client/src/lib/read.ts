@@ -109,3 +109,18 @@ export async function readScores(
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
   return json as Score[];
 }
+
+export async function usernameAvailable(username: string): Promise<boolean> {
+  const req = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
+    },
+    body: JSON.stringify({ username }),
+  };
+  const response = await fetch('/api/auth/username-available', req);
+  const json = await response.json();
+  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  return json.available;
+}
