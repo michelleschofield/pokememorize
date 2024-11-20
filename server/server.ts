@@ -99,7 +99,7 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
-app.post('/api/auth/username-available', async (req, res, next) => {
+app.post('/api/auth/username-exists', async (req, res, next) => {
   try {
     const { username } = req.body;
     const sql = `
@@ -110,9 +110,9 @@ app.post('/api/auth/username-available', async (req, res, next) => {
     const result = await db.query(sql, [username]);
     const user = result.rows[0];
     if (user) {
-      res.json({ available: false });
+      res.json({ exists: true });
     }
-    res.json({ available: true });
+    res.json({ exists: false });
   } catch (err) {
     next(err);
   }

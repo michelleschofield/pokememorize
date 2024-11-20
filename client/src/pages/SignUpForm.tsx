@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
-import { usernameAvailable } from '../lib';
+import { usernameExists } from '../lib';
 import { AvailabilityMessage } from '../components/AvailabilityMessage';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
@@ -19,7 +19,7 @@ export function SignUpForm(): JSX.Element {
     async function checkUsername(): Promise<void> {
       try {
         setIsChecking(true);
-        const available = await usernameAvailable(username);
+        const available = !(await usernameExists(username));
         setIsAvailable(available);
       } catch (err) {
         console.error(err);

@@ -114,7 +114,7 @@ export async function readScores(
   return json as Score[];
 }
 
-export async function usernameAvailable(username: string): Promise<boolean> {
+export async function usernameExists(username: string): Promise<boolean> {
   const req = {
     method: 'POST',
     headers: {
@@ -123,8 +123,8 @@ export async function usernameAvailable(username: string): Promise<boolean> {
     },
     body: JSON.stringify({ username }),
   };
-  const response = await fetch('/api/auth/username-available', req);
+  const response = await fetch('/api/auth/username-exists', req);
   const json = await response.json();
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
-  return json.available;
+  return json.exists;
 }
