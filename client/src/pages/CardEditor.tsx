@@ -20,6 +20,7 @@ import { BackOfCard } from '../components/BackOfCard';
 import { AutocompleteInput } from '../components/AutocompleteInput';
 import { RedButton } from '../components/RedButton';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { FaRotate } from 'react-icons/fa6';
 
 type FormInputs = {
   pokemon: string;
@@ -160,29 +161,32 @@ export function CardEditor(): JSX.Element {
       <Back to={`/study-sets/${studySetId}`}>{studySet.title}</Back>
       <form onSubmit={handleSubmit}>
         <label
-          className="text-2xl"
+          className="text-2xl flex items-center"
           style={{
             fontFamily: 'Kanit, sans-serif',
             fontWeight: 600,
           }}>
-          Pokemon:{' '}
+          Pokemon:
           <AutocompleteInput
-            required={true}
+            required
             completeWith={allPokemon}
             defaultValue={card.pokemonName}
           />
+          <Button>
+            <FaRotate />
+          </Button>
         </label>
         <PokemonCard
           imageSrc={card.pokemonImageUrl}
           caption={card.pokemonName}
         />
         <label
-          className="text-2xl"
+          className="text-2xl flex items-center"
           style={{
             fontFamily: 'Kanit, sans-serif',
             fontWeight: 600,
           }}>
-          Info:{' '}
+          Info:
           <select
             defaultValue={card.infoKey}
             className="border-2 rounded px-2"
@@ -195,9 +199,11 @@ export function CardEditor(): JSX.Element {
             <option value="flavor_text_entries">Pokedex</option>
             <option value="evolves_from_species">Evolves From</option>
           </select>
+          <Button>
+            <FaRotate />
+          </Button>
         </label>
         <BackOfCard card={card} />
-        <Button>Refresh</Button>
       </form>
       {cardId === 'new' && card.pokemonName && (
         <Button onClick={handleAdd}>Add Card</Button>

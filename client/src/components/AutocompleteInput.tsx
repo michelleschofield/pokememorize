@@ -53,7 +53,7 @@ export function AutocompleteInput({
         ref={inputRef}
         required={required}
         name="pokemon"
-        className="border-2 rounded px-2"
+        className="border-2 rounded px-2 max-w-52"
         style={{
           fontFamily: 'Quicksand, sans-serif',
           fontWeight: 'normal',
@@ -68,7 +68,10 @@ export function AutocompleteInput({
         isOpen={autocompleteOpen}>
         <ul className="bg-white border border-gray-400 p-2 max-h-96 w-36 overflow-scroll">
           {filteredOptions.map((string) => (
-            <li key={string} onClick={() => handleComplete(string)}>
+            <li
+              className="cursor-pointer"
+              key={string}
+              onClick={() => handleComplete(string)}>
               {string}
             </li>
           ))}
