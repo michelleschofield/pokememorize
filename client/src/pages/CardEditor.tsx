@@ -18,6 +18,7 @@ import { PokemonCard } from '../components/PokemonCard';
 import { Button } from '../components/Button';
 import { BackOfCard } from '../components/BackOfCard';
 import { AutocompleteInput } from '../components/AutocompleteInput';
+import { RedButton } from '../components/RedButton';
 
 type FormInputs = {
   pokemon: string;
@@ -203,7 +204,7 @@ export function CardEditor(): JSX.Element {
       {cardId !== 'new' && (
         <>
           <Button onClick={handleUpdate}>Save Changes</Button>
-          <Button onClick={handleDelete}>Delete card</Button>
+          <RedButton onClick={handleDelete}>Delete card</RedButton>
         </>
       )}
     </div>

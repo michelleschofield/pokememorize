@@ -16,6 +16,7 @@ import { BothSidesCard } from '../components/BothSidesCard';
 import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
+import { RedButton } from '../components/RedButton';
 
 type Props = {
   shared?: boolean;
@@ -134,9 +135,9 @@ export function SpecificSet({ shared }: Props): JSX.Element {
             </form>
             {!shared && (
               <>
-                <Button onClick={() => setDeleteModalIsOpen(true)}>
+                <RedButton onClick={() => setDeleteModalIsOpen(true)}>
                   Delete Set
-                </Button>
+                </RedButton>
                 <Button onClick={() => setShareModalOpen(true)}>
                   Share Set
                 </Button>

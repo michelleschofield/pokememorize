@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Modal } from './Modal';
 import { Button } from './Button';
 import { Menu } from './Menu';
+import { RedButton } from './RedButton';
 
 export function Header(): JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,14 +59,14 @@ export function Header(): JSX.Element {
         <Modal onClose={() => setModalOpen(false)} isOpen={modalOpen}>
           <div className="p-2 rounded">
             <p>Signed in as {user?.username}</p>
-            <Button
+            <RedButton
               onClick={() => {
                 setModalOpen(false);
                 handleSignOut();
                 navigate('/');
               }}>
               Sign out
-            </Button>
+            </RedButton>
             <Button onClick={() => setModalOpen(false)}>Close</Button>
           </div>
         </Modal>
