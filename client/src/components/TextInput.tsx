@@ -9,7 +9,7 @@ type Props = {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   defaultValue?: string;
   style?: React.CSSProperties;
-  ref?: React.LegacyRef<HTMLInputElement>;
+  reference?: React.LegacyRef<HTMLInputElement>;
   onFocus?: FocusEventHandler<HTMLInputElement>;
 };
 
@@ -19,7 +19,7 @@ export function TextInput({
   onChange,
   defaultValue,
   style,
-  ref,
+  reference,
   onFocus,
   name,
   type,
@@ -30,7 +30,7 @@ export function TextInput({
       disabled={disabled}
       type={type}
       onFocus={onFocus}
-      ref={ref}
+      ref={reference}
       defaultValue={defaultValue}
       required={required}
       name={name}

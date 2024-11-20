@@ -51,7 +51,7 @@ export function AutocompleteInput({
     <>
       <TextInput
         onFocus={() => setAutocompleteOpen(true)}
-        ref={inputRef}
+        reference={inputRef}
         required={required}
         name="pokemon"
         style={{
