@@ -41,27 +41,37 @@ export function Scoreboard({ gameId, studySetId }: Props): JSX.Element {
   return (
     <>
       <h4 className="text-lg">Scores</h4>
-      <label>
-        <input
-          type="checkbox"
-          onChange={() => setOnlyOwnScores(!onlyOwnScores)}
-          checked={onlyOwnScores}
-        />{' '}
-        Show only my scores
-      </label>
+      {!!allScores.length && (
+        <label>
+          <input
+            type="checkbox"
+            onChange={() => setOnlyOwnScores(!onlyOwnScores)}
+            checked={onlyOwnScores}
+          />{' '}
+          Show only my scores
+        </label>
+      )}
       {onlyOwnScores && (
-        <ul>
-          {ownScores.map((score) => (
-            <ScoreDisplayItem score={score} key={score.scoreId} />
-          ))}
-        </ul>
+        <>
+          <ul>
+            {ownScores.map((score) => (
+              <ScoreDisplayItem score={score} key={score.scoreId} />
+            ))}
+          </ul>
+          {!ownScores.length && <p>You have not yet played this game</p>}
+        </>
       )}
       {!onlyOwnScores && (
-        <ul>
-          {allScores.map((score) => (
-            <ScoreDisplayItem showName score={score} key={score.scoreId} />
-          ))}
-        </ul>
+        <>
+          <ul>
+            {allScores.map((score) => (
+              <ScoreDisplayItem showName score={score} key={score.scoreId} />
+            ))}
+          </ul>
+          {!allScores.length && (
+            <p>There are not yet any scores for this game</p>
+          )}
+        </>
       )}
     </>
   );

@@ -12,6 +12,7 @@ import { Back } from '../components/Back';
 import { SectionHead } from '../components/SectionHead';
 import { Button } from '../components/Button';
 import { Scoreboard } from '../components/Scoreboard';
+import { RedMessage } from '../components/RedMessage';
 
 export function Memory(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -67,7 +68,14 @@ export function Memory(): JSX.Element {
         <SectionHead>{studySet.title}</SectionHead>
         {!isPlaying && (
           <>
-            <Button onClick={() => setIsPlaying(true)}>Play Memory Game</Button>
+            {!cards.length && (
+              <RedMessage>
+                You cannot play this game because there are no cards in this set
+              </RedMessage>
+            )}
+            <Button disabled={!cards.length} onClick={() => setIsPlaying(true)}>
+              Play Memory Game
+            </Button>
             <Scoreboard studySetId={+studySetId} gameId={gameId} />
           </>
         )}
