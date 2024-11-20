@@ -11,7 +11,7 @@ export function Button({ onClick, children, disabled }: Props): JSX.Element {
     <button
       disabled={disabled}
       onClick={onClick}
-      className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
+      className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white disabled:bg-slate-400 active:bg-blue-800">
       {children}
     </button>
   );

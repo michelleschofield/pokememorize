@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
+import { Button } from '../components/Button';
 
 export function SignInForm(): JSX.Element {
   const { signIn } = useUser();
@@ -56,11 +57,7 @@ export function SignInForm(): JSX.Element {
             </label>
           </div>
         </div>
-        <button
-          disabled={isLoading}
-          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white">
-          Sign In
-        </button>
+        <Button disabled={isLoading}>Sign In</Button>
       </form>
       <p>
         Don't have an account?{' '}

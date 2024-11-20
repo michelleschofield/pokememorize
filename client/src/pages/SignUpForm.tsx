@@ -4,6 +4,7 @@ import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { usernameAvailable } from '../lib';
 import { AvailabilityMessage } from '../components/AvailabilityMessage';
+import { Button } from '../components/Button';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,11 +91,9 @@ export function SignUpForm(): JSX.Element {
             </label>
           </div>
         </div>
-        <button
-          disabled={isLoading || isChecking || !isAvailable}
-          className="align-middle text-center border rounded py-1 px-3 bg-blue-600 text-white disabled:bg-slate-400">
+        <Button disabled={isLoading || isChecking || !isAvailable || !username}>
           Register
-        </button>
+        </Button>
       </form>
       <p>
         Already have an account?{' '}
