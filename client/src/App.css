@@ -126,12 +126,12 @@ select {
 
 /* game classes */
 
-.selected {
-  box-shadow: 0 0 15px 5px #f4db5a;
+.rm-child-margin > :first-child {
+  margin: 0;
 }
 
-.match > :first-child {
-  margin: 0;
+.selected {
+  box-shadow: 0 0 15px 5px #f4db5a;
 }
 
 .correct {

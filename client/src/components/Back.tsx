@@ -11,7 +11,7 @@ export function Back({ to, children }: Props): JSX.Element {
   return (
     <Link to={to} className="flex items-center">
       <FaArrowLeft />
-      <p>{children}</p>
+      <p className="ml-2">{children}</p>
     </Link>
   );
 }

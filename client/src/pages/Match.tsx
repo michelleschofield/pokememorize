@@ -14,6 +14,7 @@ import { Scoreboard } from '../components/Scoreboard';
 import { MatchGame } from '../components/MatchGame';
 import { RedMessage } from '../components/RedMessage';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { BlueLink } from '../components/BlueLink';
 
 export function Match(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -59,7 +60,12 @@ export function Match(): JSX.Element {
   }
 
   if (!studySet || !cards || !studySetId) {
-    return <div>There was an Error</div>;
+    return (
+      <div>
+        <RedMessage>There was an Error</RedMessage>
+        <BlueLink to="/">Return to Home Page</BlueLink>
+      </div>
+    );
   }
 
   return (

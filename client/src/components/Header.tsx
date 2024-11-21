@@ -51,11 +51,13 @@ export function Header(): JSX.Element {
             />
           </div>
           {user && (
-            <p
-              className="grow text-end underline underline-offset-2 cursor-pointer"
-              onClick={() => setModalOpen(true)}>
-              {user.username}
-            </p>
+            <div className="grow text-end ">
+              <button
+                className="underline underline-offset-2 cursor-pointer"
+                onClick={() => setModalOpen(true)}>
+                {user.username}
+              </button>
+            </div>
           )}
           <Modal onClose={() => setModalOpen(false)} isOpen={modalOpen}>
             <div className="p-2 rounded">

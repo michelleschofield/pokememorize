@@ -137,7 +137,11 @@ export function SpecificSet({ shared }: Props): JSX.Element {
           </>
         )}
       </SectionHead>
-      {!shared && <NewCard />}
+      {!shared && (
+        <div className="flex">
+          <NewCard />
+        </div>
+      )}
       {isLoadingCards && <LoadingMessage>Loading Cards...</LoadingMessage>}
       {!isLoadingCards && (
         <div className="flex flex-wrap">

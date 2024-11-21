@@ -44,12 +44,10 @@ export function SignInForm(): JSX.Element {
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
             <label className="mb-1 block">
-              Username
-              <TextInput required name="username" type="text" />
+              Username: <TextInput required name="username" />
             </label>
             <label className="mb-1 block">
-              Password
-              <TextInput required name="password" type="password" />
+              Password: <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>

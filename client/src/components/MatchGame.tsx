@@ -96,9 +96,9 @@ export function MatchGame({ cards, onWin, onStopPlaying }: Props): JSX.Element {
       <div className="flex flex-wrap rounded shadow-inner shadow-stone-600 bg-slate-300 m-2">
         {gameCards.length
           ? gameCards.map((card) => (
-              <div
+              <button
                 key={card.cardId + card.side}
-                className={`m-2 match cursor-pointer ${
+                className={`m-2 rm-child-margin ${
                   card.cardId === selected?.cardId &&
                   card.side === selected.side
                     ? 'selected'
@@ -113,7 +113,7 @@ export function MatchGame({ cards, onWin, onStopPlaying }: Props): JSX.Element {
                 ) : (
                   <BackOfCard onClick={() => handleSelect(card)} card={card} />
                 )}
-              </div>
+              </button>
             ))
           : null}
 

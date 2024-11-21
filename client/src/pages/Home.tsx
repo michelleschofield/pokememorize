@@ -6,6 +6,7 @@ import { ArrowLink } from '../components/ArrowLink';
 export function Home(): JSX.Element {
   const { user, handleSignOut, signIn } = useUser();
   const navigate = useNavigate();
+
   return (
     <div>
       {!user && (

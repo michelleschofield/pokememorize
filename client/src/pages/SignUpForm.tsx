@@ -68,7 +68,7 @@ export function SignUpForm(): JSX.Element {
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
             <label className="mb-1 block">
-              Username
+              Username:{' '}
               <TextInput
                 value={username}
                 onChange={(e) => setUsername(e.currentTarget.value)}
@@ -84,8 +84,7 @@ export function SignUpForm(): JSX.Element {
               />
             )}
             <label className="mb-1 block">
-              Password
-              <TextInput required name="password" type="password" />
+              Password: <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>
