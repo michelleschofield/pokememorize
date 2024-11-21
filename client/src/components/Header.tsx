@@ -15,27 +15,27 @@ export function Header(): JSX.Element {
     {
       name: 'Home',
       path: '/',
-      iconUrl: '/home.svg',
+      iconUrl: '/home.png',
     },
     {
       name: 'Study Sets',
       path: '/study-sets',
-      iconUrl: '',
+      iconUrl: '/study-sets.png',
     },
     {
       name: 'Flashcards',
       path: '/flashcards',
-      iconUrl: '/images/flashcards.svg',
+      iconUrl: '/flashcards.png',
     },
     {
       name: 'Match',
       path: '/match',
-      iconUrl: '',
+      iconUrl: '/match.png',
     },
     {
       name: 'Memory',
       path: '/memory',
-      iconUrl: '',
+      iconUrl: '/memory.png',
     },
   ];
 
