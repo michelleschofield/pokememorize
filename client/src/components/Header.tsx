@@ -41,7 +41,7 @@ export function Header(): JSX.Element {
 
   return (
     <>
-      <div className="bg-slate-200 h-full">
+      <div className="bg-slate-200 h-full flex flex-col">
         <div className="bg-blue-300 flex items-center justify-end px-2 h-16 container m-auto border-x-2 border-blue-400">
           {user && <Menu menuItems={menuItems} />}
           <div className="w-2/3 sm:w-2/5 md:w-1/3 xl:w-1/5">
@@ -74,7 +74,7 @@ export function Header(): JSX.Element {
             </div>
           </Modal>
         </div>
-        <div className="container px-2 m-auto bg-white border-x-2 border-slate-300 h-full">
+        <div className="container px-2 m-auto bg-white border-x-2 border-slate-300 grow">
           <Outlet />
         </div>
       </div>

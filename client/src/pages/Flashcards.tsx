@@ -46,7 +46,7 @@ export function Flashcards(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="h-full flex flex-col">
       <Back to="/flashcards">Change Study Set</Back>
       <h1 className="text-3xl">FlashCards</h1>
       <h2 className="text-2xl">Study Set: {studySet.title}</h2>
@@ -56,6 +56,9 @@ export function Flashcards(): JSX.Element {
           There are no cards in this study set, please select a different one
         </p>
       )}
-    </>
+      <div className="flex flex-col items-end justify-end grow">
+        <img src="/oddish.png" />
+      </div>
+    </div>
   );
 }
