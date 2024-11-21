@@ -28,12 +28,12 @@ export function Menu({ menuItems }: Props): JSX.Element {
         <div className="absolute flex top-0 left-0 w-full">
           <div className="flex bg-red-600 text-white  h-screen">
             <nav
-              className={`py-2 pl-4 flex flex-col ${isOpen ? 'w-64' : 'w-0'}`}>
-              <FaBars
-                className="cursor-pointer"
-                onClick={() => setIsOpen(false)}
-                size="40"
-              />
+              className={`py-2 pl-4 flex flex-col items-end ${
+                isOpen ? 'w-64' : 'w-0'
+              }`}>
+              <button onClick={() => setIsOpen(false)} className="px-2">
+                <FaBars size="40" />
+              </button>
               <ul>
                 {menuItems.map((item) => (
                   <MenuItemDisplay
