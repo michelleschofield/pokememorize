@@ -96,6 +96,14 @@ export function SignUpForm(): JSX.Element {
       <p>
         Already have an account? <BlueLink to="/sign-in">Sign In</BlueLink>
       </p>
+      <p>
+        Can't be bothered?{' '}
+        <BlueLink
+          onClick={() => signIn({ username: 'Guest', password: 'guest' })}
+          to="/">
+          Continue as Guest
+        </BlueLink>
+      </p>
     </div>
   );
 }
