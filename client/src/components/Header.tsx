@@ -15,7 +15,7 @@ export function Header(): JSX.Element {
     {
       name: 'Home',
       path: '/',
-      iconUrl: '/home.png',
+      iconUrl: '/home.svg',
     },
     {
       name: 'Study Sets',
