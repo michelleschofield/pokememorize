@@ -63,7 +63,6 @@ export function SignUpForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign Up</h2>
-      {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
@@ -91,6 +90,7 @@ export function SignUpForm(): JSX.Element {
         <Button disabled={isLoading || isChecking || !isAvailable || !username}>
           Register
         </Button>
+        {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       </form>
       <p>
         Already have an account? <BlueLink to="/sign-in">Sign In</BlueLink>

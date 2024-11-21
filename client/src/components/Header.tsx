@@ -53,7 +53,7 @@ export function Header(): JSX.Element {
           {user && (
             <div className="grow text-end ">
               <button
-                className="underline underline-offset-2 cursor-pointer"
+                className="underline underline-offset-2"
                 onClick={() => setModalOpen(true)}>
                 {user.username}
               </button>

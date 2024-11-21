@@ -17,7 +17,7 @@ export function Menu({ menuItems }: Props): JSX.Element {
     <div className="transition-all ease-in-out grow z-10">
       {!isOpen && (
         <div className="grow">
-          <button onClick={() => setIsOpen(true)} className="cursor-pointer">
+          <button onClick={() => setIsOpen(true)}>
             <FaBars size="30" />
           </button>
         </div>

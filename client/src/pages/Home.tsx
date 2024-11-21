@@ -8,7 +8,7 @@ export function Home(): JSX.Element {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="h-full">
       {!user && (
         <div>
           <Button onClick={() => navigate('/sign-in')}>Sign In</Button>
@@ -23,12 +23,17 @@ export function Home(): JSX.Element {
         <>
           <div>Signed in as {user.username}</div>
           <Button onClick={handleSignOut}>Sign Out</Button>
-          <ArrowLink to="/study-sets">Study Sets</ArrowLink>
-          <ArrowLink to="/flashcards">Flashcards</ArrowLink>
-          <ArrowLink to="/match">Matching Game</ArrowLink>
-          <ArrowLink to="/memory">Memory Game</ArrowLink>
+          <div>
+            <ArrowLink to="/study-sets">Study Sets</ArrowLink>
+            <ArrowLink to="/flashcards">Flashcards</ArrowLink>
+            <ArrowLink to="/match">Matching Game</ArrowLink>
+            <ArrowLink to="/memory">Memory Game</ArrowLink>
+          </div>
         </>
       )}
+      <div className="flex flex-col justify-end items-end md:items-center mt-3 h-2/3">
+        <img alt="snorlax" src="/snorlax.jpeg" />
+      </div>
     </div>
   );
 }

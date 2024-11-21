@@ -37,7 +37,6 @@ export function CardCarousel({ cards }: Props): JSX.Element {
           <FaChevronLeft />
         </button>
         <FlippingCard
-          className="cursor-pointer"
           isFlipped={isFlipped}
           onFlip={() => setIsFlipped(!isFlipped)}
           frontSide={
