@@ -7,11 +7,19 @@ type Auth = {
 
 const authKey = 'um.auth';
 
+/**
+ * Save auth information for the signed in user in local storage
+ * @param user the user that has signed in
+ * @param token the token from the server
+ */
 export function saveAuth(user: User, token: string): void {
   const auth: Auth = { user, token };
   localStorage.setItem(authKey, JSON.stringify(auth));
 }
 
+/**
+ * Clear auth information from local storage
+ */
 export function removeAuth(): void {
   localStorage.removeItem(authKey);
 }

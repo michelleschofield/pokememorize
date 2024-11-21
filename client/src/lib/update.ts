@@ -4,7 +4,7 @@ import { readToken } from './user-management';
 /**
  * Update a study set in the database
  * @param studySet the study set to update
- * @returns the updated study set
+ * @returns a promise that resolves to the updated study set
  * @throws an error if the response from the server is not ok
  */
 export async function updateSet({
