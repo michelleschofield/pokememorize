@@ -18,6 +18,7 @@ export function SignInForm(): JSX.Element {
   ): Promise<void> {
     event.preventDefault();
     try {
+      setError(undefined);
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData) as UserData;
@@ -38,7 +39,6 @@ export function SignInForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign In</h2>
-      {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
@@ -52,6 +52,7 @@ export function SignInForm(): JSX.Element {
             </label>
           </div>
         </div>
+        {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
         {!!error && (
           <RedMessage>
             {error instanceof Error ? error.message : 'There was an error'}
