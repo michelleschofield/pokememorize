@@ -5,12 +5,13 @@ import { UserData } from '../components/UserContext';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
+import { RedMessage } from '../components/RedMessage';
 
 export function SignInForm(): JSX.Element {
-  const { signIn } = useUser();
+  const { signIn, user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown | Error>();
   const navigate = useNavigate();
-  const { user } = useUser();
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
@@ -23,7 +24,8 @@ export function SignInForm(): JSX.Element {
       await signIn(userData);
       navigate('/');
     } catch (err) {
-      alert(`Error signing in: ${err}`);
+      setError(err);
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +52,11 @@ export function SignInForm(): JSX.Element {
             </label>
           </div>
         </div>
+        {!!error && (
+          <RedMessage>
+            {error instanceof Error ? error.message : 'There was an error'}
+          </RedMessage>
+        )}
         <Button disabled={isLoading}>Sign In</Button>
       </form>
       <p>
