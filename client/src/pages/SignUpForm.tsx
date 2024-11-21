@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { usernameExists } from '../lib';
@@ -7,6 +7,7 @@ import { AvailabilityMessage } from '../components/AvailabilityMessage';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
+import { BlueLink } from '../components/BlueLink';
 
 export function SignUpForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
@@ -93,12 +94,7 @@ export function SignUpForm(): JSX.Element {
         </Button>
       </form>
       <p>
-        Already have an account?{' '}
-        <Link
-          className="text-blue-600 underline underline-offset-2"
-          to="/sign-in">
-          Sign In
-        </Link>
+        Already have an account? <BlueLink to="/sign-in">Sign In</BlueLink>
       </p>
     </div>
   );

@@ -1,11 +1,12 @@
 import { type FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
 import { RedMessage } from '../components/RedMessage';
+import { BlueLink } from '../components/BlueLink';
 
 export function SignInForm(): JSX.Element {
   const { signIn, user } = useUser();
@@ -61,12 +62,7 @@ export function SignInForm(): JSX.Element {
         <Button disabled={isLoading}>Sign In</Button>
       </form>
       <p>
-        Don't have an account?{' '}
-        <Link
-          className="text-blue-600 underline underline-offset-2"
-          to="/sign-up">
-          Sign Up
-        </Link>
+        Don't have an account? <BlueLink to="/sign-up">Sign Up</BlueLink>
       </p>
     </div>
   );
