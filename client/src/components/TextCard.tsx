@@ -7,7 +7,7 @@ type Props = {
 
 export function TextCard({ text, onClick }: Props): JSX.Element {
   return (
-    <Card className="justify-start" onClick={onClick}>
+    <Card onClick={onClick}>
       <p className="text-left">{text}</p>
     </Card>
   );
