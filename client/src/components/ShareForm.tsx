@@ -31,7 +31,8 @@ export function ShareForm({ studySetId, onShare }: Props): JSX.Element {
         setIsChecking(false);
       }
     }
-    checkExistence();
+    const timeoutId = setTimeout(checkExistence, 500);
+    return (): void => clearTimeout(timeoutId);
   }, [shareWith]);
 
   async function handleShare(event: FormEvent<HTMLFormElement>): Promise<void> {

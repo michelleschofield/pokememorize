@@ -30,6 +30,11 @@ export async function addCard({
   if (!response.ok) throw new Error(`fetch error ${json.error}`);
 }
 
+/**
+ * add a score to the database
+ * @param score the score to add
+ * @throws an error if the response is not ok
+ */
 export async function addScore(score: Score): Promise<void> {
   const req = {
     method: 'POST',
@@ -47,7 +52,7 @@ export async function addScore(score: Score): Promise<void> {
 /**
  * Add a study set to the database
  * @param set the set to add
- * @returns the set after it has been added, it will have a studySetId
+ * @returns a promise that resolves to the set after it has been added, it will have a studySetId
  * @throws an error if the response from the server is not ok
  */
 export async function addSet(set: NewSet): Promise<StudySet> {
@@ -70,6 +75,12 @@ export async function addSet(set: NewSet): Promise<StudySet> {
   return newSet;
 }
 
+/**
+ * Allow a user other than the owner to access a study set to play games (will not allow user to edit or delete)
+ * @param studySetId the study set to be shared
+ * @param username the user that will gain access to it
+ * @throws an error if the response from the server is not ok, probably because the study is already shared with that user
+ */
 export async function shareSet(
   studySetId: number,
   username: string

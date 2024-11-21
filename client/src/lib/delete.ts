@@ -14,8 +14,10 @@ export async function deleteSet(studySetId: number): Promise<void> {
   };
 
   const response = await fetch(`/api/sets/${studySetId}`, req);
-  const json = await response.json();
-  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  if (!response.ok) {
+    const json = await response.json();
+    throw new Error(`fetch error ${json.error}`);
+  }
 }
 
 /**

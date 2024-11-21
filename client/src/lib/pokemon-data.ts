@@ -53,6 +53,11 @@ type AllPokemonRes = {
   results: { name: string }[];
 };
 
+/**
+ * Fetch an array of every pokemon from pokeapi
+ * @returns a promise that resolves to an array with the name of every pokemon
+ * @throws an error if the response is not ok
+ */
 export async function getAllPokemon(): Promise<string[]> {
   const response = await fetch(
     'https://pokeapi.co/api/v2/pokemon-species/?limit=2000'
@@ -116,7 +121,7 @@ export async function fillCardViaName(
 /**
  * Populate a card from the database with information from the pokeapi
  * @param card a card retrieved from the database
- * @returns a new card populated with the information from the pokeapi
+ * @returns a promise that resolves to a new card populated with the information from the pokeapi
  * @throws an error if the response from pokeapi is not ok
  */
 export async function fillOutCard(card: CardDB): Promise<FilledCard> {
@@ -138,7 +143,7 @@ export async function fillOutCard(card: CardDB): Promise<FilledCard> {
 /**
  * Call fillOutCard on every card in array
  * @param cards an array of cards from the database
- * @returns a new array of cards that have been populated with information from pokeapi
+ * @returns a promise that resolves to a new array of cards that have been populated with information from pokeapi
  * @throws if the pokeapi response is at any point not ok
  */
 export async function fillOutCards(cards: CardDB[]): Promise<FilledCard[]> {

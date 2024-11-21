@@ -20,22 +20,22 @@ export function Header(): JSX.Element {
     {
       name: 'Study Sets',
       path: '/study-sets',
-      iconUrl: '',
+      iconUrl: '/study-sets.png',
     },
     {
       name: 'Flashcards',
       path: '/flashcards',
-      iconUrl: '/images/flashcards.svg',
+      iconUrl: '/flashcards.png',
     },
     {
       name: 'Match',
       path: '/match',
-      iconUrl: '',
+      iconUrl: '/match.png',
     },
     {
       name: 'Memory',
       path: '/memory',
-      iconUrl: '',
+      iconUrl: '/memory.png',
     },
   ];
 
@@ -47,7 +47,7 @@ export function Header(): JSX.Element {
           <div className="w-2/3 sm:w-2/5 md:w-1/3 xl:w-1/5">
             <img
               className="w-full object-contain"
-              src="https://fontmeme.com/permalink/241004/6e99ef9578d90391496b5f4b4459f196.png"
+              src="/pokememorize-logo.png"
             />
           </div>
           {user && (

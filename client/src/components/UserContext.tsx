@@ -62,10 +62,11 @@ export function UserProvider({ children }: Props): JSX.Element {
       body: JSON.stringify(userData),
     };
     const res = await fetch('/api/auth/sign-in', req);
+    const json = await res.json();
     if (!res.ok) {
-      throw new Error(`fetch Error ${res.status}`);
+      throw new Error(`Error ${json.error}`);
     }
-    const { user, token } = (await res.json()) as AuthData;
+    const { user, token } = json as AuthData;
     handleSignIn(user, token);
   }
 

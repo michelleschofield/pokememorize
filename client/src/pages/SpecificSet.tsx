@@ -94,8 +94,7 @@ export function SpecificSet({ shared }: Props): JSX.Element {
   async function handleDelete(): Promise<void> {
     try {
       if (!studySetId) {
-        alert('cannot delete if not study set id');
-        return;
+        throw new Error('there is no study set id');
       }
       await deleteSet(+studySetId);
       navigate('/study-sets');

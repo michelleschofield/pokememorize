@@ -1,29 +1,33 @@
 import { type FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/useUser';
 import { UserData } from '../components/UserContext';
 import { Button } from '../components/Button';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
+import { RedMessage } from '../components/RedMessage';
+import { BlueLink } from '../components/BlueLink';
 
 export function SignInForm(): JSX.Element {
-  const { signIn } = useUser();
+  const { signIn, user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown | Error>();
   const navigate = useNavigate();
-  const { user } = useUser();
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
     try {
+      setError(undefined);
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData) as UserData;
       await signIn(userData);
       navigate('/');
     } catch (err) {
-      alert(`Error signing in: ${err}`);
+      setError(err);
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -36,7 +40,6 @@ export function SignInForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign In</h2>
-      {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
@@ -50,15 +53,24 @@ export function SignInForm(): JSX.Element {
             </label>
           </div>
         </div>
+        {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
+        {!!error && (
+          <RedMessage>
+            {error instanceof Error ? error.message : 'There was an error'}
+          </RedMessage>
+        )}
         <Button disabled={isLoading}>Sign In</Button>
       </form>
       <p>
-        Don't have an account?{' '}
-        <Link
-          className="text-blue-600 underline underline-offset-2"
-          to="/sign-up">
-          Sign Up
-        </Link>
+        Don't have an account? <BlueLink to="/sign-up">Sign Up</BlueLink>
+      </p>
+      <p>
+        Can't be bothered?{' '}
+        <BlueLink
+          onClick={() => signIn({ username: 'Guest', password: 'guest' })}
+          to="/">
+          Continue as Guest
+        </BlueLink>
       </p>
     </div>
   );
