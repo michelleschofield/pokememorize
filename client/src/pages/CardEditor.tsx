@@ -195,8 +195,8 @@ export function CardEditor(): JSX.Element {
               fontWeight: 'normal',
             }}
             name="infoType">
-            <option value="types">Types</option>
             <option value="flavor_text_entries">Pokedex</option>
+            <option value="types">Types</option>
             <option value="evolves_from_species">Evolves From</option>
           </select>
           <Button>
