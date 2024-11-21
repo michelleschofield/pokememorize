@@ -8,6 +8,7 @@ export function NotFound(): JSX.Element {
         <BlueLink to="/">Go to Home Page</BlueLink>
       </div>
       <img
+        alt="psyduck"
         className="w-full p-2 md:w-1/2"
         src="https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/054.png"
       />
