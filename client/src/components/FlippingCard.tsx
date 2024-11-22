@@ -23,7 +23,7 @@ export function FlippingCard({
 
   return (
     <button
-      className={`flip-card ${isFlipped} ${className}`}
+      className={`flip-card rounded ${isFlipped} ${className}`}
       onClick={flipCard}>
       <div className="flip-card-inner">
         <div className="flip-card-front">{frontSide}</div>
