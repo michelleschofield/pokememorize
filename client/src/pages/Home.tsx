@@ -9,7 +9,7 @@ export function Home(): JSX.Element {
   const navigate = useNavigate();
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col grow">
       {!user && (
         <div>
           <Button onClick={() => navigate('/sign-in')}>Sign In</Button>

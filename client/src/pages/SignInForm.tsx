@@ -38,7 +38,7 @@ export function SignInForm(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col grow">
       <div>
         <h2 className="text-xl font-bold">Sign In</h2>
         <form onSubmit={handleSubmit}>

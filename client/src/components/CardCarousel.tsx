@@ -30,11 +30,11 @@ export function CardCarousel({ cards }: Props): JSX.Element {
 
   return (
     <div className="max-w-96">
-      <div className="flex justify-evenly items-center max-w-md">
+      <div className="flex justify-evenly items-center max-w-md mb-2">
         <button
           onClick={decrementIndex}
           className="m-1 rounded-lg hover:bg-slate-200">
-          <FaChevronLeft />
+          <FaChevronLeft className="m-1" />
         </button>
         <FlippingCard
           isFlipped={isFlipped}
@@ -50,7 +50,7 @@ export function CardCarousel({ cards }: Props): JSX.Element {
         <button
           onClick={incrementIndex}
           className="m-1 rounded-lg hover:bg-slate-200">
-          <FaChevronRight />
+          <FaChevronRight className="m-1" />
         </button>
       </div>
       <Indicators

@@ -61,7 +61,7 @@ export function SignUpForm(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col grow">
       <h2 className="text-xl font-bold">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">

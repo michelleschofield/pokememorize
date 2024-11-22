@@ -46,7 +46,7 @@ export function Flashcards(): JSX.Element {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="grow flex flex-col">
       <Back to="/flashcards">Change Study Set</Back>
       <h1 className="text-3xl">FlashCards</h1>
       <h2 className="text-2xl">Study Set: {studySet.title}</h2>
