@@ -7,12 +7,8 @@ type Props = {
 
 export function IndicatorDot({ onClick, active }: Props): JSX.Element {
   return (
-    <>
-      {active ? (
-        <FaCircle className="m-1 cursor-pointer" onClick={onClick} />
-      ) : (
-        <FaRegCircle className="m-1 cursor-pointer" onClick={onClick} />
-      )}
-    </>
+    <button onClick={onClick} className="m-1">
+      {active ? <FaCircle /> : <FaRegCircle />}
+    </button>
   );
 }

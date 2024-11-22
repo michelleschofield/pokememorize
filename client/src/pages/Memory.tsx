@@ -14,6 +14,7 @@ import { Button } from '../components/Button';
 import { Scoreboard } from '../components/Scoreboard';
 import { RedMessage } from '../components/RedMessage';
 import { LoadingMessage } from '../components/LoadingMessage';
+import { BlueLink } from '../components/BlueLink';
 
 export function Memory(): JSX.Element {
   const [studySet, setStudySet] = useState<StudySet>();
@@ -59,7 +60,12 @@ export function Memory(): JSX.Element {
   }
 
   if (!studySet || !cards || !studySetId) {
-    return <div>There was an Error</div>;
+    return (
+      <div>
+        <RedMessage>There was an Error</RedMessage>
+        <BlueLink to="/">Return to Home Page</BlueLink>
+      </div>
+    );
   }
 
   return (

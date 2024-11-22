@@ -8,7 +8,7 @@ type Props = {
 export function TextCard({ text, onClick }: Props): JSX.Element {
   return (
     <Card onClick={onClick}>
-      <p>{text}</p>
+      <p className="text-left">{text}</p>
     </Card>
   );
 }

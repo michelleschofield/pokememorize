@@ -19,6 +19,8 @@ import { RedButton } from '../components/RedButton';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { TextInput } from '../components/TextInput';
 import { ShareForm } from '../components/ShareForm';
+import { BlueLink } from '../components/BlueLink';
+import { RedMessage } from '../components/RedMessage';
 
 type Props = {
   shared?: boolean;
@@ -105,7 +107,12 @@ export function SpecificSet({ shared }: Props): JSX.Element {
   }
 
   if (!studySetId) {
-    return <div>Sorry, there is no studySetId</div>;
+    return (
+      <div>
+        <RedMessage>There was an Error</RedMessage>
+        <BlueLink to="/">Return to Home Page</BlueLink>
+      </div>
+    );
   }
 
   return (
@@ -137,7 +144,11 @@ export function SpecificSet({ shared }: Props): JSX.Element {
           </>
         )}
       </SectionHead>
-      {!shared && <NewCard />}
+      {!shared && (
+        <div className="flex">
+          <NewCard />
+        </div>
+      )}
       {isLoadingCards && <LoadingMessage>Loading Cards...</LoadingMessage>}
       {!isLoadingCards && (
         <div className="flex flex-wrap">

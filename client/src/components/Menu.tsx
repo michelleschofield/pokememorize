@@ -17,23 +17,21 @@ export function Menu({ menuItems }: Props): JSX.Element {
     <div className="transition-all ease-in-out grow z-10">
       {!isOpen && (
         <div className="grow">
-          <FaBars
-            className="cursor-pointer"
-            size="30"
-            onClick={() => setIsOpen(true)}
-          />
+          <button onClick={() => setIsOpen(true)}>
+            <FaBars size="30" />
+          </button>
         </div>
       )}
       {isOpen && (
         <div className="absolute flex top-0 left-0 w-full">
           <div className="flex bg-red-600 text-white  h-screen">
             <nav
-              className={`py-2 pl-4 flex flex-col ${isOpen ? 'w-64' : 'w-0'}`}>
-              <FaBars
-                className="cursor-pointer"
-                onClick={() => setIsOpen(false)}
-                size="40"
-              />
+              className={`py-2 pl-4 flex flex-col items-end ${
+                isOpen ? 'w-64' : 'w-0'
+              }`}>
+              <button onClick={() => setIsOpen(false)} className="px-2">
+                <FaBars size="40" />
+              </button>
               <ul>
                 {menuItems.map((item) => (
                   <MenuItemDisplay

@@ -68,11 +68,8 @@ export function AutocompleteInput({
         isOpen={autocompleteOpen}>
         <ul className="bg-white border border-gray-400 p-2 max-h-96 w-36 overflow-scroll">
           {filteredOptions.map((string) => (
-            <li
-              className="cursor-pointer"
-              key={string}
-              onClick={() => handleComplete(string)}>
-              {string}
+            <li key={string}>
+              <button onClick={() => handleComplete(string)}>{string}</button>
             </li>
           ))}
         </ul>

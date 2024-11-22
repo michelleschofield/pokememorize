@@ -21,6 +21,8 @@ import { AutocompleteInput } from '../components/AutocompleteInput';
 import { RedButton } from '../components/RedButton';
 import { LoadingMessage } from '../components/LoadingMessage';
 import { FaRotate } from 'react-icons/fa6';
+import { RedMessage } from '../components/RedMessage';
+import { BlueLink } from '../components/BlueLink';
 
 type FormInputs = {
   pokemon: string;
@@ -153,7 +155,12 @@ export function CardEditor(): JSX.Element {
   }
 
   if (!card || !studySet) {
-    return <div>Error! either card or study set does not exist</div>;
+    return (
+      <div>
+        <RedMessage>There was an Error</RedMessage>
+        <BlueLink to="/">Return to Home Page</BlueLink>
+      </div>
+    );
   }
 
   return (

@@ -179,7 +179,7 @@ export function MemoryGame({
             onFlip={() => handleSelect(card)}
             isFlipped={card.isFlipped}
             className={`${card.className} ${
-              acceptClicks && !card.isFlipped ? 'cursor-pointer' : ''
+              acceptClicks && !card.isFlipped ? '' : 'cursor-default'
             } m-2`}
             frontSide={<PokeballCard />}
             backSide={

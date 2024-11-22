@@ -63,12 +63,11 @@ export function SignUpForm(): JSX.Element {
   return (
     <div>
       <h2 className="text-xl font-bold">Sign Up</h2>
-      {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
           <div className="w-1/2">
             <label className="mb-1 block">
-              Username
+              Username:{' '}
               <TextInput
                 value={username}
                 onChange={(e) => setUsername(e.currentTarget.value)}
@@ -84,14 +83,14 @@ export function SignUpForm(): JSX.Element {
               />
             )}
             <label className="mb-1 block">
-              Password
-              <TextInput required name="password" type="password" />
+              Password: <TextInput required name="password" type="password" />
             </label>
           </div>
         </div>
         <Button disabled={isLoading || isChecking || !isAvailable || !username}>
           Register
         </Button>
+        {isLoading && <LoadingMessage>Signing up...</LoadingMessage>}
       </form>
       <p>
         Already have an account? <BlueLink to="/sign-in">Sign In</BlueLink>
