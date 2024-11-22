@@ -38,27 +38,29 @@ export function SignInForm(): JSX.Element {
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-bold">Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-wrap mb-1">
-          <div className="w-1/2">
-            <label className="mb-1 block">
-              Username: <TextInput required name="username" />
-            </label>
-            <label className="mb-1 block">
-              Password: <TextInput required name="password" type="password" />
-            </label>
+    <div className="flex flex-col h-full">
+      <div>
+        <h2 className="text-xl font-bold">Sign In</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-wrap mb-1">
+            <div className="w-1/2">
+              <label className="mb-1 block">
+                Username: <TextInput required name="username" />
+              </label>
+              <label className="mb-1 block">
+                Password: <TextInput required name="password" type="password" />
+              </label>
+            </div>
           </div>
-        </div>
-        {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
-        {!!error && (
-          <RedMessage>
-            {error instanceof Error ? error.message : 'There was an error'}
-          </RedMessage>
-        )}
-        <Button disabled={isLoading}>Sign In</Button>
-      </form>
+          {isLoading && <LoadingMessage>Signing In...</LoadingMessage>}
+          {!!error && (
+            <RedMessage>
+              {error instanceof Error ? error.message : 'There was an error'}
+            </RedMessage>
+          )}
+          <Button disabled={isLoading}>Sign In</Button>
+        </form>
+      </div>
       <p>
         Don't have an account? <BlueLink to="/sign-up">Sign Up</BlueLink>
       </p>
@@ -70,6 +72,9 @@ export function SignInForm(): JSX.Element {
           Continue as Guest
         </BlueLink>
       </p>
+      <div className="grow flex justify-end items-end">
+        <img alt="snivy" className="w-56 md:w-96" src="/images/snivy.png" />
+      </div>
     </div>
   );
 }

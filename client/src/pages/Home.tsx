@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { useUser } from '../components/useUser';
 import { ArrowLink } from '../components/ArrowLink';
+import { SectionHead } from '../components/SectionHead';
 
 export function Home(): JSX.Element {
   const { user, handleSignOut, signIn } = useUser();
@@ -28,6 +29,7 @@ export function Home(): JSX.Element {
           <div>
             <ArrowLink to="/study-sets">Study Sets</ArrowLink>
             <ArrowLink to="/flashcards">Flashcards</ArrowLink>
+            <SectionHead>Games</SectionHead>
             <ArrowLink to="/match">Matching Game</ArrowLink>
             <ArrowLink to="/memory">Memory Game</ArrowLink>
           </div>
