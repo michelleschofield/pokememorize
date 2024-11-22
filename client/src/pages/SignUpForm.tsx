@@ -61,7 +61,7 @@ export function SignUpForm(): JSX.Element {
   }
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <h2 className="text-xl font-bold">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap mb-1">
@@ -103,6 +103,13 @@ export function SignUpForm(): JSX.Element {
           Continue as Guest
         </BlueLink>
       </p>
+      <div className="grow flex items-end">
+        <img
+          className="w-56 md:w-96"
+          alt="jigglypuff"
+          src="/images/jigglypuff.png"
+        />
+      </div>
     </div>
   );
 }

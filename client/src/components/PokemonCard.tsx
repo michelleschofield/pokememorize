@@ -13,7 +13,7 @@ export function PokemonCard({
 }: Props): JSX.Element {
   return (
     <Card onClick={onClick}>
-      <img src={imageSrc} className="w-full" />
+      <img alt={caption} src={imageSrc} className="w-full" />
       <h3 className="text-2xl">{caption}</h3>
     </Card>
   );
