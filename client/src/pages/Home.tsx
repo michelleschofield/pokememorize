@@ -34,7 +34,7 @@ export function Home(): JSX.Element {
         </>
       )}
       <div className="flex flex-col justify-end items-start mt-3 grow">
-        <img className="m-2" alt="snorlax" src="/snorlax.jpeg" />
+        <img className="m-2" alt="snorlax" src="/images/snorlax.jpeg" />
       </div>
     </div>
   );

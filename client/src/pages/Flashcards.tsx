@@ -57,7 +57,7 @@ export function Flashcards(): JSX.Element {
         </p>
       )}
       <div className="flex flex-col items-end justify-end grow">
-        <img src="/oddish.png" />
+        <img src="/images/oddish.png" />
       </div>
     </div>
   );
