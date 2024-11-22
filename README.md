@@ -13,6 +13,7 @@ I wished to gain familiarity with the pokemon franchise
 - React
 - Node
 - Tailwind CSS
+- PokeApi https://pokeapi.co/docs/v2#google_vignette
 
 ### Live demo
 
