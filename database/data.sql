@@ -11,11 +11,11 @@ insert into "studySets" ("userId", "title")
 values (1, 'Popular Pokemon');
 
 insert into "cards" ("studySetId", "pokemonId", "infoKey")
-values (1, 133, 'flavor_text_entries');
+values (1, 133, 'flavor_text_entries'),
        (1, 197, 'flavor_text_entries'),
        (1, 94, 'flavor_text_entries'),
        (1, 1, 'flavor_text_entries'),
-       (1, 6, 'flavor_text_entries'),
+       (1, 6, 'flavor_text_entries');
 
 
 insert into "users" ("username", "hashedPassword")
