@@ -49,6 +49,11 @@ export function MatchGame({ cards, onWin, onStopPlaying }: Props): JSX.Element {
       return;
     }
 
+    if (selected.cardId === card.cardId && selected.side === card.side) {
+      setSelected(undefined);
+      return;
+    }
+
     if (selected.cardId === card.cardId && selected.side !== card.side) {
       const filtered = gameCards.filter(
         (gameCard) => card.cardId !== gameCard.cardId
