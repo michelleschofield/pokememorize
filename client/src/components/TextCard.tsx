@@ -6,9 +6,10 @@ type Props = {
 };
 
 export function TextCard({ text, onClick }: Props): JSX.Element {
+  const formatted = text?.split('\n').join(' ').split('\f').join(' ');
   return (
     <Card onClick={onClick}>
-      <p className="text-left">{text}</p>
+      <p className="text-left">{formatted}</p>
     </Card>
   );
 }
