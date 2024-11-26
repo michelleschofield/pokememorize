@@ -34,6 +34,8 @@ export async function deleteCard(cardId: number): Promise<void> {
   };
 
   const response = await fetch(`/api/cards/${cardId}`, req);
-  const json = await response.json();
-  if (!response.ok) throw new Error(`fetch error ${json.error}`);
+  if (!response.ok) {
+    const json = await response.json();
+    throw new Error(`fetch error ${json.error}`);
+  }
 }
