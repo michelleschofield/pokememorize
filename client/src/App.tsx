@@ -15,6 +15,8 @@ import { MatchSelect } from './pages/MatchSelect';
 import { Match } from './pages/Match';
 import { MemorySelect } from './pages/MemorySelect';
 import { Memory } from './pages/Memory';
+import { AsteroidSelect } from './pages/AsteroidSelect';
+import { Asteroid } from './pages/Asteroid';
 
 export default function App(): JSX.Element {
   return (
@@ -41,6 +43,8 @@ export default function App(): JSX.Element {
           <Route path="match/:studySetId" element={<Match />} />
           <Route path="memory" element={<MemorySelect />} />
           <Route path="memory/:studySetId" element={<Memory />} />
+          <Route path="asteroid" element={<AsteroidSelect />} />
+          <Route path="asteroid/:studySetId" element={<Asteroid />} />
         </Route>
       </Routes>
     </UserProvider>
