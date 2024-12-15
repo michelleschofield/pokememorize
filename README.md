@@ -38,8 +38,7 @@ Try the application live at http://ec2-3-134-57-218.us-east-2.compute.amazonaws.
 1. Clone the repository.
 
    ```shell
-   git clone https://github.com/Learning-Fuze/sgt-react
-   cd sgt-react
+   git clone git@github.com:michelleschofield/pokememorize.git
    ```
 
 1. Install all dependencies with NPM.
